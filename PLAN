@@ -12,3 +12,33 @@ We have something like three layers here. Here's how I view them:
                        |            |     |
   LAYER THREE (GIMEL)  |      X     |  X  | large full-stack projects
   ---------------------+------------+-----+----------------------------------
+
+== Layer one -- quick and dirty web programming with basically no framework
+
+This is slated to be the Perl 6 equivalent of programming on top of CGI in Perl
+5.
+
+I think Rack can be ported more or less directly over to Perl 6-land. Then,
+we'll be able to write very small Perl 6 web applications like this:
+
+    use v6;
+    use Sinatra;
+    get '/hi' => {
+      "Hello World!"
+    };
+
+Currently, the things providing inspiration here are these:
+
+    <http://rack.rubyforge.org/>
+    <http://www.sinatrarb.com/>
+
+You'll note from the above example that no HTML is output, only a string.
+This could be solved by making an (X)HTML module along the same principles
+as the SVG module:
+
+    <http://github.com/masak/svg/blob/184536dc5af1388cd095e8f02e4c1987fba3d9d0/svg-example>
+
+That could conceivably give us a native syntax, along with DTD validation.
+
+I need to think up more examples that do CGI-like stuff; particularly forms
+and sticky fields and all that.
