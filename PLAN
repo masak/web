@@ -1,0 +1,14 @@
+It says in the grant proposal: "Specifying framework basics: 1 week". So that's
+what I'll be doing this week, specifying. I'm eager to get coding as well,
+but it's nice to see where one is going.
+
+We have something like three layers here. Here's how I view them:
+
+                         Templating   MVC   Comments
+  ---------------------+------------+-----+----------------------------------
+  LAYER ONE   (ALEPH)  |            |     | q&d get-out-of-my-way programming
+                       |            |     |
+  LAYER TWO   (BET)    |      X     |     | medium-large projects w/o a db
+                       |            |     |
+  LAYER THREE (GIMEL)  |      X     |  X  | large full-stack projects
+  ---------------------+------------+-----+----------------------------------
