@@ -41,6 +41,25 @@ as the SVG module:
 
   <http://github.com/masak/svg/blob/184536dc5af1388cd095e8f02e4c1987fba3d9d0/svg-example>
 
+Something like this:
+
+    HTML.serialize( :html[
+        :head[ :title('On Problems') ],
+        :body[
+            :p[ 'A grook by Piet Hein' ],
+            :pre[
+'Our choicest plans
+     have fallen through,
+our airiest castles
+     tumbled over,
+because of lines
+     we neatly drew
+and later neatly
+     stumbled over.'
+            ],
+        ]
+    ] );
+
 That could conceivably give us a native syntax, along with DTD validation.
 
 I need to think up more examples that do CGI-like stuff; particularly forms
