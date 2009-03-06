@@ -75,6 +75,12 @@ Genshi:
 
 With reasonable syntactic modifications for Perl 6, of course.
 
+Hm, need to process this page and extract all the goodness from it:
+
+ <http://wiki.github.com/why/hpricot/hpricot-challenge>
+
+Maybe we actually want to port Hpricot as well.
+
 == Layer three -- a full Rails/Jifty-like MVC framework
 
 These points were things I noticed and liked in Jifty.
