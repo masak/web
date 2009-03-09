@@ -1,0 +1,109 @@
+# the controller holds information that applies to all actions
+# there. The initialization will look in the config file if there is
+# a definition to any of the attributes defined in the package.
+role Controller {}
+
+# this is a normal private action
+role Action {
+   has Controller $.controller;
+   has Str $.private-name;
+   has Callable $.begin-closure;
+   has Callable $.execute-closure;
+   has Callable $.end-closure;
+}
+
+role Action::Private {
+   multi method begin {
+     $.begin-closure.(self); 
+   }
+   multi method execute {
+     $.execute-closure.(self); 
+   }
+   multi method end {
+     $.end-closure.(self);
+   }
+}
+
+# this is used to mask out the base-uri for the application
+role Action::Root {
+   has URI $.base;
+}
+
+# this is an action that might be part of a chain
+role Action::Chained {
+   has Action $.parent;
+   has Pattern $.path-part;
+   has Int $.capture-args;
+   multi method begin {
+     $.parent.begin if $.parent;
+     $.begin-closure.(self); 
+   }
+   multi method execute {
+     $.parent.execute if $.parent;
+     # TODO: add the captured args as arguments
+     # to the closure call.
+     my @args = ...;
+     $.execute-closure.(self, |@args); 
+   }
+   multi method end {
+     $.parent.end if $.parent;
+     $.end-closure.(self);
+   }
+}
+
+# this is an action that is seen as an endpoint
+role Action::Public does Action::Chained does Pattern {
+   has Int $.priority; # match order
+   method ACCEPTS {
+     
+   }
+}
+
+# the dispatcher catalogs all actions, and is responsible for
+# actually trying to invoke them
+role Dispatcher {
+  has %!actions;
+  has @!public;
+  method register-action(Action $a) {
+    fail 'Duplicated action'
+      if %!actions.exists($a.private-name);
+    %!actions{$a.private-name} = $a;
+    if $a ~~ Action::Public {
+      @!public = (@!public, $a).sort { $_.priority }
+    }
+  }
+  method dispatch($request? = $*request) {
+    my $match;
+    for @!public --> $action {
+      if $request ~~ $action  {
+        $match = $action;
+      }
+    }
+    if $match {
+      self.run-action($match);
+    } else {
+      fail 'No action matched';
+    }
+  }
+  method run-action($action) {
+    $action.*begin;
+    $action.*execute;
+    $action.*end;
+    CONTROL {
+      when ControlExceptionDetach {
+        self.run-action(%!actions{$_.path});
+      }
+    }
+  }
+}
+
+# An application has components and a dispatcher
+role Application {
+  has %!components;
+  has Dispatcher $.dispatcher;
+
+  # this is where the several steps performed by catalyst should
+  # reside, so application-wide plugins can modify
+  multi method 
+
+}
