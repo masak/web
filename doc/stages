@@ -1,0 +1,31 @@
+Stages 
+=======
+
+ruoso suggestions:
+
+1) receiving a request
+that's the "engine" part
+it knows how to be triggered for an event
+and generates a "Request" object
+I, for one, think that Web.pm should be able to handle the engine part standalone if it has to.
+in Catalyst the "Request" object is very HTTP-specific
+this is something that can be fixed
+you can have a much more generic "Request" role
+and have a HTTPRequest role to complement it
+this "Request" object is the thing that takes us to the second step
+
+2) dispatch
+This takes info from $req in order to dispatch
+I think the generic request role would provide
+has $.uri
+has %.params
+The mistake in Catalyst in the dispatch part
+is to make each dispatch type independent
+like it first tries to dispatch "Regex"
+if that fails
+it tries "Chained"
+if thoat fails "Path"
+you need a way to provide an unified dispatching
+I think the good way of doing it is basically to consider everything "Chained", while support different part matching algorigthms
+the third step is actually having no third step
+;)
