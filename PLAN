@@ -65,6 +65,13 @@ That could conceivably give us a native syntax, along with DTD validation.
 I need to think up more examples that do CGI-like stuff; particularly forms
 and sticky fields and all that.
 
+User Authentication will go here too, as soon as wayland gets time to write
+about it.
+
+We'll have a templating system at this layer, which does templating without
+any assumptions about HTML or structure. That is, the templating system will
+also work in non-HTML contexts.  
+
 == Layer two -- template programming without a full MVC framework
 
 In this layer, we're already quite a bit above CPAN's HTML::Template. The
