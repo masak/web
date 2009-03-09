@@ -29,3 +29,19 @@ you need a way to provide an unified dispatching
 I think the good way of doing it is basically to consider everything "Chained", while support different part matching algorigthms
 the third step is actually having no third step
 ;)
+
+and ruoso again:
+
+1) the engine code is something external that declares $*request and $*response
+where you have generic Request and Response roles
+ihrd: there certainly doesn't seem to be a shortage of ideas, at least :)
+but also specific Request::HTTP and Response::HTTP
+or even
+Request::Apache and Response::Apache
+
+2) the dispatch code is something that tries to match an action using $*request
+takes that action
+calls $action.begin
+$action.execute
+$action.end
+and that's all
