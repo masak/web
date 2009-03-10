@@ -99,17 +99,16 @@ role Dispatcher {
     my sub buildspec($act) {
       if $act.parent {
         my $r = buildspec($act.parent);
-        return / $<_parent_action_capture> := <$r> <$act.regex> /;
+        return / $<actcap> := ( $<_parent_action_capture> := <$r> <$act.regex> ) { make $act } /;
       } else {
-        return $act.regex;
+        return / $<actcap> := <$act.regex> { make $act } /;
       }
     }
 
     my @subregexes;
 
     for @!public --> $action {
-       my $urlspec = buildspec($action);
-       push @subregexes, / $<action-capture> := <$urlspec> { make $action } /;
+        push @subregexes, buildspec($action);
     }
 
     $.regex = / $<action> := <@subregexes> /;
@@ -120,7 +119,7 @@ role Dispatcher {
     self.compile unless $.regex;
 
     if $*request.uri.path ~~ $.regex {
-      self.run-action($<action><?>, |$<action><action-capture>);
+      self.run-action($<action><?>, |$<action><actcap>);
     } else {
       fail 'No action matched';
     }
