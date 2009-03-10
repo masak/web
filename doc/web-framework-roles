@@ -7,56 +7,72 @@ role Controller {}
 role Action {
    has Controller $.controller;
    has Str $.private-name;
-   has Callable $.begin-closure;
-   has Callable $.execute-closure;
-   has Callable $.end-closure;
+   multi method begin {...}
+   multi method execute(*@_, *%_) {...}
+   multi method end {...}
 }
 
 role Action::Private {
+   has Callable $.begin-closure;
+   has Callable $.execute-closure;
+   has Callable $.end-closure;
    multi method begin {
-     $.begin-closure.(self); 
+     $.begin-closure.(self)
+       if $.begin-closure;
    }
-   multi method execute {
-     $.execute-closure.(self); 
+   multi method execute(*@_, *%_) {
+     $.execute-closure.(self, |@_, |%_)
+       if $.execute-closure;
    }
    multi method end {
-     $.end-closure.(self);
+     $.end-closure.(self)
+       if $.end-closure;
    }
-}
-
-# this is used to mask out the base-uri for the application
-role Action::Root {
-   has URI $.base;
 }
 
 # this is an action that might be part of a chain
 role Action::Chained {
-   has Action $.parent;
-   has Pattern $.path-part;
-   has Int $.capture-args;
+   has Action::Chained $.parent;
+   has Regex $.regex;
+
+   has Callable $.begin-closure;
+   has Callable $.execute-closure;
+   has Callable $.end-closure;
+
    multi method begin {
-     $.parent.begin if $.parent;
-     $.begin-closure.(self); 
+     $.parent.*begin
+       if $.parent;
+     $.begin-closure.(self)
+       if $.begin-closure;
    }
-   multi method execute {
-     $.parent.execute if $.parent;
-     # TODO: add the captured args as arguments
-     # to the closure call.
-     my @args = ...;
-     $.execute-closure.(self, |@args); 
+
+   multi method execute(*@_, :¢_parent_action_capture, *%_) {
+     $.parent.*execute(|¢_parent_action_capture);
+       if $.parent;
+     $.execute-closure.(self, |@_, |%_)
+       if $.execute-closure;
    }
+
    multi method end {
-     $.parent.end if $.parent;
-     $.end-closure.(self);
+     $.parent.*end
+       if $.parent;
+     $.end-closure.(self)
+       if $.end-closure;
+   }
+
+}
+
+# this is used to mask out the base-uri for the application
+role Action::Root does Action::Chained {
+   has URI $.base;
+   method regex {
+      return / ^ $.base /;
    }
 }
 
 # this is an action that is seen as an endpoint
 role Action::Public does Action::Chained does Pattern {
-   has Int $.priority; # match order
-   method ACCEPTS {
-     
-   }
+   has Int $.priority;
 }
 
 # the dispatcher catalogs all actions, and is responsible for
@@ -64,6 +80,8 @@ role Action::Public does Action::Chained does Pattern {
 role Dispatcher {
   has %!actions;
   has @!public;
+  has $.regex;
+
   method register-action(Action $a) {
     fail 'Duplicated action'
       if %!actions.exists($a.private-name);
@@ -72,38 +90,79 @@ role Dispatcher {
       @!public = (@!public, $a).sort { $_.priority }
     }
   }
-  method dispatch($request? = $*request) {
-    my $match;
-    for @!public --> $action {
-      if $request ~~ $action  {
-        $match = $action;
+
+  # this method freezes the regexes, combining them into a single
+  # regular expression that will evaluate the request and return the
+  # desired action.
+  method compile {
+
+    my sub buildspec($act) {
+      if $act.parent {
+        my $r = buildspec($act.parent);
+        return / $<_parent_action_capture> := <$r> <$act.regex> /;
+      } else {
+        return $act.regex;
       }
     }
-    if $match {
-      self.run-action($match);
+
+    my @subregexes;
+
+    for @!public --> $action {
+       my $urlspec = buildspec($action);
+       push @subregexes, / $<action-capture> := <$urlspec> { make $action } /;
+    }
+
+    $.regex = / $<action> := <@subregexes> /;
+    
+  }
+
+  method dispatch() {
+    self.compile unless $.regex;
+
+    if $*request.uri.path ~~ $.regex {
+      self.run-action($<action><?>, |$<action><action-capture>);
     } else {
       fail 'No action matched';
     }
   }
-  method run-action($action) {
-    $action.*begin;
-    $action.*execute;
+
+  method run-action($action, *@_, *%_) {
+    my $errors is context<rw>;
+    try {
+      $action.*begin;
+      $action.*execute(|@_, |%_);
+      CATCH {
+        $_.handled = 1;
+        $errors = $_;
+      }
+    }
     $action.*end;
     CONTROL {
       when ControlExceptionDetach {
-        self.run-action(%!actions{$_.path});
+        self.run-action(%!actions{$_.path}, |$_.capture);
       }
     }
   }
+
 }
 
 # An application has components and a dispatcher
 role Application {
-  has %!components;
-  has Dispatcher $.dispatcher;
+  has %.components;
+  has Dispatcher $.dispatcher handles <register-action dispatch>;
 
   # this is where the several steps performed by catalyst should
   # reside, so application-wide plugins can modify
-  multi method 
+  multi method prepare { };
+  multi method finalize { };
+
+
+  multi method handle($request? is context = $*request,
+                      $response? is context = $*response) {
+     my $application is context = self;
+     self.*prepare;
+     self.*dispatch;
+     self.*finalize;
+  };
 
 }
