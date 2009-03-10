@@ -14,71 +14,49 @@ role Action {
 
 role Action::Private {
    multi method begin {
-     $.begin-closure.(self)
-       if $.begin-closure;
+     $.begin-closure.(self); 
    }
    multi method execute {
-     $.execute-closure.(self)
-       if $.execute-closure;
+     $.execute-closure.(self); 
    }
    multi method end {
-     $.end-closure.(self)
-       if $.end-closure;
+     $.end-closure.(self);
    }
 }
 
 # this is used to mask out the base-uri for the application
-role Action::Root does Action::Private does Pattern {
+role Action::Root {
    has URI $.base;
-
-   method ACCEPTS {
-     # returns true and set CALLER::<$/> if match.
-   }
 }
 
 # this is an action that might be part of a chain
-role Action::Chained does Pattern {
+role Action::Chained {
    has Action $.parent;
    has Pattern $.path-part;
    has Int $.capture-args;
-
    multi method begin {
-     $.parent.*begin
-       if $.parent;
-     $.begin-closure.(self)
-       if $.begin-closure;
+     $.parent.begin if $.parent;
+     $.begin-closure.(self); 
    }
-
-   multi method execute($match) {
-     $.parent.*execute($match.<parent>);
-       if $.parent;
-     $match.delete('parent');
-     $.execute-closure.(self, |$match)
-       if $.execute-closure;
+   multi method execute {
+     $.parent.execute if $.parent;
+     # TODO: add the captured args as arguments
+     # to the closure call.
+     my @args = ...;
+     $.execute-closure.(self, |@args); 
    }
-
    multi method end {
-     $.parent.*end
-       if $.parent;
-     $.end-closure.(self)
-       if $.end-closure;
-   }
-
-   method ACCEPTS($request) {
-
-     # first try to match the parent, then take $/.to and try to
-     # match that point onwards...
-     
-     # returns true and set CALLER::<$/> if match.
-     # the match should include the captures, which will then be used
-     # as capture when calling the closure
-
+     $.parent.end if $.parent;
+     $.end-closure.(self);
    }
 }
 
 # this is an action that is seen as an endpoint
-role Action::Public does Action::Chained {
+role Action::Public does Action::Chained does Pattern {
    has Int $.priority; # match order
+   method ACCEPTS {
+     
+   }
 }
 
 # the dispatcher catalogs all actions, and is responsible for
@@ -86,7 +64,6 @@ role Action::Public does Action::Chained {
 role Dispatcher {
   has %!actions;
   has @!public;
-
   method register-action(Action $a) {
     fail 'Duplicated action'
       if %!actions.exists($a.private-name);
@@ -95,35 +72,22 @@ role Dispatcher {
       @!public = (@!public, $a).sort { $_.priority }
     }
   }
-
-  method dispatch() {
+  method dispatch($request? = $*request) {
     my $match;
     for @!public --> $action {
-      if $*request ~~ $action  {
+      if $request ~~ $action  {
         $match = $action;
       }
     }
     if $match {
-      self.run-action($match, $/);
+      self.run-action($match);
     } else {
       fail 'No action matched';
     }
   }
-
-  method run-action($action, $match?) {
-    my $errors is context<rw>;
-    try {
-      $action.*begin;
-      if $match {
-        $action.*execute($match);
-      } else {
-        $action.*execute;
-      }
-      CATCH {
-        $_.handled = 1;
-        $errors = $_;
-      }
-    }
+  method run-action($action) {
+    $action.*begin;
+    $action.*execute;
     $action.*end;
     CONTROL {
       when ControlExceptionDetach {
@@ -131,26 +95,15 @@ role Dispatcher {
       }
     }
   }
-
 }
 
 # An application has components and a dispatcher
 role Application {
-  has %.components;
-  has Dispatcher $.dispatcher handles <register-action dispatch>;
+  has %!components;
+  has Dispatcher $.dispatcher;
 
   # this is where the several steps performed by catalyst should
   # reside, so application-wide plugins can modify
-  multi method prepare { };
-  multi method finalize { };
-
-
-  multi method handle($request? is context = $*request,
-                      $response? is context = $*response) {
-     my $application is context = self;
-     self.prepare;
-     self.dispatch;
-     self.finalize;
-  };
+  multi method 
 
 }
