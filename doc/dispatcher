@@ -1,0 +1,40 @@
+Dispatcher
+==========
+
+
+Grammatics
+----------
+...
+
+
+MMD-based
+---------
+
+Simple translater request to call:
+
+GET /foo/bar?umh=baz
+
+$app.('GET', 'foo', 'bar', :umh => bar) 
+or
+$foo.bar(Request::Method.new('GET'), :tags => 'bar')
+
+REST, HTTP-methods as call on the resource:
+
+GET /foo/bar?umh=baz
+
+$resource_foo.GET('bar', :umh('baz'))
+
+Chains relization:
+
+GET /company/1/offer
+
+$res_company.Link(1, 'offer');
+and then
+$res_offer.GET('company', Model::Comapny $company);
+
+We can use types and/or first args to set chains compatibility. And this give use flexability to have different chains from the same links.
+
+
+Actions as regular Objects
+--------------------------
+...
