@@ -1,6 +1,7 @@
 use v6;
 # A more or less direct port of
 # <http://github.com/chneukirchen/rack/blob/master/lib/rack/utils.rb>
+# This file is distributed under the license found in licenses/rack/COPYING.
 
 module Web::Utils {
     # Web::Utils contains a grab-bag of useful methods for writing web
