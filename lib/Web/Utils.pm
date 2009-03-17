@@ -36,8 +36,7 @@ module Web::Utils {
         for ($qs // '').split($regex) -> $p {
             my ($k, $v) = unescape($p).split('=', 2);
 
-            %params{$k} //= [];
-            %params{$k}.push($v);
+            (%params{$k} //= []).push($v);
         }
 
         for %params.kv -> $k, $v {
