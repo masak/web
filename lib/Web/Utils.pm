@@ -36,19 +36,12 @@ module Web::Utils {
         for ($qs // '').split($regex) -> $p {
             my ($k, $v) = unescape($p).split('=', 2);
 
-            given %params {
-                if my $cur = .{$k} {
-                    if $cur ~~ List {
-                        .{$k}.push($v.values);
-                    }
-                    else {
-                        .{$k} = [$cur, $v];
-                    }
-                }
-                else {
-                    .{$k} = $v;
-                }
-            }
+            %params{$k} ||= [];
+            %params{$k}.push($v);
+        }
+
+        for %params.kv -> $k, $v {
+            %params{$k} = $v[0] if $v.elems == 1;
         }
 
         return %params;
