@@ -1,5 +1,6 @@
 Dispatcher
 ==========
+Make posibilites to use different dispatchers.
 
 
 Grammatics
@@ -23,6 +24,8 @@ REST, HTTP-methods as call on the resource:
 GET /foo/bar?umh=baz
 
 $resource_foo.GET('bar', :umh('baz'))
+
+Resource is object, with HTTP-methods: GET, POST, PUT, DELETE. Use multi methods to cover or typical resorce manipulations by this methods 
 
 Chains relization:
 
