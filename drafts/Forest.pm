@@ -2,7 +2,7 @@ class Forest;
 
 has %.resources;
 
-multi method handle (@chunks, $method, %data?) {
+multi method handle (@chunks, $method, %data?, @stash?) {
     my $res_name;
     my @args;
     my $action = $method;
@@ -17,7 +17,7 @@ multi method handle (@chunks, $method, %data?) {
             $res_name = @chunks.shift;
             @args = @chunks;
         }
-        when 3  {
+        when 3..4  {
             $res_name = @chunks.shift;
             @args = @chunks;
             $action = 'Link';
@@ -34,11 +34,23 @@ multi method handle (@chunks, $method, %data?) {
         %.resources{$res_name} = "$res_name".new;
     }
 
+    say "test:" ~ @stash;
+    @args.push(@stash) if @stash;
     @args.push(\%data) if %data;
-    my @back = $.resources{$res_name}."$action"(| @args);
 
-    if @back.shift eq 'next' {
-        self.handle(@back, $method, %data);
+    say "$action $res_name" ~ @args.perl;
+    
+    # RAKUDO: multiple return do not work properly [perl #63912]
+    my ($rest, $stash) = $.resources{$res_name}."$action"(| @args); 
+   
+    (| @args).perl.say;
+
+    say 'R:' ~ $rest.perl;
+    say 'S:' ~ $stash.perl;
+    my @re = $rest.list;
+    
+    if $action eq 'Link'{
+        self.handle(@re, $method, %data, [list $stash]);
     }
 }
 
