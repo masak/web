@@ -12,7 +12,7 @@ module Web::Utils {
     sub escape($s) is export {
         # RAKUDO: Need 'H2' in Rakudo's unpack before this works
         # XXX: What does the /n flag do on Ruby regexes?
-        return (~$s).subst(/<-[ a..zA..Z0..9_.-]+>/,
+        return (~$s).subst(/<-[ a..zA..Z0..9_.\-]>+/,
             { '%' ~ unpack(~$/, "H2" x $/.chars).join('%').uc },
             :global).trans(' ' => '+');
     }
