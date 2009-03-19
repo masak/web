@@ -13,7 +13,7 @@ module Web::Utils {
         # RAKUDO: Need 'H2' in Rakudo's unpack before this works
         # RAKUDO: Also need to turn the string into bytes before letting
         #         the substitution loose on it.
-        return (~$s).subst(/<-[ a..zA..Z0..9_.-]+>/,
+        return (~$s).subst(/<-[ a..zA..Z0..9_.\-]>+/,
             { '%' ~ unpack(~$/, "H2" x $/.chars).join('%').uc },
             :global).trans(' ' => '+');
     }
@@ -37,19 +37,11 @@ module Web::Utils {
         for ($qs // '').split($regex) -> $p {
             my ($k, $v) = unescape($p).split('=', 2);
 
-            given %params {
-                if my $cur = .{$k} {
-                    if $cur ~~ List {
-                        .{$k}.push($v.values);
-                    }
-                    else {
-                        .{$k} = [$cur, $v];
-                    }
-                }
-                else {
-                    .{$k} = $v;
-                }
-            }
+            (%params{$k} //= []).push($v);
+        }
+
+        for %params.kv -> $k, $v {
+            %params{$k} = $v[0] if $v.elems == 1;
         }
 
         return %params;
