@@ -1,9 +1,9 @@
 Dispatcher
 ==========
-Make posibilites to use different dispatchers.
+Make possibility to use different dispatchers.
 
 
-Grammatics
+Grammatic
 ----------
 ...
 
@@ -11,31 +11,36 @@ Grammatics
 MMD-based
 ---------
 
-Simple translater request to call:
+Simple translator request to call:
 
 GET /foo/bar?umh=baz
 
-$app.('GET', 'foo', 'bar', :umh => bar) 
+$app.('GET', 'foo', 'bar', :umh => 'baz') 
 or
-$foo.bar(Request::Method.new('GET'), :tags => 'bar')
+$foo.bar(Request::Method.new('GET'), :tags => 'baz')
 
-REST, HTTP-methods as call on the resource:
+REST, call HTTP-methods on the resource:
 
 GET /foo/bar?umh=baz
 
 $resource_foo.GET('bar', :umh('baz'))
 
-Resource is object, with HTTP-methods: GET, POST, PUT, DELETE. Use multi methods to cover or typical resorce manipulations by this methods 
+Resource is object, with HTTP-methods: GET, POST, PUT, DELETE. Use multi methods to cover typical resource manipulations by this methods. 
 
-Chains relization:
+Chains realization:
 
 GET /company/1/offer
 
 $res_company.Link(1, 'offer');
 and then
-$res_offer.GET('company', Model::Comapny $company);
+$res_offer.GET('company', Model::Company $company);
 
-We can use types and/or first args to set chains compatibility. And this give use flexability to have different chains from the same links.
+We can use types and/or some args to set chains compatibility. And this give use flexibility to have different chains from the same links:
+
+GET /company/1/offer
+GET /user/23/offer
+
+Can call GET on the Offer with different args.
 
 
 Actions as regular Objects
