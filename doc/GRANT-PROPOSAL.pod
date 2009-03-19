@@ -1,0 +1,207 @@
+=head1 Web.pm – a lightweight web framework for Perl 6
+
+=over 1
+
+=item Names:
+
+Ilya Belikin, Carl Mäsak, Stephen Weeks
+
+=item Email:
+
+Ilya Belikin (forihrd@gmail.com), Carl Mäsak (cmasak@gmail.com),
+Stephen Weeks (tene@allalone.org)
+
+=item Amount Requested:
+
+$3000.
+
+=over
+
+=item Ilya: 1320$, for 12h/week.
+
+=item Carl: 1100$, for 10h/week.
+
+=item Stephen: 550$, for 5h/week.
+
+=back
+
+=back
+
+=head2 Synopsis
+
+Two years ago, Juerd proposed the Web.pm module for Perl 6. Meant to
+functionally replace Perl 5's CGI.pm, it is a revamping of the
+fundamentals in order to better serve today's web development needs.
+
+Apart from implementing a working web development toolkit, we intend
+to integrate templating as a desirable default, make sessions and
+sticky form values (as described in Juerd's email) work, and organize
+the framework according to the Model-View-Controller (MVC) pattern and
+the REST architecture.
+
+The structure of the Web framework will be modular, and a web
+application writer can choose the parts that make sense for the
+particular application developed. As the user's application matures,
+more high-level modules can be swapped in to combat the increasing
+complexity.
+
+We intend to develop Web.pm in the open, seeking frequent input from
+people on #perl6 and #parrot, and from the mailing lists
+perl6-compiler, perl6-users and perl6-language.
+
+=head2 Benefits to the Perl Community
+
+Having a simple, well thought-out web development toolkit can be an
+enormous benefit to Perl 6 and its growing developer community. There
+is good opportunity at this time to coordinate an effort to create
+such a toolkit. A web toolkit will increase Rakudo visibility, and
+bring more people to try Perl 6 programming.
+
+Applications like November show that it is possible to create a Perl 6
+web application today, but that much convenience functionality has to
+be reinvented in the web application itself. The fact that a bridge
+between Rakudo and Perl 5/CPAN does not exist at this point is an
+obstacle, but also an opportunity to sit down and think about the
+parts that we want to improve or remake rather than just inherit.
+
+As the past six months of November clearly show, development of
+real-world applications is one of the most effective ways to generate
+feedback to the Rakudo development team, and to help focus on bug
+fixes and features needed for everyday tasks.
+
+=head2 Deliverables
+
+=over
+
+=item HTTP::Request, HTTP::Response and Web.pm modules that run on the
+latest release of Rakudo.
+
+=item A URI module based on RFC 3986, using Perl 6 grammars.
+
+=item Web::Tags module for (X)HTML tags generation.
+
+=item Dispatcher and Routines (with REST support) modules for better
+controllers code organization.
+
+=item A simple Perl6-ish templater as a replacement for HTML::Template.
+
+=item A slightly more advanced XML-aware templating system, similar to
+Python's Genshi.
+
+=item Three web applications that make use of the Web module. (On the
+assumption that having three clients to an API gives enough clues
+about the different needs clients might have.) The first web
+application will most likely be November, the wiki, and the second
+Maya, a blogging engine. The third will be a proof-of-concept pastebin
+for Perl 6 code with color coding.
+
+=item A tutorial clearly showing the strengths of the Web module
+framework, why/when it should be used, and how to get started using
+it.
+
+=back
+
+The modules URI, HTML::Template, and Dispatcher already exist in a
+working alpha state within the November repository, and are being used
+to run the wiki engine. Ilya has begun developing the blogging engine
+Maya.
+
+Ilya will post weekly about progress in Russian on the perl6.ru blog.
+Carl will blog weekly on use.perl.org. Stephen will blog weekly.
+
+=head2 Project Details
+
+The following stages can be identified in providing the above deliverables:
+
+=over
+
+=item Specifying the basics of a Web framework organized by MVC
+pattern and following REST principles.
+
+=item Creating a minimal Web, HTTP, Template and Routines modules that
+can host a minimal "hello world" web application with a simple form,
+but following the specification.
+
+=item Adapting November to run on top of the new Web framework. Much
+of the infrastructural web code currently residing in November will
+thereby be the responsibility of the framework instead.
+
+=item Setting up Maya to use the framework as well. Deploying and
+start to use it for perl6-blog us soon as possible.
+
+=item Implementing the framework and applications features possible
+within the current limits of Rakudo.
+
+=item Condensing the above experience into a tutorial.
+
+=back
+
+=head2 Inch-stones
+
+=over
+
+=item Specifying framework basics: 1 week.
+
+=item Creating a minimal Web framework: 2 weeks.
+
+=item Changing November to run on top of the framework: 1 weeks.
+
+=item Setting up Maya to use the framework: 1 week.
+
+=item Setting up a proof-of-concept pastebin: 1 week.
+
+=item Implementing the features possible within the current limits of
+Rakudo: 4 weeks.
+
+=item Condensing the above experience into a tutorial: 1 week.
+
+=back
+
+=head2 Project Schedule
+
+=over
+
+=item Specifying framework basics: 1 week.
+
+=item Creating a minimal Web framework: 2 weeks.
+
+=item Changing November to run on top of the framework: 1 weeks.
+
+=item Setting up Maya to use the framework: 1 week.
+
+=item Setting up a third web application: 1 week.
+
+=item Implementing the features possible within the current limits of
+Rakudo: 4 weeks.
+
+=item Condensing the above experience into a tutorial: 1 week.
+
+=back
+
+We can start in February.
+
+=head2 Bios
+
+Ilya Belikin has been working with web technologies since 2000,
+functioning as an all-round project manager, CSS and HTML coder. A
+Perl developer since 2006, he founded a small web-developing company
+2007. He uses Catalyst, TT, and DBIx::Class in his daily work. He is a
+productive November committer (280+ commits). He sends Rakudo and
+Parrot bug reports. He is one of the authors of perl6.ru.
+
+Carl Mäsak has been using Perl since 2002, and has been an avid Pugs
+participant since 2005. He has committed various tests, documentation
+files and the occasional Haskell patch, totalling over 100 commits. He
+is a Parrot committer, helping the main Rakudo developers with bug
+tickets (over 200 so far), patches and minor features. He is one of
+the co-founders of the November project.
+
+Stephen Weeks has been using Perl since 2004 for web development and
+sysadmin tasks. He has been a Parrot core developer since Feb 2008,
+implementing many features in Rakudo.
+
+=head2 OK to publish this proposal?
+
+Yes.
+
+=cut
