@@ -1,37 +1,39 @@
 Lightweight Perl 6 framework for web applications. Work-name is Web.pm.
 
-See our PROPOUSAL if you wondering what going on here.
-See doc/* for the first drafts.
+See our doc/GRANT-PROPOSAL.pod if you wondering about the background to this
+project. See doc/* for other planning documents.
 
-Ilya Belikin, Carl Mäsak, Stephen Weeks.
+Ilya Belikin (ihrd), Carl Mäsak (masak), Stephen Weeks (Tene).
 
 
 Related repos
 =============
 
 URI.pm
-http://github.com/ihrd/uri
+  <http://github.com/ihrd/uri>
 
-November (wiki)
-http://github.com/viklund/november
+November (wiki engine)
+  <http://github.com/viklund/november>
 
-Maya (blog)
-http://github.com/ihrd/maya
+Maya (blog engine)
+  <http://github.com/ihrd/maya>
 
 ...
 
+Progress updates
+================
 
+We use the IRC channel #november-wiki over at irc.freenode.org for live
+discussions, and mail-list november-wiki@googlegroups.com for asynchronous
+ones. People are explicitly invited to participate in these discussions.
 
-In touch
-=========
+All three project members are blogging weekly about their status.
 
-We use IRC channel: #november-wiki over at irc.freenode.org to disscuss project and mail-list november-wiki@googlegroups.com.
+masak:
+  <http://use.perl.org/~masak/journal/>
 
-Carl`s blog:
-http://use.perl.org/~masak/journal/
+Ilya blogs his progress in Russian at perl6.ru:
+  <http://perl6.ru>
 
-Ilya bloged progress in Russian at:
-http://perl6.ru 
-
-Stephen
-...
+Tene:
+  <http://blogs.gurulabs.com/stephen/>
