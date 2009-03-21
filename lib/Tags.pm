@@ -22,8 +22,8 @@ module Tags {
         end_multipart_form isindex tmpfilename uploadinfo url_encoded
         multipart form canvas
         > -> $tag {
-            ::Tags{$tag} = sub (&c) {
-                _tag($tag, &c);
+            ::Tags{$tag} = sub (&c, *%attrs) {
+                _tag($tag, &c, :attrs{%attrs});
             }
             ::Tags::EXPORT::DEFAULT{$tag} = ::Tags{$tag};
         }
@@ -36,8 +36,13 @@ module Tags {
         return end_buffer_frame();
     }
 
-    sub _tag(Str $tag, &code) {
-        my $buf = "\n" ~ '  ' x (@frames.elems() - 1) ~ "<$tag>";
+    sub _tag(Str $tag, &code, *%named-args) {
+        my %attrs = %named-args<attrs>;
+        my $buf = "\n" ~ '  ' x (@frames.elems() - 1) ~ "<$tag";
+        for %attrs.kv -> $k, $v {
+            $buf ~= " $k='$v'";
+        }
+        $buf ~= ">";
         new_buffer_frame();
         my $ret = &code();
         my $frame = end_buffer_frame();
