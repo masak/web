@@ -36,12 +36,13 @@ multi method handle (@chunks, $method, %data?, @stash?) {
 
     say "test:" ~ @stash;
     @args.push(@stash) if @stash;
+    # XXX: What's the backslash doing there?
     @args.push(\%data) if %data;
 
     say "$action $res_name" ~ @args.perl;
     
-    # RAKUDO: multiple return do not work properly [perl #63912]
-    my ($rest, $stash) = $.resources{$res_name}."$action"(| @args); 
+    # RAKUDO: multiple return does not work properly [perl #63912]
+    my ($rest, $stash) = %!resources{$res_name}."$action"(| @args); 
    
     (| @args).perl.say;
 

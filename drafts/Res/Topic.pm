@@ -19,7 +19,7 @@ method Link ($id, *@rest_chunks) {
     my $topic = Topic.new.find($id);
     my $rest = @rest_chunks;
     
-    # RAKUDO: multiple return do not work properly [perl #63912]
+    # RAKUDO: multiple return does not work properly [perl #63912]
     return ($rest, [$topic]);
 }
 
