@@ -1,0 +1,12 @@
+Bedrock principles
+==================
+
+-- Use pure Perl6, avoid (other) magic. 
+
+-- Provide extremely reasonable defaults for everything.
+
+-- Make applications within Web.pm reusable and pluggable.
+
+-- Use MMD dispatching as base for Controller actions organization. 
+
+-- Make chained actions possible.
