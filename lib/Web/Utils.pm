@@ -47,6 +47,58 @@ module Web::Utils {
         return %params;
     }
 
+    sub parse_nested_query(Str $qs, $d = '&;') {
+        my %params = {};
+
+        # RAKUDO: Need to solve this with eval right now. [perl #63892]
+        my $regex = eval("/<[$d]>/");
+        for ($qs // '').split($regex) -> $p {
+            my ($k, $v) = unescape($p).split('=', 2);
+
+            normalize_params(%params, $k, $v);
+        }
+        return %params;
+    }
+
+    sub normalize_params(%params is rw, $name, $v = undef) {
+        $name = ~~ / <[ \[ \] ]>* (<-[ \[ \] ]>+) \]* /;
+        my $k = ~$0;
+        my $after = $name.substr($/.to);
+
+        return unless $k.chars;
+
+        given $after {
+            when '' {
+                %params{$k} = $v;
+            }
+            when '[]' {
+                %params{$k} //= [];
+                die 'Type error' unless %params{$k} ~~ List;
+                %params{$k}.push($v);
+            }
+            when /^ '[][' (<-[ \[ \] ]>+) ']' $/ | /^ '[]'(.+) $/ {
+                my $child_key = ~$0;
+                %params{$k} //= [];
+                die 'Type error' unless %params{$k} ~~ List;
+                if %params{$k}[*-1] ~~ Hash
+                   && !%params{$k}[*-1].exists($child_key) {
+                    normalize_params(%params{$k}[*-1], $child_key, $v);
+                }
+                else {
+                    %params{$k}.push(
+                        normalize_params(%params{$k}, $after, $v)
+                    );
+                }
+            }
+            default {
+                %params{$k} //= {};
+                %params{$k} = normalize_params(%params{$k}, $after, $v);
+            }
+        }
+
+        return %params;
+    }
+
     sub build-query(Hash %params) is export {
         return %params.pairs.map: {
             my ($k, $v) = .kv;
