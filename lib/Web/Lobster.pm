@@ -1,3 +1,7 @@
+# A more or less direct port of
+# <http://github.com/chneukirchen/rack/blob/master/lib/rack/lobster.rb>
+# This file is distributed under the license found in licenses/rack/COPYING.
+
 class Web::Lobster {
     my $lobster-string = 'lobster';
 
