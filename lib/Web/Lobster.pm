@@ -2,8 +2,28 @@
 # <http://github.com/chneukirchen/rack/blob/master/lib/rack/lobster.rb>
 # This file is distributed under the license found in licenses/rack/COPYING.
 
+use v6;
+
+use Web::Request;
+use Web::Response;
+
 class Web::Lobster {
-    my $lobster-string = 'lobster';
+    # Somewhat less cool than the Ruby solution, we have to include the
+    # lobster verbatim, for lack of a zlib module (hint, hint).
+    my $lobster-string = q[
+                             ,.---._
+                   ,,,,     /       `,
+                    \\\\   /    '\_  ;
+                     |||| /\/``-.__\;'
+                     ::::/\/_
+     {{`-.__.-'(`(^^(^^^(^ 9 `.========='
+    {{{{{{ { ( ( (  (   (-----:=
+     {{.-'~~'-.(,(,,(,,,(__6_.'=========.
+                     ::::\/\
+                     |||| \/\  ,-'/,
+                    ////   \ `` _/ ;
+                   ''''     \  `  .'
+                             `---];
 
     # RAKUDO: Should really be 'method postcircumfix:<( )>($env)' once this
     #         is supported.
