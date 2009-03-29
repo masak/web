@@ -11,18 +11,28 @@ class Routes {
         }
     }
 
-    multi method resource ($name) is default {
+    method res ($name, @pattern) {
         self.add_controller: $name;
-        @!routes.push: Routes::Route.new(pattern => [$name, *], name => $name) does Routes::Resource;
+        @!routes.push: Routes::Route.new(pattern => [$name], name => $name) does Routes::Resource;
     }
 
-    multi method resource (*@names) { self.resource($_) for @names }
+    multi method resource ($name)  is default { self.res: $name, [$name] }
+    multi method resources ($name) is default { self.res: $name, [$name, *] }
+
+    multi method resource (*@names)  { self.resource($_) for @names }
+    multi method resources (*@names) { self.resources($_) for @names }
+
+    method resource-chain (@pattern) { ... }
+    method connect (@pattern) { ... }
 
     method select(@chunks) {
-        my @matched_routes = @!routes.grep: { @chunks ~~ .pattern };
-        @matched_routes = @matched_routes.sort: { - .pattern.elems } if @matched_routes > 1;
-        # mb 'equal elems or bigest' better here
-        return @matched_routes[0];
+        my @routes = @!routes.grep: { @chunks ~~ .pattern };
+        if @routes > 1 {
+            my $elems = @chunks.elems;
+            # RAKUDO: can`t parse .=method: {...} [perl #64268] 
+            @routes = ( @routes.grep: { $elems == .pattern.elems }  or  @routes.sort: { - .pattern.elems } );
+        }
+        return @routes[0];
     }
 
     method dispatch ($request) {
@@ -53,4 +63,13 @@ role Routes::Resource {
     }
     
 }
+
+role Routes::Connect {
+    ...
+}
+
+role Routes::ResourceChain {
+    ...
+}
+
 # vim:ft=perl6
