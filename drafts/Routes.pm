@@ -2,10 +2,6 @@ class Routes {
     has @.routes;
     has %.controllers;
 
-    method add_route (@pattern, $route) {
-        @!routes.push: Routes::Route.new(@pattern, $route);
-    }
-
     method add_controller ($name is copy) {
         unless %!controllers{$name} {
             $name = 'Controller::' ~ $name.capitalize; 
@@ -17,26 +13,44 @@ class Routes {
 
     multi method resource ($name) is default {
         self.add_controller: $name;
-        self.add_rote: [$name, *], Routes::Resource.new($name);
+        @!routes.push: Routes::Route.new(pattern => [$name, *], name => $name) does Routes::Resource;
     }
 
     multi method resource (*@names) { self.resource($_) for @names }
 
-    method sort {
-        @!routes = @!routes.sort: { $^a.pattern.elems > $^b.pattern.elems };
+    method select(@chunks) {
+        my @matched_routes = @!routes.grep: { @chunks ~~ .pattern };
+        @matched_routes = @matched_routes.sort: { - .pattern.elems } if @matched_routes > 1;
+        # mb 'equal elems or bigest' better here
+        return @matched_routes[0];
+    }
+
+    method dispatch ($request) {
+        my @chunks = $request.uri.chunks;
+        my $route  = self.select(@chunks);
+        $route.handle($!controller{($route.controller || $route.name)}, $request);
     }
 }
 
 class Routes::Route {
+    has $.name;
     has @.pattern;
-    has $.route;
+    has $.controller;
+    has $.action;
     has $.alias;
 }
 
-class Routes::Resource {
-    has $.name;
+role Routes::Resource {
+    method handle ($resource, $request) {
+        my $method = $request.method;
+        my @chunks = $request.uri.chunks;
+        my %data   = $request.data;
 
-    method call ($request) {
-        ...
+        my @args = @chunks[1..*-1];
+        @args.push(\%data) if %data;
+
+        $resource."$method"(| @args); 
     }
+    
 }
+# vim:ft=perl6
