@@ -1,4 +1,4 @@
-class Res::Root;
+class Controller::Root;
 
 method GET () {
     say "Root"

@@ -29,29 +29,28 @@ multi method handle (@chunks, $method, %data?, @stash?) {
     } 
 
     unless %.resources{$res_name} {
-        $res_name = 'Res::' ~ $res_name.capitalize; 
+        $res_name = 'Controller::' ~ $res_name.capitalize; 
         use $res_name;
         %.resources{$res_name} = "$res_name".new;
     }
 
-    say "test:" ~ @stash;
     @args.push(@stash) if @stash;
-    # XXX: What's the backslash doing there?
     @args.push(\%data) if %data;
 
-    say "$action $res_name" ~ @args.perl;
+    say "$action $res_name " ~ @args.perl;
     
     # RAKUDO: multiple return does not work properly [perl #63912]
     my ($rest, $stash) = %!resources{$res_name}."$action"(| @args); 
    
-    (| @args).perl.say;
+    # (| @args).perl.say;
 
     say 'R:' ~ $rest.perl;
     say 'S:' ~ $stash.perl;
     my @re = $rest.list;
+    my @st = $stash.list;
     
     if $action eq 'Link'{
-        self.handle(@re, $method, %data, [list $stash]);
+        self.handle(@re, $method, %data, @st);
     }
 }
 

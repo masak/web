@@ -1,4 +1,4 @@
-class Topic; # is Forest::Model
+class Model::Topic; # is Forest::Model
 has $.id;
 has $.title;
 has $.body;

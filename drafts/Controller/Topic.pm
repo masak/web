@@ -1,4 +1,5 @@
-class Res::Topic;
+class Controller::Topic;
+use Model::Topic;
 
 multi method GET () {
     say "Topics";
@@ -16,7 +17,7 @@ multi method POST (%data) {
 }
 
 method Link ($id, *@rest_chunks) {
-    my $topic = Topic.new.find($id);
+    my $topic = Model::Topic.new.find($id);
     my $rest = @rest_chunks;
     
     # RAKUDO: multiple return does not work properly [perl #63912]

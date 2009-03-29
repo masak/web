@@ -1,14 +1,14 @@
-class Res::Comment;
+class Controller::Comment;
 
 multi method GET ($id) {
     say "Comment by id $id";
 }
 
-multi method GET (Topic $topic) {
-    say "Comments for topic $topic";
+multi method GET (Model::Topic $topic) {
+    say "Comments for { $topic.WHAT } { $topic.id }";
 }
 
-multi method GET ($id, Topic $topic) {
+multi method GET ($id, Model::Topic $topic) {
     say "Comment $id for { $topic.WHAT } { $topic.id }";
 }
 
