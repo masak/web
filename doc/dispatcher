@@ -5,6 +5,8 @@ Make possibility to use different dispatchers.
 
 Grammatic
 ----------
+Use grammas inheritance to create DSL for uri to call transfer.
+Use {*} and Actions as application structure. 
 ...
 
 
@@ -42,7 +44,29 @@ GET /user/23/offer
 
 Can call GET on the Offer with different args.
 
+see drafts/{Forest.pm, blog.app}
+
+
+Routes
+------
+One place with rules for dispatchering.
+
+Use arrays with * as simple pattern for action or resource. 
+
+['foo', *]
+
+This is usefull for chain actions schema:
+
+['foo', *, 'bar', * ]
+
+see drafts/Routes.pm
+
 
 Actions as regular Objects
 --------------------------
+my $action = @parts.reduce: &dispatcher;
+
+Use .* to call all begins, then alll executes and then all ends of actions.
+
+see ./web-framework-roles
 ...
