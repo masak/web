@@ -1,12 +1,23 @@
 class Routes {
     has @.routes;
+    has %.controllers;
 
-    method add (@pattern, $route) {
-        @!routes.push: Routes::Route.new(@pattern, $rote);
+    method add_route (@pattern, $route) {
+        @!routes.push: Routes::Route.new(@pattern, $route);
+    }
+
+    method add_controller ($name is copy) {
+        unless %!controllers{$name} {
+            $name = 'Controller::' ~ $name.capitalize; 
+            use $name;
+            %!controllers{$name} = "$name".new;
+            CATCH { ... }
+        }
     }
 
     multi method resource ($name) is default {
-        self.add: [$name, *], Routes::Resource.new($name);
+        self.add_controller: $name;
+        self.add_rote: [$name, *], Routes::Resource.new($name);
     }
 
     multi method resource (*@names) { self.resource($_) for @names }
