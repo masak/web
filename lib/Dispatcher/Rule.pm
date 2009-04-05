@@ -6,8 +6,16 @@ has Str $.controller is rw;
 has Str $.action     is rw;
 has Code $.code;
 
+# params
+has $.slurp is rw = False;
+
 method match (@chunks) {
-    return False if @chunks != @!pattern;
+    return False if ! $.slurp and @chunks != @!pattern;
+
+    # RAKUDO: Whatever do not work as specified with zip operator, [perl #64474]
+    # S03: "...short list may always be extended arbitrarily by putting C<*> 
+    # after the final value, which replicates the final value as many times as necessary
+    # so, I should make workaround if nobody fix it first
 
     for @chunks Z @!pattern-> $chunk, Object $rule {
         if ~$chunk ~~ ($rule ~~ Pair ?? $rule.value !! $rule) {
