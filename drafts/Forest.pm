@@ -31,7 +31,7 @@ multi method handle (@chunks, $method, %data?, @stash?) {
     unless %.resources{$res_name} {
         $res_name = 'Controller::' ~ $res_name.capitalize; 
         use $res_name;
-        %.resources{$res_name} = "$res_name".new;
+        %.resources{$res_name} = "$res_name".new unless $!;
     }
 
     @args.push(@stash) if @stash;

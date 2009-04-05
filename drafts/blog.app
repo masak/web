@@ -5,6 +5,7 @@ my $f = Forest.new;
 for $f {
     .handle([''], 'GET');
     .handle(['topic'], 'GET');
+    .handle(['foo'], 'GET');
     .handle(['topic'], 'POST');
     .handle(['topic'], 'POST', {title => 'foo', body => 'text'});
     .handle(['topic', '1'], 'GET');

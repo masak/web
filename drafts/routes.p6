@@ -3,9 +3,10 @@
 
 use Routes;
 
-my $routines = do given Routines.new {
+my $routes = do given Routines.new {
     
-    .resource: 'company'; # call company.METHOD()
+    .resource: 'company';  # pattern ['company'], call company.METHOD()
+    .resources: 'company'; # pattern ['company', *], call company.METHOD(| @args)
 
     .resource: 'company', alias => ['comapnies']; # call comapny.GET() if url '/companies';
 
@@ -21,3 +22,4 @@ my $routines = do given Routines.new {
     .connect: [:controller, :action, *];
 };
 
+$routes.dispatch($*request);

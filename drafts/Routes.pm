@@ -13,23 +13,28 @@ class Routes {
 
     method res ($name, @pattern) {
         self.add_controller: $name;
-        @!routes.push: Routes::Route.new(pattern => [$name], name => $name) does Routes::Resource;
+        @!routes.push: Routes::Resource.new(pattern => [$name], name => $name);
     }
 
-    multi method resource ($name)  is default { self.res: $name, [$name] }
-    multi method resources ($name) is default { self.res: $name, [$name, *] }
+    multi method resource ($name)  is default { self.res: $name, [$name], %_; }
+    multi method resources ($name) is default { self.res: $name, [$name, *], %_; }
 
     multi method resource (*@names)  { self.resource($_) for @names }
     multi method resources (*@names) { self.resources($_) for @names }
 
-    method resource-chain (@pattern) { ... }
+    method resource-chain (@pattern) { 
+        my @resources = @pattern.grep: { $_ ~~ Str }
+        self.add_controller($_) for @resources;
+        ... 
+    }
+
     method connect (@pattern) { ... }
 
     method select(@chunks) {
         my @routes = @!routes.grep: { @chunks ~~ .pattern };
         if @routes > 1 {
             my $elems = @chunks.elems;
-            # RAKUDO: can`t parse .=method: {...} [perl #64268] 
+            # mb add priority to routes without whatever
             @routes = ( @routes.grep: { $elems == .pattern.elems }  or  @routes.sort: { - .pattern.elems } );
         }
         return @routes[0];
@@ -50,7 +55,7 @@ class Routes::Route {
     has $.alias;
 }
 
-role Routes::Resource {
+class Routes::Resource is Routes::Route {
     method handle ($resource, $request) {
         my $method = $request.method;
         my @chunks = $request.uri.chunks;
@@ -61,14 +66,13 @@ role Routes::Resource {
 
         $resource."$method"(| @args); 
     }
-    
 }
 
-role Routes::Connect {
+class Routes::Connect is Routes::Route {
     ...
 }
 
-role Routes::ResourceChain {
+class Routes::ResourceChain is Routes::Route {
     ...
 }
 
