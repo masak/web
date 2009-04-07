@@ -3,23 +3,33 @@
 
 use Routes;
 
-my $routes = do given Routines.new {
+my $routes = do given Routes.new {
+    .connect: ['foo', :action ]; 
+    # the same as:
+    .add: ['foo', :action ], :conroller('Root'), { %*controller{$:controller}."{$:action}"(@_) }
+
+    .connect: [:controller, :action, *], :slurp; # call controller.action(@_)
+}
+
+use Routes::Resources;
+
+my $routes = do given Routes.new does Routes::Resources {
     
     .resource: 'company';  # pattern ['company'], call company.METHOD()
     .resources: 'company'; # pattern ['company', *], call company.METHOD(| @args)
 
-    .resource: 'company', alias => ['comapnies']; # call comapny.GET() if url '/companies';
+    .resource: 'company', plural => 'comapnies'; # call comapny.GET() if url '/companies';
+    # mb pattern like: [[ 'companies' ], ['company', *]]?
 
     .resource: 'company', :controller('foo'); # call foo.GET() for GET '/company'
 
-    .resource: 'company', has => ['offer', 'account'];
-    .chain: ['company', *, 'offer' | 'account']; 
-    
-    # useful if strict /res/:id pattern by default.
-    .connect: ['comapy', *, 'new' | 'edit' ], :resource('company'); 
-    
-    .connect: ['login'], :controller('user'), :action('login') ;
-    .connect: [:controller, :action, *];
+    .resource: 'company', has_one => ['offer', 'account'], has_many => {
+        .resources: 'member', plural => 'members';
+    };
+
+    .resources-chain: ['company', *, ['offer', 'account']]; 
 };
 
 $routes.dispatch($*request);
+
+# vim: ft=perl6
