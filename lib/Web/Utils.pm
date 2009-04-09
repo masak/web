@@ -100,11 +100,11 @@ module Web::Utils {
     }
 
     sub build-query(Hash %params) is export {
-        return %params.pairs.map: {
+        return %params.pairs.map({
             my ($k, $v) = .kv;
             $v ~~ List ??  build-query($v.map: { [$k, $^x] })
                        !!  escape($k) ~ '=' ~ escape($v)
-        }.join('&');
+        }).join('&');
     }
 
     # Escape ampersands, brackets and quotes to their HTML/XML entities.
