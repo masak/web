@@ -61,7 +61,7 @@ module Web::Utils {
     }
 
     sub normalize_params(%params is rw, $name, $v = undef) {
-        $name = ~~ / <[ \[ \] ]>* (<-[ \[ \] ]>+) \]* /;
+        $name ~~ / <[ \[ \] ]>* (<-[ \[ \] ]>+) \]* /;
         my $k = ~$0;
         my $after = $name.substr($/.to);
 
