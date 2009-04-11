@@ -33,7 +33,7 @@ class Web::Lobster {
         given $req.GET<flip> // '' {
             when 'left' {
                 $lobster = $lobster-string.split("\n").map(
-                    { fmt('%-42s').reverse }
+                    { .fmt('%-42s').flip }
                 ).join("\n");
                 $href = '?flip=right';
             }
