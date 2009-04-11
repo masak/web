@@ -184,7 +184,11 @@ module Web::Utils {
     ;
 
     # Responses with HTTP status codes that should not have an entity body
-    my %STATUS_WITH_NO_ENTITY_BODY = (100..199, 204, 304).map: { {$_ => 1} };
+    my %STATUS_WITH_NO_ENTITY_BODY;
+    # RAKUDO: map within module declaration doesn't work.
+    for 100..199, 204, 304 {
+        %STATUS_WITH_NO_ENTITY_BODY{$_} = 1;
+    }
 
     # A multipart form data parser, adapted from IOWA.
     #
