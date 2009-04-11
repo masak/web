@@ -1,0 +1,103 @@
+#!/usr/local/bin/perl6
+use HTTP::Daemon;
+use Web::Lobster;
+defined @*ARGS[0] && @*ARGS[0] eq '--request' ?? request() !! daemon();
+
+# Serve one page
+sub request {
+    # Currently executed in a child process of socat - inefficient
+    my HTTP::Daemon $d .= new;
+    while my HTTP::Daemon::ClientConn $c = $d.accept {
+        while my HTTP::Request $r = $c.get_request {
+            if $r.req_method eq 'GET' {
+                # log request info to the standard error stream
+                warn "{hhmm} GET {$r.url.path} {$r.header('User-Agent')}";
+                my $qs = $r.url.path ~~ / '?' (.*) $/
+                            ?? $0
+                            !! '';
+                $c.send_response(
+                    ~([~] Web::Lobster.call({"QUERY_STRING" => $qs}).[2])
+                );
+            }
+            else {
+                warn "{hhmm} rejected {$r.req_method} {$r.url.path}";
+                $c.send_error('RC_FORBIDDEN');
+            }
+            warn ' '; # blank line
+        }
+    }
+}
+
+# Executed as main parent process with an endless loop that re-starts
+# netcat after every page request.
+sub daemon {
+    my HTTP::Daemon $d .= new( host=> '127.0.0.1', port=> 8888 );
+    say "Browse this Perl 6 (Rakudo) web server at {$d.url}";
+    $d.daemon();
+}
+
+# give the current time in hh:mm format
+sub hhmm {
+    my $t = int(time);
+    my $m = int( $t / 60 ) % 60;
+    my $h = int( $t / 3600 ) % 24;
+    my $hhmm = "{$h.fmt('%02d')}:{$m.fmt('%02d')}";
+    return $hhmm;
+}
+
+=begin pod
+
+=head1 NAME
+httpd - HyperText Transfer Protocol Daemon or Perl 6 (Rakudo) web server
+
+=head1 SYNOPSIS
+
+ git clone git://github.com/eric256/perl6-examples.git
+ cd perl6-examples/lib/HTTP
+ perl6 Configure
+ make help
+ make LOCALADDR=127.0.0.1 run
+
+=head1 DESCRIPTION
+This program runs a simple web server within itself, so there is no need
+for Apache, IIS, mod_perl or other such products. It must temporarily use the
+Unix L<man:socat> utility for the TCP part, but will soon use the socket
+functions in Parrot and Rakudo.
+The overhead of communicating through socat is two process forks per
+browser request, plus the Perl 6 parse and compile times.
+Performance will definitely improve a lot when Rakudo handle the I/O
+in-process.
+
+This program uses L<doc:HTTP::Daemon> for the low level work. Thus the
+programmer can concentrate on the web content, as this source code
+shows.
+
+=head1 INSTALLATION
+Follow the L<synopsis|doc:httpd#SYNOPSIS> with possibly your own values
+for LOCALADDR and LOCALPORT, because the default 127.0.0.1:8888 works
+only for a browser on the same host. Firewalls permitting, any address
+you can ping from other hosts should work.
+
+=head1 COMPATIBILITY
+The API is designed to help migrate similar Perl 5 based servers. It is
+completely original code written whilst matching the corresponding Perl
+5 equivalent documentation. The migration to Parrot and Rakudo socket
+functions will attempt to maintain this compatibility if possible.
+
+Network compatibility is approximately HTTP 1.0, but is not verified.
+
+=head1 BUGS
+Bug reports and suggestions are very welcome. The most common problem is
+not having B<socat> installed, read L<doc:HTTP::Daemon> to fix that.
+Nag the author via #perl6 on irc.freenode.net - any interest is welcome.
+
+This L<doc:httpd> may give errors running with certain revisions of
+Rakudo or Parrot. The Rakudo of 2009-04-07 and Parrot r37973 were ok.
+
+=head1 SEE ALSO
+<doc:HTTP::Daemon>
+
+=head1 AUTHOR
+Martin Berends (mberends on CPAN github #perl6 and @autoexec.demon.nl).
+
+=end pod
