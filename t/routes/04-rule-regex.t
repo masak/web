@@ -3,9 +3,9 @@ use v6;
 use Test;
 plan 6;
 
-use Dispatcher;
-my $d = Dispatcher.new;
-$d.add: [
+use Routes;
+my $r = Routes.new;
+$r.add: [
     ['foo', /^ \d+ $/],          { $^d },
     [/^ \w+ $/],                 { "Yep!" if $^w.WHAT eq 'Match' },
     ['foo', / \d+ /],            { $^d + 10 },
@@ -15,32 +15,32 @@ $d.add: [
 ];
 
 
-is( $d.dispatch(['foo']), 
+is( $r.dispatch(['foo']), 
     'Yep!', 
     "Pattern with regex \w+, put Match in args"
 );
 
-is( $d.dispatch(['foo', '50']), 
+is( $r.dispatch(['foo', '50']), 
     '60', 
-    "Dispatch ['foo', '50'] to last matched Rule" 
+    "Dispatch ['foo', '50'] to last matched Route" 
 );
 
-is( $d.dispatch(['foo', 'a50z']), 
+is( $r.dispatch(['foo', 'a50z']), 
     '60', 
     'Pattern with regex \d, put Match in args'  
 );
 
-is( $d.dispatch(['foo', 'item4', 'bar']), 
+is( $r.dispatch(['foo', 'item4', 'bar']), 
     '5', 
     'Pattern with regexp in the middle (foo/\d+/bar)'
 );
 
-is( $d.dispatch(['summ', '2', '3']), 
+is( $r.dispatch(['summ', '2', '3']), 
     '5', 
     'Pattern with two regexs'
 );
 
-is( $d.dispatch(['summ', 'Z', '2']), 
+is( $r.dispatch(['summ', 'Z', '2']), 
     'Zoo', 
     'Pattern with regexp and junction'
 );
