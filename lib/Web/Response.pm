@@ -3,7 +3,6 @@ class Web::Response {
     has Int $!status = 200;
     has %!header;
     has @!body = '';
-    has &!writer = { @!body.push($^x) };
 
     # Append to body and update Content-Length.
     #
@@ -12,7 +11,10 @@ class Web::Response {
     # RAKUDO: '$str as Str'
     method write(Str $str) {
         $!length += $str.chars;
-        &!writer($str);
+        # XXX: For now, we skip the whole 'writer' abstraction found in Rack.
+        #      The support for it in Rakudo is flaky, and I don't yet grok
+        #      its underlying purpose.
+        @!body.push($str);
 
         %!header<Content-Length> = ~$!length;
         return $str;
@@ -21,10 +23,10 @@ class Web::Response {
     method finish() {
         if $!status == 204 | 304 {
             %!header.delete: 'Content-Type';
-            return [$!status, %!header, []];
+            return [$!status, \%!header, []];
         }
         else {
-            return [$!status, %!header, @!body];
+            return [$!status, \%!header, \@!body];
         }
     }
 }

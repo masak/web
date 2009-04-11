@@ -3,6 +3,10 @@ use Web::Utils;
 class Web::Request {
     has %.env;
 
+    method new(%env) {
+        return self.bless( :env(%env) );
+    }
+
     method body           {  %!env<web.input>      }
     method scheme         {  %!env<web.url_scheme> }
     method script_name    { ~%!env<SCRIPT_NAME>    }
@@ -15,8 +19,8 @@ class Web::Request {
 
     # Returns the data recieved in the query string.
     method GET {
-        if %!env<web.request.query_string> eq self.query_string() {
-            return %!env<web.request.query_hash>;
+        if (%!env<web.request.query_string> // '') eq self.query_string() {
+            return %!env<web.request.query_hash> //= {};
         }
         else {
             %!env<web.request.query_string> = self.query_string();

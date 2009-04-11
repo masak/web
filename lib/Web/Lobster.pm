@@ -28,10 +28,9 @@ class Web::Lobster {
     # RAKUDO: Should really be 'method postcircumfix:<( )>($env)' once this
     #         is supported.
     method call($env) {
-        # RAKUDO: Want to write new($env) here.
-        my Web::Request $req .= new(:env($env));
+        my Web::Request $req .= new($env);
         my Str ($lobster, $href);
-        given $req.GET<flip> {
+        given $req.GET<flip> // '' {
             when 'left' {
                 $lobster = $lobster-string.split("\n").map(
                     { fmt('%-42s').reverse }
