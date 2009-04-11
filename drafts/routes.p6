@@ -1,10 +1,10 @@
-# This draft was inspired by RoR Routes  
+# This draft was inspired by RoR Routes
 # see http://guides.rubyonrails.org/routing.html
 
 use Routes;
 
 my $routes = do given Routes.new {
-    .connect: ['foo', :action ]; 
+    .connect: ['foo', :action ];
     # the same as:
     .add: ['foo', :action ], :conroller('Root'), { %*controller{$:controller}."{$:action}"(@_) }
 
@@ -14,7 +14,7 @@ my $routes = do given Routes.new {
 use Routes::Resources;
 
 my $routes = do given Routes.new does Routes::Resources {
-    
+
     .resource: 'company';  # pattern ['company'], call company.METHOD()
     .resources: 'company'; # pattern ['company', *], call company.METHOD(| @args)
 
@@ -27,7 +27,7 @@ my $routes = do given Routes.new does Routes::Resources {
         .resources: 'member', plural => 'members';
     };
 
-    .resources-chain: ['company', *, ['offer', 'account']]; 
+    .resources-chain: ['company', *, ['offer', 'account']];
 };
 
 $routes.dispatch($*request);
