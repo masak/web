@@ -5,6 +5,9 @@ module Tags::EXPORT::DEFAULT { }
 module Tags {
     our @frames;
 
+    # XXX: The below list used to contain 'map', but I removed it because it
+    #      screwed up code elsewhere. -- masak
+
     # Hide it in a sub to work around a bug
     sub _setup {
         for <
@@ -13,7 +16,7 @@ module Tags {
         link nextid title meta kbd start_html end_html input select option
         comment charset escapehtml div table caption th td tr tr sup sub
         strike applet param nobr embed basefont style span layer ilayer font
-        frameset frame script small big area map abbr acronym bdo col colgroup
+        frameset frame script small big area abbr acronym bdo col colgroup
         del fieldset iframe ins label legend noframes noscript object optgroup
         q thead tbody tfoot blink fontsize center textfield textarea filefield
         password_field hidden checkbox checkbox_group submit reset defaults
