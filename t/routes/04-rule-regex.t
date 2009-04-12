@@ -1,48 +1,50 @@
 use v6;
 
 use Test;
-plan 6;
+plan 8;
 
 use Routes;
-my $r = Routes.new;
-$r.add: [
-    ['foo', /^ \d+ $/],          { $^d },
-    [/^ \w+ $/],                 { "Yep!" if $^w.WHAT eq 'Match' },
-    ['foo', / \d+ /],            { $^d + 10 },
-    ['foo', / \d+ /, 'bar' ],    { $^d + 1 },
-    ['summ', / \d+ /, / \d+ / ], { $^a + $^b },
-    ['summ', / \w+ /, 1|2 ],     { $^a ~ "oo" }
-];
+given my $r = Routes.new {
+    .add: ['foo', /'bar' | 'baz'/],   {  $^variant  };
+    .add: ['foo', /^ \d+ $/],              { $^d };
+    .add: [/^ \w+ $/],                     { "Yep!" if $^w.WHAT eq 'Match' };
+    .add: ['foo', / \d+ /],                { $^d + 10 };
+    .add: ['foo', / \d+ /, 'bar' ],        { $^d + 1 };
+    .add: ['summ', / \d+ /, / \d+ / ],     { $^a + $^b };
+    .add: ['bar', / $<w>=\w+ $<d>=\d+ / ], { my $m = $^a; $m<d> ~ $m<w> };
+}
 
+is $r.dispatch(<foo bar>), 
+    'bar', 
+    'Use regexp-rule to catch variant: bar';
 
-is( $r.dispatch(['foo']), 
+is $r.dispatch(<foo baz>), 
+    'baz', 
+    'Use regexp-rule to catch variant: baz';
+    
+is $r.dispatch(['foo']), 
     'Yep!', 
-    "Pattern with regex \w+, put Match in args"
-);
+    "Pattern with regex \w+, put Match in args";
 
-is( $r.dispatch(['foo', '50']), 
+is $r.dispatch(['foo', '50']), 
     '60', 
-    "Dispatch ['foo', '50'] to last matched Route" 
-);
+    "Dispatch ['foo', '50'] to last matched Route";
 
-is( $r.dispatch(['foo', 'a50z']), 
+is $r.dispatch(['foo', 'a50z']), 
     '60', 
-    'Pattern with regex \d, put Match in args'  
-);
+    'Pattern with regex \d, put Match in args';
 
-is( $r.dispatch(['foo', 'item4', 'bar']), 
+is $r.dispatch(['foo', 'item4', 'bar']), 
     '5', 
-    'Pattern with regexp in the middle (foo/\d+/bar)'
-);
+    'Pattern with regexp in the middle (foo/\d+/bar)';
 
-is( $r.dispatch(['summ', '2', '3']), 
+is $r.dispatch(['summ', '2', '3']), 
     '5', 
-    'Pattern with two regexs'
-);
+    'Pattern with two regexs';
 
-is( $r.dispatch(['summ', 'Z', '2']), 
-    'Zoo', 
-    'Pattern with regexp and junction'
-);
+is $r.dispatch(['bar', 'item2']), 
+    '2item', 
+    'Pattern with regexp, use abstract object in code';
+
 
 # vim:ft=perl6

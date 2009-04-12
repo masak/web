@@ -4,27 +4,26 @@ use Test;
 plan 4;
 
 use Routes;
-my $r = Routes.new;
+given my $r = Routes.new {
+    .add: [:controller, :action ],    { 'c:' ~ $:controller ~ ' a:' ~ $:action };
+    .add: [:controller, / \d / ],     {  $:controller ~ '/' ~ $^a };
+    .add: [:controller, *, * ],       { 
+        my $c = $:controller; 
+        use "$c"; 
+        is $^a, $^b, 'Test within Route code block' 
+    };
+}
 
-$r.add: [ 
-    [:controller, :action ],    { 'c:' ~ $:controller ~ ' a:' ~ $:action },
-    [:controller, / \d / ],     {  $:controller ~ '/' ~ $^a },
-    [:controller, *, * ],       { my $c = $:controller; use "$c"; is($^a, $^b, 'Test within Route code block') };
-];
-
-is( $r.dispatch(['one', 5]), 
+is $r.dispatch(['one', 5]), 
     'one/5', 
-    'Pattern set controller'  
-);
+    'Pattern set controller';
 
-is( $r.dispatch(['one', 'two']), 
+is $r.dispatch(['one', 'two']), 
     'c:one a:two', 
-    'Pair rule set controller and action'  
-);
+    'Pair rule set controller and action';
 
-is( $r.dispatch(['Test', 3, 3]), 
+is $r.dispatch(['Test', 3, 3]), 
     1, 
-    'Pair rule set controller and action'  
-);
+    'Pair set cobtroller -- Test, code use args to make next test';
 
 # vim:ft=perl6
