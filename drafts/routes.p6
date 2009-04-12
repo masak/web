@@ -3,7 +3,7 @@
 
 use Routes;
 
-my $routes = do given Routes.new {
+given my $routes = Routes.new {
     .connect: ['foo', :action ];
     # the same as:
     .add: ['foo', :action ], :conroller('Root'), { %*controller{$:controller}."{$:action}"(@_) }
@@ -13,7 +13,7 @@ my $routes = do given Routes.new {
 
 use Routes::Resources;
 
-my $routes = do given Routes.new does Routes::Resources {
+given my $routes = Routes.new does Routes::Resources {
 
     .resource: 'company';  # pattern ['company'], call company.METHOD()
     .resources: 'company'; # pattern ['company', *], call company.METHOD(| @args)

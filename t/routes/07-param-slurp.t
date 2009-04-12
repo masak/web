@@ -4,11 +4,14 @@ use Test;
 plan 3;
 
 use Routes;
-my $r = Routes.new;
 
-for $r {
+given my $r = Routes.new {
     .add: [:action(*)], :slurp, { $:action.join: '/' };
-    .add: ['foo', *],   :slurp, { @_.join: '/' };
+    .add: ['foo', *],   :slurp, { 
+        # RAKUDO: lose first arg in @_ [perl #63974]
+        @_.unshift: $^a; 
+        @_.join: '/';
+    };
 }
 
 is( $r.dispatch(['foo', 1]), 
@@ -28,7 +31,7 @@ is( $r.dispatch(['foo', 1, 2, 3]),
 
 is( $r.dispatch: ['bar', 'baz' ],
     'bar/baz',
-    'Whatever as pair value put all args in param'  
+    ':param(*) with slurp, put all args in this param'  
 );
 
 # vim:ft=perl6
