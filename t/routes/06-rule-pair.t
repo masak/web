@@ -24,6 +24,6 @@ is $r.dispatch(['one', 'two']),
 
 is $r.dispatch(['Test', 3, 3]), 
     1, 
-    'Pair set cobtroller -- Test, code use args to make next test';
+    'Pair set controller -- Test, code use args to make next test';
 
 # vim:ft=perl6
