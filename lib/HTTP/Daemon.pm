@@ -44,18 +44,21 @@ class HTTP::Response {
 class HTTP::Daemon::ClientConn {
     has HTTP::Request $.request is rw;
     has Bool $!gave_request;
+    has $.socket;
     
     method get_request {
         if defined $!gave_request { return undef; }
         else {
             $!gave_request = Bool::True;
-            my Str $line = =$*IN;
+            my $buf = $.socket.recv();
+            my @lines = split($buf, "\x0D\x0A");
+            my Str $line = @lines.shift();
             my @fields = $line.split(' ');
             # $*ERR.say: "-------------------";
             my Str $headerline;
             my %headers;
             repeat {
-                $headerline = =$*IN;
+                $headerline = @lines.shift();
                 # $*ERR.say: "HEADERLINE: $headerline";
                 # if $headerline ~~ HTTP::headerline {
                 #     my $key   = $/<key>;
@@ -83,7 +86,8 @@ class HTTP::Daemon::ClientConn {
     method send_response( $self: Str $content ) {
         $self.send_basic_header;
         $self.send_crlf;
-        say $content;
+        $.socket.send($content);
+        $.socket.close();
     }
 
     # provided for Perl 5 compatibility, send_response calls this
@@ -94,10 +98,10 @@ class HTTP::Daemon::ClientConn {
         Int $status?   = 200,
         Str $message?  = 'OK',
         Str $protocol? = 'HTTP/1.0'
-    ) { say "$protocol $status $message"; }
+    ) { $.socket.send("$protocol $status $message\n"); }
 
     # the internet newline is 0x0D 0x0A, "\n" would vary between OSes
-    method send_crlf { print "\x0D\x0A"; }
+    method send_crlf { $.socket.send("\x0D\x0A"); }
 
     # now tested with /favicon.ico
     method send_file_response( $self: Str $filename ) {
@@ -109,7 +113,7 @@ class HTTP::Daemon::ClientConn {
     # now tested with /favicon.ico
     method send_file( Str $filename ) {
         my $contents = slurp( $filename );
-        print $contents;
+        $.socket.send($contents);
     }
 
     # not sure whether this and the next method might be inefficient
@@ -139,8 +143,8 @@ class HTTP::Daemon::ClientConn {
     multi method send_error( Int $status, Str $message ) {
         self.send_status_line( $status, $message );
         self.send_crlf;
-        say "<title>$status $message</title>";
-        say "<h1>$status $message</h1>";
+        $.socket.send("<title>$status $message</title>");
+        $.socket.send("<h1>$status $message</h1>");
     }
 }
 
@@ -159,13 +163,22 @@ class HTTP::Daemon
 
     method daemon {
         $!running = Bool::True;
+
+        # hack until we can get real CALLER support
+        my %callerns := Q:PIR {{ $P0 = getinterp
+                %r = $P0['namespace';1] }};
+
+        # Ew... we need a Socket.pm in rakudo
+        my $listener := Q:PIR {{ %r = new 'Socket' }};
+        $listener.socket(2,1,6);
+        $listener.bind($listener.sockaddr($.host, $.port));
+        $listener.listen(1);
         while $!running {
-            # spawning socat here is a temporary measure until
-            # Rakudo gets socket(), listen(), accept() etc.
-            my Str $command = "perl6 $*PROGRAM_NAME --request";
-            run( "socat TCP-LISTEN:{$.port},bind={$.host},fork EXEC:'$command'" );
-            # previous versions used netcat, but on BSD lacked -c and -e
-            # run( "netcat -c '$command' -l -s {$.host} -p {$.port} -v" );
+            my $work = $listener.accept();
+            my HTTP::Daemon::ClientConn $c .= new( :socket($work) );
+
+            # call request($c) in the caller's namespace
+            %callerns<request>($c);
         }
     }
 
