@@ -82,6 +82,10 @@ class HTTP::Daemon::ClientConn {
         }
     }
 
+    method close {
+        $.socket.close();
+    }
+
     # the method servers should mainly use for normal page output
     method send_response( $self: Str $content ) {
         $self.send_basic_header;
@@ -114,10 +118,11 @@ class HTTP::Daemon::ClientConn {
     method send_file( Str $filename ) {
         my $contents = slurp( $filename );
         $.socket.send($contents);
+        $.socket.close();
     }
 
     # not sure whether this and the next method might be inefficient
-    multi method send_error( $self: Int $status ) {
+    multi method send_error( Int $status ) {
         my %message = (
             200 => 'OK',
             403 => 'RC_FORBIDDEN',
@@ -125,7 +130,7 @@ class HTTP::Daemon::ClientConn {
             500 => 'RC_INTERNALERROR',
             501 => 'RC_NOTIMPLEMENTED'
         );
-        $self.send_error( $status, %message{$status} );
+        self.send_error( $status, %message{$status} );
     }
 
     # seems inefficient
@@ -145,6 +150,7 @@ class HTTP::Daemon::ClientConn {
         self.send_crlf;
         $.socket.send("<title>$status $message</title>");
         $.socket.send("<h1>$status $message</h1>");
+        $.socket.close();
     }
 }
 
