@@ -8,6 +8,7 @@ module Tags {
     # XXX: The below list used to contain 'map', but I removed it because it
     #      screwed up code elsewhere. -- masak
 
+    my @nocollapse = <textarea>;
     # Hide it in a sub to work around a bug
     sub _setup {
         for <
@@ -39,7 +40,7 @@ module Tags {
         return end_buffer_frame();
     }
 
-    sub _tag(Str $tag, $body, *%named-args) {
+    sub _tag(Str $tag is rw, $body, *%named-args) {
         my %attrs = %named-args<attrs>;
         my $buf = "\n" ~ '  ' x (@frames.elems() - 1) ~ "<$tag";
         for %attrs.kv -> $k, $v {
@@ -47,7 +48,12 @@ module Tags {
         }
         given $body {
             when Failure {
-            $buf ~= '/>';
+                if $tag ~~ @nocollapse {
+                    $buf ~= "></$tag>";
+                }
+                else {
+                    $buf ~= '/>';
+                }
             }
             when Code {
                 $buf ~= '>';
