@@ -24,6 +24,7 @@ class HTTP::Request {
     has HTTP::url     $!req_url;
     has Str           $.uurl;
     has Str           $.req_method  is rw;
+    has Str           %.query is rw;
 
     method url {
         return $!req_url;
@@ -39,6 +40,18 @@ class HTTP::Request {
 class HTTP::Response {
 }
 
+sub urldecode($text) {
+    state %hex;
+    unless %hex {
+        for 0..255 {
+            my $h = $_.fmt('%02X');
+            %hex{lc $h} = chr $_;
+            %hex{uc $h} = chr $_;
+        }
+    }
+    return $text.subst('+', ' ', :g).subst(/\%(<[0..9a..fA..F]>**{2})/, {%hex{$/[0]}}, :g);
+}
+
 # This maintains the connected TCP session and handles chunked data
 # transfer, but Rakudo and netcat end the session after every request.
 class HTTP::Daemon::ClientConn {
@@ -51,6 +64,7 @@ class HTTP::Daemon::ClientConn {
         else {
             $!gave_request = Bool::True;
             my $buf = $.socket.recv();
+            say $buf;
             my @lines = split($buf, "\x0D\x0A");
             my Str $line = @lines.shift();
             my @fields = $line.split(' ');
@@ -73,11 +87,29 @@ class HTTP::Daemon::ClientConn {
                     %headers{$key} = $value;
                 }
             } until $headerline eq ""; # blank line terminates
+            # deal with body
+            my %query;
+            given %headers<Content-Type> {
+                when 'application/x-www-form-urlencoded' {
+                    my $body = @lines.join('');
+                    for $body.split(/<[&;]>/) -> $pair {
+                        $pair ~~ /$<name>=(.*)\=$<value>=(.*)/ or next;
+                        %query{urldecode($/<name>)} = urldecode($/<value>);
+                    }
+                }
+                when '' {
+                    # no content-type... not a problem
+                }
+                when * {
+                    warn 'unknown content-type in request';
+                }
+            }
             return HTTP::Request.new(
                 req_url    => HTTP::url.new( path=>@fields[1] ),
                 headers    => HTTP::Headers.new(
                                   header_values => %headers ),
-                req_method => @fields[0]
+                req_method => @fields[0],
+                query      => %query,
             );
         }
     }
