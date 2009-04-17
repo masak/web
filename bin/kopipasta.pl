@@ -7,6 +7,7 @@ sub request($c) {
     if $m eq 'GET' {
         given $r.url.path {
             when '/'             { main_page( $c, $r ); }
+            when m{^\/<digit>*$} { show_paste( $c, $r ); }
             when * { $c.send_error('RC_FORBIDDEN'); }
         }
     }
@@ -25,33 +26,67 @@ sub main_page($c, $r) {
                 title { 'kopipasta' }
             };
             body {
-                h1 { 'Kopipasta is a PASTEBIN site for COPYING and/or PASTING' }
-                p { outs 'put some text in me'; strong { 'I AM HUNGRY FOR TEXT' } }
+                h1 'Kopipasta is a PASTEBIN site for COPYING and/or PASTING';
+                p { outs 'put some text in me'; strong 'I AM HUNGRY FOR TEXT'; }
                 form :method<POST>, :action</paste>, {
                     p {
-                        textarea :cols<80>, :rows<20>, :name<content>, { '' }
+                        textarea :cols<80>, :rows<20>, :name<content>;
                     }
-                    input :type<submit>, :name<paste>, :value('PASTE ME'), { '' }
+                    input :type<submit>, :name<paste>, :value('PASTE ME')
                 }
             }
         }
     }
 }
 
-sub paste($c, $r) {
+sub show_paste($c, $r) {
+    my $match = $r.url.path ~~ m{^\/(<digit>+)$};
+    my $id = $match[0];
+    my $content = fetch_paste($id);
     $c.send_response: show {
         html {
             head {
-                title { 'kopipasta' }
+                title "kopipasta #$id by someone"
             };
             body {
-                h1 { 'you pasted text' };
-                pre {
-                    $r.query<content>;
-                }
+                h1 'Someone pasted this some time ago';
+                $content ?? pre($content)!! p("wtf dood?!?!  No paste here!");
+                a :href</>, 'make ur own paste, dood';
             }
         }
     }
+}
+
+sub paste($c, $r) {
+    my $id = save_paste($r.query<content>);
+
+    # TODO Send a redirect instead of 200 OK
+    $c.send_response: show {
+        html {
+            head {
+                title 'kopipasta'
+            };
+            body {
+                h1 'you pasted text!';
+                p { outs 'you can find it '; a :href("/$id"), 'here'; }
+            }
+        }
+    }
+}
+
+my %pastes;
+sub fetch_paste($id) {
+    # TODO go to filesystem
+    %pastes{$id}
+}
+
+sub save_paste($content) { # TODO save username, title, time, etc
+    # TODO avoid collisions
+    my $id = int(rand*1000000);
+
+    # TODO go to filesystem
+    %pastes{$id} = $content;
+    return $id;
 }
 
 sub daemon {
