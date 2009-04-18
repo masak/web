@@ -8,6 +8,7 @@ module Tags {
     # XXX: The below list used to contain 'map', but I removed it because it
     #      screwed up code elsewhere. -- masak
 
+    my @nocollapse = <textarea>;
     # Hide it in a sub to work around a bug
     sub _setup {
         for <
@@ -25,8 +26,8 @@ module Tags {
         end_multipart_form isindex tmpfilename uploadinfo url_encoded
         multipart form canvas
         > -> $tag {
-            ::Tags{$tag} = sub (&c, *%attrs) {
-                _tag($tag, &c, :attrs{%attrs});
+            ::Tags{$tag} = sub ($c?, *%attrs) {
+                _tag($tag, $c, :attrs{%attrs});
             }
             ::Tags::EXPORT::DEFAULT{$tag} = ::Tags{$tag};
         }
@@ -39,23 +40,38 @@ module Tags {
         return end_buffer_frame();
     }
 
-    sub _tag(Str $tag, &code, *%named-args) {
+    sub _tag(Str $tag is rw, $body, *%named-args) {
         my %attrs = %named-args<attrs>;
         my $buf = "\n" ~ '  ' x (@frames.elems() - 1) ~ "<$tag";
         for %attrs.kv -> $k, $v {
             $buf ~= " $k='$v'";
         }
-        $buf ~= ">";
-        new_buffer_frame();
-        my $ret = &code();
-        my $frame = end_buffer_frame();
-        if $frame.chars() > 0 {
-            $buf ~= $frame;
+        given $body {
+            when Failure {
+                if $tag ~~ @nocollapse {
+                    $buf ~= "></$tag>";
+                }
+                else {
+                    $buf ~= '/>';
+                }
+            }
+            when Code {
+                $buf ~= '>';
+                new_buffer_frame();
+                my $ret = $body();
+                my $frame = end_buffer_frame();
+                if $frame.chars() > 0 {
+                    $buf ~= $frame;
+                }
+                else {
+                    $buf ~= $ret;
+                }
+                $buf ~= "\n" ~ '  ' x (@frames.elems() - 1) ~ "</$tag>";
+            }
+            when Str {
+                $buf ~= ">$body</$tag>";
+            }
         }
-        else {
-            $buf ~= $ret;
-        }
-        $buf ~= "\n" ~ '  ' x (@frames.elems() - 1) ~ "</$tag>";
         outs($buf);
         return '';
     }
