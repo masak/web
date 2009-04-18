@@ -73,18 +73,6 @@ sub paste($c, $r) {
     $c.send_headers(:Location("/$id"));
     $c.send_crlf;
     $c.close;
-    # TODO Send a redirect instead of 200 OK
-    $c.send_response: show {
-        html {
-            head {
-                title 'kopipasta'
-            };
-            body {
-                h1 'you pasted text!';
-                p { outs 'you can find it '; a :href("/$id"), 'here'; }
-            }
-        }
-    }
 }
 
 my %pastes;
