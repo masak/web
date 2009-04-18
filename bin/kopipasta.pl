@@ -30,6 +30,12 @@ sub main_page($c, $r) {
                 p { outs 'put some text in me'; strong 'I AM HUNGRY FOR TEXT'; }
                 form :method<POST>, :action</paste>, {
                     p {
+                        label :for<name>, 'Name: '; input :name<name>, :id<name>;
+                    }
+                    p {
+                        label :for<title>, 'Title: '; input :name<title>, :id<title>;
+                    }
+                    p {
                         textarea :cols<80>, :rows<20>, :name<content>;
                     }
                     input :type<submit>, :name<paste>, :value('PASTE ME')
@@ -42,15 +48,18 @@ sub main_page($c, $r) {
 sub show_paste($c, $r) {
     my $match = $r.url.path ~~ m{^\/(<digit>+)$};
     my $id = $match[0];
-    my $content = fetch_paste($id);
+    my %query = fetch_paste($id);
+    my $name = %query<name> // "Someone";
+    my $title = %query<title>;
+    my $content = %query<content>;
     $c.send_response: show {
         html {
             head {
-                title "kopipasta #$id by someone"
+                title "kopipasta \"$title\" by $name"
             };
             body {
-                h1 'Someone pasted this some time ago';
-                $content ?? pre($content)!! p("wtf dood?!?!  No paste here!");
+                h1 "$name pasted \"$title\" some time ago";
+                $content ?? pre($content) !! p("wtf dood?!?!  No paste here!");
                 a :href</>, 'make ur own paste, dood';
             }
         }
@@ -58,7 +67,7 @@ sub show_paste($c, $r) {
 }
 
 sub paste($c, $r) {
-    my $id = save_paste($r.query<content>);
+    my $id = save_paste($r.query);
 
     # TODO Send a redirect instead of 200 OK
     $c.send_response: show {
@@ -80,12 +89,12 @@ sub fetch_paste($id) {
     %pastes{$id}
 }
 
-sub save_paste($content) { # TODO save username, title, time, etc
+sub save_paste($q) { # TODO save username, title, time, etc
     # TODO avoid collisions
     my $id = int(rand*1000000);
 
     # TODO go to filesystem
-    %pastes{$id} = $content;
+    %pastes{$id} = $q;
     return $id;
 }
 
