@@ -5,12 +5,12 @@ plan 8;
 
 use Routes;
 given my $r = Routes.new {
-    .add: ['foo', /'bar' | 'baz'/],   {  $^variant  };
+    .add: ['foo', /'bar' | 'baz'/],        { $^variant  };
     .add: ['foo', /^ \d+ $/],              { $^d };
-    .add: [/^ \w+ $/],                     { "Yep!" if $^w.WHAT eq 'Match' };
+    .add: [/^ \w+ $/],                     { "Yep!"  ~~ Match };
     .add: ['foo', / \d+ /],                { $^d + 10 };
     .add: ['foo', / \d+ /, 'bar' ],        { $^d + 1 };
-    .add: ['summ', / \d+ /, / \d+ / ],     { $^a + $^b };
+    .add: ['sum', / \d+ /, / \d+ / ],      { $^a + $^b };
     .add: ['bar', / $<w>=\w+ $<d>=\d+ / ], { my $m = $^a; $m<d> ~ $m<w> };
 }
 
@@ -38,7 +38,7 @@ is $r.dispatch(['foo', 'item4', 'bar']),
     '5', 
     'Pattern with regexp in the middle (foo/\d+/bar)';
 
-is $r.dispatch(['summ', '2', '3']), 
+is $r.dispatch(['sum', '2', '3']), 
     '5', 
     'Pattern with two regexs';
 

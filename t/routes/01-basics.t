@@ -21,10 +21,10 @@ is $r.dispatch(['']),
     "Root pattern [''] works";
 
 ok $r.add( ['foo', 'bar'], { "Yay" } ), 
-    '.add(@pattern, $code) -- shortcut for fast add Route object';
+    '.add(@pattern, $code) -- shortcut for adding a Route object';
 
 nok $r.dispatch(['foo']), 
-    'Routes return False if can`t find matched Route and do not have default';
+    'Routes returns False if it can\'t find matched Route and does not have a default';
 
 is $r.dispatch(['foo', 'bar']), 
     "Yay", 
