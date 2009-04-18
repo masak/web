@@ -30,7 +30,7 @@ method match (@chunks) {
     for @chunks Z @tmp_pattern -> $chunk, Object $rule {
         if ~$chunk ~~ ($rule ~~ Pair ?? $rule.value !! $rule) {
             given $rule {
-                # RAKUDO: /./ ~~ Regex us false, but /./ ~~ Code is true  
+                # RAKUDO: /./ ~~ Regex is false, but /./ ~~ Code is true  
                 when Code | Whatever { @!args.push($/ || $chunk) } # should be Regex | Whatever
                 when Pair            { %!params{$rule.key}  = $/ || $chunk }
             }

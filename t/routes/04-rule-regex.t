@@ -7,7 +7,10 @@ use Routes;
 given my $r = Routes.new {
     .add: ['foo', /'bar' | 'baz'/],        { $^variant  };
     .add: ['foo', /^ \d+ $/],              { $^d };
-    .add: [/^ \w+ $/],                     { "Yep!"  ~~ Match };
+    .add: [/^ \w+ $/],                     { 
+        # RAKUDO: /./ ~~ Regex is false, but /./ ~~ Code is true  
+        "Yep!"  if $^w.WHAT eq 'Match';
+    };
     .add: ['foo', / \d+ /],                { $^d + 10 };
     .add: ['foo', / \d+ /, 'bar' ],        { $^d + 1 };
     .add: ['sum', / \d+ /, / \d+ / ],      { $^a + $^b };
