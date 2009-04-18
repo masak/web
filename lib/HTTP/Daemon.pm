@@ -65,7 +65,7 @@ class HTTP::Daemon::ClientConn {
             $!gave_request = Bool::True;
             my $buf = $.socket.recv();
             say $buf;
-            my @lines = split($buf, "\x0D\x0A");
+            my @lines = split("\x0D\x0A", $buf);
             my Str $line = @lines.shift();
             my @fields = $line.split(' ');
             # $*ERR.say: "-------------------";
