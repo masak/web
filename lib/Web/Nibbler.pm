@@ -10,29 +10,43 @@ use Web::Response;
 class Web::Lobster {
     # Somewhat less cool than the Ruby solution, we have to include the
     # lobster verbatim, for lack of a zlib module (hint, hint).
-    my $lobster-string = q[
-                             ,.---._
-                   ,,,,     /       `,
-                    \\\\   /    '\_  ;
-                     |||| /\/``-.__\;'
-                     ::::/\/_
-     {{`-.__.-'(`(^^(^^^(^ 9 `.========='
-    {{{{{{ { ( ( (  (   (-----:=
-     {{.-'~~'-.(,(,,(,,,(__6_.'=========.
-                     ::::\/\
-                     |||| \/\  ,-'/,
-                    ////   \ `` _/ ;
-                   ''''     \  `  .'
-                             `---];
+    my $nibbler-string = q[
+              +   ?:
+             .    M..
+                    7
+              ...  $
+                 MMO
+                 8MM.
+                 ~MM.
+                  MM.
+                +MMMM~.
+              MMMMMMMMMO
+          =MMMMMMMMMMMMMMMMM..
+     . .MMMMMMMMMMMMMMMMMMMMM7MMMMMM  .
+   MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM?
+=MMMMMMMMMMMMMMMMMMMMMMMMMMN..     M,
+  $       :MMMMMMMMMMMMMMMM           .
+  .      MM MMMMMMMMMMMMMM.       MMM.,.
+I      ..Z? ~MMMMMMMMMMMMM        ...
+:           .MMMMMMMMMMMMM            =
+N .        .NMMMMM88DMMMMMM.       .
+Z         =MM,,:MMMMMI,:MMM     . .D.
+  ,.     .MMMMM::$MMMM::~$MMMMMDDMD.
+  ..MMMMMD:,,,,,:,:,,:,,:,,,:::MMM
+    .MM,,,,,,,,,,,,,,,,,,,,,,,,:,,$ .
+     =:,,::::,,:?$O88OZZZZON88O$Z8?
+     .M::,,:N .I,,,,,,,,,,,,.  ,.
+     . .Z+,::.+::,,,,,,,,,,:M M
+        . ..I~::,:,,,,,,,,8..];
 
     # RAKUDO: Should really be 'method postcircumfix:<( )>($env)' once this
     #         is supported.
     method call($env) {
         my Web::Request $req .= new($env);
-        my Str ($lobster, $href);
+        my Str ($nibbler, $href);
         given $req.GET<flip> // '' {
             when 'left' {
-                $lobster = $lobster-string.split("\n").map(
+                $nibbler = $nibbler-string.split("\n").map(
                     { .fmt('%-42s').flip }
                 ).join("\n");
                 $href = '?flip=right';
@@ -41,7 +55,7 @@ class Web::Lobster {
                 die "Lobster crashed";
             }
             default {
-                $lobster = $lobster-string;
+                $nibbler = $nibbler-string;
                 $href = '?flip=left';
             }
         }
@@ -50,7 +64,7 @@ class Web::Lobster {
         $res.write($_) for
             '<title>Lobstericious!</title>',
             '<pre>',
-            $lobster,
+            $nibbler,
             '</pre>',
             "<p><a href='$href'>flip!</a></p>",
             "<p><a href='?flip=crash'>crash!</a></p>";

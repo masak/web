@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl6
 use HTTP::Daemon;
-use Web::Lobster;
+use Web::Nibbler;
 defined @*ARGS[0] && @*ARGS[0] eq '--request' ?? request() !! daemon();
 
 # Serve one page
