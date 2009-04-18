@@ -69,6 +69,10 @@ sub show_paste($c, $r) {
 sub paste($c, $r) {
     my $id = save_paste($r.query);
 
+    $c.send_status_line(303, 'See Other');
+    $c.send_headers(:Location("/$id"));
+    $c.send_crlf;
+    $c.close;
     # TODO Send a redirect instead of 200 OK
     $c.send_response: show {
         html {

@@ -184,6 +184,13 @@ class HTTP::Daemon::ClientConn {
         $.socket.send("<h1>$status $message</h1>");
         $.socket.close();
     }
+
+    method send_headers(*%headers) {
+        for %headers.kv -> $k, $v {
+            $.socket.send("$k: $v");
+            self.send_crlf;
+        }
+    }
 }
 
 grammar HTTP::headerline {
