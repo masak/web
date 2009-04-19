@@ -213,11 +213,9 @@ class HTTP::Daemon
         my %callerns := Q:PIR {{ $P0 = getinterp
                 %r = $P0['namespace';1] }};
 
-        # Ew... we need a Socket.pm in rakudo
-        my $listener := Q:PIR {{ %r = new 'Socket' }};
-        $listener.socket(2,1,6);
-        $listener.bind($listener.sockaddr($.host, $.port));
-        $listener.listen(1);
+        my $listener = IO::Socket::INET.socket(2, 1, 6)\
+                                       .bind($.host, $.port)\
+                                       .listen();
         while $!running {
             my $work = $listener.accept();
             my HTTP::Daemon::ClientConn $c .= new( :socket($work) );
