@@ -13,7 +13,6 @@ multi method add (@pattern, Code $code) {
     @!routes.push: Routes::Route.new( pattern => @pattern, code => $code, | %_);
 }
 
-# draft
 method connect (@pattern, *%_ is rw) {
     %_<controller> //= 'Root';
     %_<action> //= 'index';
