@@ -9,12 +9,10 @@ multi method add (Routes::Route $route) {
     @!routes.push($route);
 }
 
-# RAKUDO: | %params NIY :(
-multi method add (@pattern, Code $code, :$slurp) {
-    @!routes.push: Routes::Route.new( pattern => @pattern, code => $code, slurp => $slurp );
+multi method add (@pattern, Code $code) {
+    @!routes.push: Routes::Route.new( pattern => @pattern, code => $code, | %_);
 }
 
-# RAKUDO: | %params NIY, so this is just draft
 method connect (@pattern, *%_ is rw) {
     %_<controller> //= 'Root';
     %_<action> //= 'index';

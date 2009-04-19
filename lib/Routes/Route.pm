@@ -1,12 +1,11 @@
 class Routes::Route;
 has @.pattern;
 has @.args;
+has %.args;
 
 has $.controller;
 has $.action;
 has Code $.code;
-
-has %params;
 
 # params
 has $.slurp is rw = False;
@@ -32,7 +31,7 @@ method match (@chunks) {
             given $rule {
                 # RAKUDO: /./ ~~ Regex is false, but /./ ~~ Code is true  
                 when Code | Whatever { @!args.push($/ || $chunk) } # should be Regex | Whatever
-                when Pair            { %!params{$rule.key}  = $/ || $chunk }
+                when Pair            { %!args{$rule.key}  = $/ || $chunk }
             }
         }
         else {
@@ -44,23 +43,12 @@ method match (@chunks) {
 }
 
 method apply {
-    # RAKUDO: die with FixedIntegerArray: index out of bounds! on test 01/3
-    #$!code(| @!args, | %!params );
-    # workaround:
-    
-    $!action = %!params<action> if %!params<action>;
-    $!controller = %!params<controller> if %!params<controller>;
+    # This is init %!args<action> and <controller> as undef, because of rakudobug
+    #$!action = %!args<action> if %!args<action>;
+    #$!controller = %!args<controller> if %!args<controller>;
 
-    if $!controller and $!action {
-        $!code(| @!args, action => $.action, controller => $.controller  );
-    } elsif $!action {
-        $!code(| @!args, action => $.action );
-    } elsif $!controller {
-        $!code(| @!args, controller => $.controller );
-    } else {
-        #say 'call: (|' ~ @!args.perl ~ ')';
-        $!code(| @!args );
-    }
+    #say 'call: (|' ~ @!args.perl ~  ', |' ~ %!args.perl ~')';
+    $!code(| @!args, | %!args );
 }
 
 method is_complete {
@@ -69,9 +57,9 @@ method is_complete {
 
 method clear {
     @!args = ();
+    %!args = ();
     $!controller = undef;
     $!action = undef;
-    %!params = ();
 }
 
 # vim:ft=perl6
