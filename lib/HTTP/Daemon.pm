@@ -89,7 +89,7 @@ class HTTP::Daemon::ClientConn {
             } until $headerline eq ""; # blank line terminates
             # deal with body
             my %query;
-            given %headers<Content-Type> {
+            given %headers<Content-Type> // '' {
                 when 'application/x-www-form-urlencoded' {
                     my $body = @lines.join('');
                     for $body.split(/<[&;]>/) -> $pair {
