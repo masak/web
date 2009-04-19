@@ -41,13 +41,18 @@ method match (@chunks) {
     return True;
 }
 
-method apply {
-    # This is init %!args<action> and <controller> as undef, because of rakudobug
-    #$!action = %!args<action> if %!args<action>;
-    #$!controller = %!args<controller> if %!args<controller>;
+method apply (%param) {
+    # RAKUDO: This is set %!args<action> and <controller> as undef, because of rakudobug
+    # $!action = %!args<action> if %!args<action>;
+    # $!controller = %!args<controller> if %!args<controller>;
+    # and call block with named params, when block do not have %_ 
+    # in signature fall with another rakudobug [perl #64844] 
 
     #say 'call: (|' ~ @!args.perl ~  ', |' ~ %!args.perl ~')';
-    $!code(| @!args, | %!args );
+    
+    # mb we should use differnet containers for params and args fetched from path. 
+    my %named_args = %!args.pairs, %param.pairs;
+    $!code(| @!args, | %named_args );
 }
 
 method is_complete {
