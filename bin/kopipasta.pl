@@ -1,6 +1,8 @@
 use HTTP::Daemon;
 use Tags;
 
+my %pastes;
+
 sub request($c) {
     my $r = $c.get_request();
     my $m = $r.req_method();
@@ -16,10 +18,19 @@ sub main_page($c, $r) {
     $c.send_response: show {
         html {
             head {
-                title { 'kopipasta' }
+                title { 'kopipasta' };
+                style :type<text/css>, '#recent { float: right; list-style-type: none;}';
             };
             body {
                 h1 'Kopipasta is a PASTEBIN site for COPYING and/or PASTING';
+                if %pastes {
+                    ul :id<recent>, {
+                        p 'Recent pastes';
+                        for %pastes.kv -> $k, $v {
+                            li a :href("/$k"), $v<title>;
+                        }
+                    }
+                }
                 p { outs 'put some text in me'; strong 'I AM HUNGRY FOR TEXT'; }
                 form :method<POST>, :action</paste>, {
                     p {
@@ -68,20 +79,17 @@ sub paste($c, $r) {
     $c.close;
 }
 
-my %pastes;
 sub fetch_paste($id) {
-    # TODO go to filesystem
     unless defined %pastes{$id} {
         %pastes{$id} = eval(open("/tmp/pastes/$id.paste").slurp);
     }
-    return %pastes;
+    return %pastes{$id};
 }
 
 sub save_paste($q) { # TODO save time, etc
     # TODO avoid collisions
     my $id = int(rand*1000000);
 
-    # TODO go to filesystem
     %pastes{$id} = $q;
     my $f = open("/tmp/pastes/$id.paste", :w);
     my $result = $f.say($q.perl);
