@@ -81,10 +81,11 @@ sub paste($c, $r) {
 }
 
 sub fetch_paste($id) {
+    # TODO go to filesystem
     unless defined %pastes{$id} {
         %pastes{$id} = eval(open("/tmp/pastes/$id.paste").slurp);
     }
-    return %pastes{$id};
+    return %pastes;
 }
 
 sub save_paste($q) { # TODO save time, etc
