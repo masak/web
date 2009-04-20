@@ -4,18 +4,11 @@ use Tags;
 sub request($c) {
     my $r = $c.get_request();
     my $m = $r.req_method();
-    if $m eq 'GET' {
-        given $r.url.path {
-            when '/'             { main_page( $c, $r ); }
-            when m{^\/<digit>*$} { show_paste( $c, $r ); }
-            when * { $c.send_error('RC_FORBIDDEN'); }
-        }
-    }
-    elsif $m eq 'POST' {
-        paste($c, $r);
-    }
-    else {
-        $c.send_error('RC_FORBIDDEN');
+    given $r.url.path {
+        when '/'             { main_page( $c, $r ); }
+        when m{^\/paste$}    { paste( $c, $r ); }
+        when m{^\/<digit>+$} { show_paste( $c, $r ); }
+        when *               { $c.send_error('RC_NOTFOUND'); }
     }
 }
 
@@ -78,21 +71,28 @@ sub paste($c, $r) {
 my %pastes;
 sub fetch_paste($id) {
     # TODO go to filesystem
-    %pastes{$id}
+    unless defined %pastes{$id} {
+        %pastes{$id} = eval(open("/tmp/pastes/$id.paste").slurp);
+    }
+    return %pastes;
 }
 
-sub save_paste($q) { # TODO save username, title, time, etc
+sub save_paste($q) { # TODO save time, etc
     # TODO avoid collisions
     my $id = int(rand*1000000);
 
     # TODO go to filesystem
     %pastes{$id} = $q;
+    my $f = open("/tmp/pastes/$id.paste", :w);
+    my $result = $f.say($q.perl);
+    $f.close();
+    $*ERR.say("IO error: $result") unless $result;
     return $id;
 }
 
 sub daemon {
-    my HTTP::Daemon $d .= new( :host('127.0.0.1'), :port(2080) );
-    say "Browse this Perl 6 web server at {$d.url}";
+    my HTTP::Daemon $d .= new( :host('0.0.0.0'), :port(2080) );
+    say "Browse this Perl 6 web server at http://localhost:2080/";
     $d.daemon();
 }
 
