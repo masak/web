@@ -4,8 +4,6 @@ use HTML::Entities;
 
 my %pastes;
 
-my %pastes;
-
 sub request($c) {
     my $r = $c.get_request();
     my $m = $r.req_method();
