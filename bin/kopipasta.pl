@@ -1,5 +1,6 @@
 use HTTP::Daemon;
 use Tags;
+use HTML::Entities;
 
 my %pastes;
 
@@ -53,8 +54,8 @@ sub show_paste($c, $r) {
     my $match = $r.url.path ~~ m{^\/(<digit>+)$};
     my $id = $match[0];
     my %query = fetch_paste($id);
-    my $name = %query<name> // "Someone";
-    my $title = %query<title>;
+    my $name = encode_entities(%query<name> // "Someone");
+    my $title = encode_entities(%query<title>);
     my $content = %query<content>;
     $c.send_response: show {
         html {
@@ -63,7 +64,7 @@ sub show_paste($c, $r) {
             };
             body {
                 h1 "$name pasted \"$title\" some time ago";
-                $content ?? pre($content) !! p("wtf dood?!?!  No paste here!");
+                $content ?? pre(encode_entities($content)) !! p("wtf dood?!?!  No paste here!");
                 a :href</>, 'make ur own paste, dood';
             }
         }
