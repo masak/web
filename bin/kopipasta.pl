@@ -4,6 +4,8 @@ use HTML::Entities;
 
 my %pastes;
 
+my %pastes;
+
 sub request($c) {
     my $r = $c.get_request();
     my $m = $r.req_method();
@@ -81,11 +83,10 @@ sub paste($c, $r) {
 }
 
 sub fetch_paste($id) {
-    # TODO go to filesystem
     unless defined %pastes{$id} {
         %pastes{$id} = eval(open("/tmp/pastes/$id.paste").slurp);
     }
-    return %pastes;
+    return %pastes{$id};
 }
 
 sub save_paste($q) { # TODO save time, etc
