@@ -25,7 +25,8 @@ method connect (@pattern, *%_ is rw) {
     %_<action> //= 'index';
     # RAKUDO: die with 'Class P6protoobject already registered!' if this just in argh
     #%_<code> //= { %!controllers{$:controller}."$:action"(| @_, | %_) };
-    @!routes.push: Routes::Route.new( pattern => @pattern, code => { %!controllers{$:controller}."$:action"(| @_, | %_) }, argh => %_ );
+    say 'connect:' ~ @pattern.perl ~ ' ' ~  %_.perl;
+    @!routes.push: Routes::Route.new( pattern => @pattern, code => { %!controllers{$:controller.ucfirst}."$:action"(| @_, | %_) }, argh => %_ );
 }
 
 # I think it should work as I mean without this one

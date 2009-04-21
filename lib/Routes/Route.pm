@@ -56,7 +56,7 @@ method apply (%param) {
     # mb we should use differnet containers for params and args fetched from path. 
     my %named = %!argh.pairs, %param.pairs;
 
-    #say 'call: (|' ~ @!arga.perl ~  ', |' ~ %named-argh.perl ~ ')';
+    say 'call: (|' ~ @!arga.perl ~  ', |' ~ %named.perl ~ ')';
  
     $!code(| @!arga, | %named );
 }
