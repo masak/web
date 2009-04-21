@@ -1,7 +1,12 @@
 class Routes::Route;
 has @.pattern;
-has @.args;
-has %.args;
+
+# hm .new(args => {...}) init both :(
+#has @.args;
+#has %.args;
+
+has @.arga;
+has %.argh;
 
 has $.controller;
 has $.action;
@@ -29,8 +34,8 @@ method match (@chunks) {
         if ~$chunk ~~ ($rule ~~ Pair ?? $rule.value !! $rule) {
             given $rule {
                 # RAKUDO: /./ ~~ Regex is false, but /./ ~~ Code is true  
-                when Code | Whatever { @!args.push($/ || $chunk) } # should be Regex | Whatever
-                when Pair            { %!args{$rule.key}  = $/ || $chunk }
+                when Code | Whatever { @!arga.push($/ || $chunk) } # should be Regex | Whatever
+                when Pair            { %!argh{$rule.key}  = $/ || $chunk }
             }
         }
         else {
@@ -48,11 +53,12 @@ method apply (%param) {
     # and call block with named params, when block do not have %_ 
     # in signature fall with another rakudobug [perl #64844] 
 
-    #say 'call: (|' ~ @!args.perl ~  ', |' ~ %!args.perl ~')';
-    
     # mb we should use differnet containers for params and args fetched from path. 
-    my %named_args = %!args.pairs, %param.pairs;
-    $!code(| @!args, | %named_args );
+    my %named = %!argh.pairs, %param.pairs;
+
+    #say 'call: (|' ~ @!arga.perl ~  ', |' ~ %named-argh.perl ~ ')';
+ 
+    $!code(| @!arga, | %named );
 }
 
 method is_complete {
@@ -60,8 +66,8 @@ method is_complete {
 }
 
 method clear {
-    @!args = ();
-    %!args = ();
+    @!arga = ();
+    %!argh = ();
     $!controller = undef;
     $!action = undef;
 }

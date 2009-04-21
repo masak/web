@@ -4,6 +4,8 @@ use Routes::Route;
 has @.routes;
 has $.default is rw;
 
+has %.controllers;
+
 multi method add (Routes::Route $route) {
     die "Only complete routes allowed" unless $route.?is_complete;
     @!routes.push($route);
@@ -13,12 +15,12 @@ multi method add (@pattern, Code $code) {
     @!routes.push: Routes::Route.new( pattern => @pattern, code => $code, | %_);
 }
 
-# draft
 method connect (@pattern, *%_ is rw) {
     %_<controller> //= 'Root';
     %_<action> //= 'index';
-    %_<code> //= { %*controllers{$!controller}.$!action(| @_, | %_) };
-    @!routes.push: Routes::Route.new( pattern => @pattern, | %_ );
+    # RAKUDO: die with Class P6protoobject already registered! if this in argh
+    #%_<code> //= { %!controllers{$:controller}."$:action"(| @_, | %_) };
+    @!routes.push: Routes::Route.new( pattern => @pattern, code => { %!controllers{$:controller}."$:action"(| @_, | %_) }, argh => %_ );
 }
 
 # I think it should work as I mean without this one
