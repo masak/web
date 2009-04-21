@@ -5,7 +5,7 @@ PERL6LIB='<PERL6LIB>:$(RAKUDO_DIR)'
 SOURCES=lib/HTTP/Daemon.pm \
 	lib/Routes.pm lib/Routes/Route.pm \
 	lib/Tags.pm lib/Test.pm \
-	lib/Web.pm lib/Web/Controller.pm lib/Web/Lobster.pm \
+	lib/Web.pm lib/Web/Controller.pm lib/Web/Nibbler.pm \
 	lib/Web/Model.pm lib/Web/Request.pm lib/Web/Response.pm \
 	lib/Web/Utils.pm lib/Web/View.pm
 
