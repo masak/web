@@ -1,0 +1,57 @@
+use v6;
+
+grammar XML {
+    regex TOP { ^ <pi>* [ <opening><xmlcontent>+<closing> | <empty> ] $ };
+    rule xmlcontent {
+        | <opening> <xmlcontent>+ <closing>
+        | <empty>
+        | <content>
+    };
+
+    rule pi { '<!' <.ident> <.ident> '>' };
+
+    rule opening { '<'  <ident> <attrs>?     '>' };
+    rule closing { '</' <ident>              '>' };
+    rule empty   { '<'  <ident> <attrs>? '/' '>' };
+
+    rule attrs { <attr>+ }
+    rule attr { <.ident>[':'<.ident>]? '=' '"' <-["]>+ '"' }
+
+    token ident { <+alnum + [\-]>+ }
+
+    regex content { <-[<]>+ }
+};
+
+my $xml = $*IN.slurp;
+interp(XML.parse($xml));
+
+sub interp(Match $m) {
+    for %($m).keys -> $key {
+        if $key eq 'opening'|'closing'|'empty'|'content' {
+            print $m{$key}.text;
+        }
+        elsif $key eq 'xmlcontent' {
+            for $m{$key}.values -> $chunk {
+                if $chunk<opening><attrs>
+                   && ~($chunk<opening><attrs>).index('pe:') { # problem here
+                    say "omitted", $m{$key}<opening><ident>;
+                }
+                else {
+                    interp($chunk);
+                }
+            }
+        }
+        else {
+            given $m{$key} {
+                when Match {
+                    interp($m{$key});
+                }
+                when List {
+                    for $m{$key}.values -> $element {
+                        interp($element);
+                    }
+                }
+            }
+        }
+    }
+}
