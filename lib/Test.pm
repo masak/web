@@ -1,18 +1,18 @@
-# Based on:
+module Test;
 # Copyright (C) 2007, The Perl Foundation.
-# $Id: Test.pm 30592 2008-08-27 14:31:45Z moritz $
+# $Id: Test.pm 34904 2009-01-03 23:24:38Z masak $
 
-# This version of Test.pm used in November (http://github.com/viklund/november/)
-# Changes:
-# - implementation of 'is_deeply'
-# - proclaim can say what it got and expected, respectively
+## This is a temporary Test.pm to get us started until we get pugs's Test.pm
+## working. It's shamelessly stolen & adapted from MiniPerl6 in the pugs repo.
 
 # globals to keep track of our tests
-our $num_of_tests_run = 0;
+our $num_of_tests_run    = 0;
 our $num_of_tests_failed = 0;
+our $todo_upto_test_num  = 0;
+our $todo_reason         = '';
 our $num_of_tests_planned;
-our $todo_upto_test_num = 0;
-our $todo_reason = '';
+our $no_plan;
+our $die_on_fail;
 
 our $*WARNINGS = 0;
 
@@ -22,143 +22,149 @@ our $testing_started;
 
 ## test functions
 
-# Compare numeric values with approximation
-sub approx ($x, $y) {
-    my $epsilon = 0.00001;
-    my $diff = abs($x - $y);
-    ($diff < $epsilon);
+# you can call die_on_fail; to turn it on and die_on_fail(0) to turn it off
+sub die_on_fail($fail=1) {
+    $die_on_fail = $fail;
 }
 
-sub plan($number_of_tests) is export() {
+# "plan 'no_plan';" is now "plan *;"
+multi sub plan(Whatever $plan) is export(:DEFAULT) {
+    $no_plan = 1;
+}
+
+multi sub plan($number_of_tests) is export(:DEFAULT) {
     $testing_started      = 1;
+
     $num_of_tests_planned = $number_of_tests;
 
     say '1..' ~ $number_of_tests;
 }
 
-multi sub pass($desc) is export() {
+multi sub pass($desc) is export(:DEFAULT) {
     proclaim(1, $desc);
 }
 
-multi sub ok(Object $cond, $desc) is export() {
-    proclaim($cond, $desc);
+multi sub ok(Object $cond, $desc) is export(:DEFAULT) {
+    proclaim(?$cond, $desc);
 }
 
-multi sub ok(Object $cond) is export() { ok($cond, ''); }
+multi sub ok(Object $cond) is export(:DEFAULT) { ok(?$cond, ''); }
 
 
-multi sub nok(Object $cond, $desc) is export() {
+multi sub nok(Object $cond, $desc) is export(:DEFAULT) {
     proclaim(!$cond, $desc);
 }
 
-multi sub nok(Object $cond) is export() { nok(!$cond, ''); }
+multi sub nok(Object $cond) is export(:DEFAULT) { nok($cond, ''); }
 
 
-multi sub is(Object $got, Object $expected, $desc) is export() {
+multi sub is(Object $got, Object $expected, $desc) is export(:DEFAULT) {
     my $test = $got eq $expected;
-    proclaim($test, $desc, $got, $expected);
+    proclaim(?$test, $desc);
 }
 
-multi sub is(Object $got, Object $expected) is export() { is($got, $expected, ''); }
+multi sub is(Object $got, Object $expected) is export(:DEFAULT) { is($got, $expected, ''); }
 
 
-multi sub isnt(Object $got, Object $expected, $desc) is export() {
+multi sub isnt(Object $got, Object $expected, $desc) is export(:DEFAULT) {
     my $test = !($got eq $expected);
-    proclaim($test, $desc, $got, $expected);
+    proclaim($test, $desc);
 }
 
-multi sub isnt(Object $got, Object $expected) is export() { isnt($got, $expected, ''); }
+multi sub isnt(Object $got, Object $expected) is export(:DEFAULT) { isnt($got, $expected, ''); }
 
-multi sub is_approx(Object $got, Object $expected, $desc) is export() {
+multi sub is_approx(Object $got, Object $expected, $desc) is export(:DEFAULT) {
     my $test = abs($got - $expected) <= 0.00001;
-    proclaim($test, $desc, $got, $expected);
+    proclaim(?$test, $desc);
 }
 
-multi sub is_approx($got, $expected) is export() { is_approx($got, $expected, ''); }
+multi sub is_approx(Object $got, Object $expected) is export(:DEFAULT) {
+    is_approx($got, $expected, '');
+}
 
-multi sub todo($reason, $count) is export() {
+multi sub todo($reason, $count) is export(:DEFAULT) {
     $todo_upto_test_num = $num_of_tests_run + $count;
     $todo_reason = '# TODO ' ~ $reason;
 }
 
-multi sub todo($reason) is export() {
+multi sub todo($reason) is export(:DEFAULT) {
     $todo_upto_test_num = $num_of_tests_run + 1;
     $todo_reason = '# TODO ' ~ $reason;
 }
 
-multi sub skip()                is export() { proclaim(1, "# SKIP"); }
-multi sub skip($reason)         is export() { proclaim(1, "# SKIP " ~ $reason); }
-multi sub skip($count, $reason) is export() {
+multi sub skip()                is export(:DEFAULT) { proclaim(1, "# SKIP"); }
+multi sub skip($reason)         is export(:DEFAULT) { proclaim(1, "# SKIP " ~ $reason); }
+multi sub skip($count, $reason) is export(:DEFAULT) {
     for 1..$count {
         proclaim(1, "# SKIP " ~ $reason);
     }
 }
 
-multi sub skip_rest() is export() {
+multi sub skip_rest() is export(:DEFAULT) {
     skip($num_of_tests_planned - $num_of_tests_run, "");
 }
 
-multi sub skip_rest($reason) is export() {
+multi sub skip_rest($reason) is export(:DEFAULT) {
     skip($num_of_tests_planned - $num_of_tests_run, $reason);
 }
 
-sub diag($message) is export() { say '# '~$message; }
+sub diag($message) is export(:DEFAULT) { say '# '~$message; }
 
 
-multi sub flunk($reason) is export() { proclaim(0, "flunk $reason")}
+multi sub flunk($reason) is export(:DEFAULT) { proclaim(0, "flunk $reason")}
 
 
-multi sub isa_ok($var,$type) is export() {
+multi sub isa_ok(Object $var,$type) is export(:DEFAULT) {
     ok($var.isa($type), "The object is-a '$type'");
 }
-multi sub isa_ok($var,$type, $msg) is export() { ok($var.isa($type), $msg); }
+multi sub isa_ok(Object $var,$type, $msg) is export(:DEFAULT) { ok($var.isa($type), $msg); }
 
-multi sub dies_ok($closure, $reason) is export() {
+multi sub dies_ok(Callable $closure, $reason) is export(:DEFAULT) {
     try {
         $closure();
     }
     proclaim((defined $!), $reason);
 }
-multi sub dies_ok($closure) is export() {
+multi sub dies_ok(Callable $closure) is export(:DEFAULT) {
     dies_ok($closure, '');
 }
 
-multi sub lives_ok($closure, $reason) is export() {
+multi sub lives_ok(Callable $closure, $reason) is export(:DEFAULT) {
     try {
         $closure();
     }
     proclaim((not defined $!), $reason);
 }
-multi sub lives_ok($closure) is export() {
+multi sub lives_ok(Callable $closure) is export(:DEFAULT) {
     lives_ok($closure, '');
 }
 
-multi sub eval_dies_ok($code, $reason) is export() {
+multi sub eval_dies_ok(Str $code, $reason) is export(:DEFAULT) {
     proclaim((defined eval_exception($code)), $reason);
 }
-multi sub eval_dies_ok($code) is export() {
+multi sub eval_dies_ok(Str $code) is export(:DEFAULT) {
     eval_dies_ok($code, '');
 }
 
-multi sub eval_lives_ok($code, $reason) is export() {
+multi sub eval_lives_ok(Str $code, $reason) is export(:DEFAULT) {
     proclaim((not defined eval_exception($code)), $reason);
 }
-multi sub eval_lives_ok($code) is export() {
+multi sub eval_lives_ok(Str $code) is export(:DEFAULT) {
     eval_lives_ok($code, '');
 }
 
 
-multi sub is_deeply($this, $that, $reason) {
+multi sub is_deeply(Object $this, Object $that, $reason) is export(:DEFAULT) {
     my $val = _is_deeply( $this, $that );
-    proclaim( $val, $reason, $this.perl, $that.perl );
+    proclaim($val, $reason);
 }
 
-multi sub is_deeply($this, $that) {
+multi sub is_deeply(Object $this, Object $that) is export(:DEFAULT) {
     my $val = _is_deeply( $this, $that );
-    proclaim( $val, '', $this.perl, $that.perl );
+    proclaim($val, '');
 }
 
-sub _is_deeply( $this, $that) {
+sub _is_deeply(Object $this, Object $that) {
 
     if $this ~~ List && $that ~~ List {
         return if +$this.values != +$that.values;
@@ -198,13 +204,9 @@ sub eval_exception($code) {
     $eval_exception // $!;
 }
 
-sub proclaim(Object $cond, $desc, $got?, $expected?) {
+sub proclaim($cond, $desc) {
     $testing_started  = 1;
     $num_of_tests_run = $num_of_tests_run + 1;
-
-    if $cond.HOW().isa($cond, Junction) {
-        warn("Junction passed to proclaim");
-    }
 
     unless $cond {
         print "not ";
@@ -215,13 +217,14 @@ sub proclaim(Object $cond, $desc, $got?, $expected?) {
     if $todo_reason and $num_of_tests_run <= $todo_upto_test_num {
         print $todo_reason;
     }
+    print "\n";
 
-    unless $cond {
-        # Rakudo: exists not implimented yet
-        print "\n# got: " ~ $got ~ "\n# expected: " ~ $expected if defined $expected; # if $got.exists;
+    if !$cond && $die_on_fail && !$todo_reason {
+        die "Test failed.  Stopping test";
     }
-    
-    say '';
+    # must clear this between tests
+    $todo_reason = '';
+    return $cond;
 }
 
 END {
@@ -231,6 +234,12 @@ END {
     our $num_of_tests_planned;
     our $num_of_tests_run;
     our $num_of_tests_failed;
+    our $no_plan;
+
+    if $no_plan {
+        $num_of_tests_planned = $num_of_tests_run;
+        say "1..$num_of_tests_planned";
+    }
 
     if ($testing_started and $num_of_tests_planned != $num_of_tests_run) {  ##Wrong quantity of tests
         diag("Looks like you planned $num_of_tests_planned tests, but ran $num_of_tests_run");
@@ -240,4 +249,4 @@ END {
     }
 }
 
-# vim:ft=perl6
+# vim: ft=perl6
