@@ -7,7 +7,7 @@ use v6;
 use Web::Request;
 use Web::Response;
 
-class Web::Lobster {
+class Web::Nibbler {
     # Somewhat less cool than the Ruby solution, we have to include the
     # lobster verbatim, for lack of a zlib module (hint, hint).
     my $nibbler-string = q[
@@ -52,7 +52,7 @@ Z         =MM,,:MMMMMI,:MMM     . .D.
                 $href = '?flip=right';
             }
             when 'crash' {
-                die "Lobster crashed";
+                die "Nibbler crashed";
             }
             default {
                 $nibbler = $nibbler-string;
@@ -62,7 +62,7 @@ Z         =MM,,:MMMMMI,:MMM     . .D.
         
         my Web::Response $res .= new;
         $res.write($_) for
-            '<title>Lobstericious!</title>',
+            '<title>Look! A Nibblonian!</title>',
             '<pre>',
             $nibbler,
             '</pre>',

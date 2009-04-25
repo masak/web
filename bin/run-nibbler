@@ -14,7 +14,7 @@ sub request($c) {
                     ?? $0
                     !! '';
         $c.send_response(
-            ~([~] Web::Lobster.call({"QUERY_STRING" => $qs}).[2])
+            ~([~] Web::Nibbler.call({"QUERY_STRING" => $qs}).[2])
         );
     }
     else {
