@@ -1,57 +1,90 @@
 use v6;
 
 grammar XML {
-    regex TOP { ^ <pi>* [ <opening><xmlcontent>+<closing> | <empty> ] $ };
-    rule xmlcontent {
-        | <opening> <xmlcontent>+ <closing>
-        | <empty>
-        | <content>
+    regex TOP { ^ <pi>* <xmlcontent>+ {*} $ };
+
+    token xmlcontent {
+        | <node>           {*} #= node
+        | <empty>          {*} #= empty
+        | <content>        {*} #= content
     };
+
+    rule node {
+        '<' <name=ident> <attrs> '>'
+        <xmlcontent>+
+        '</' $<name> '>'
+        {*}
+    }
 
     rule pi { '<!' <.ident> <.ident> '>' };
 
-    rule opening { '<'  <ident> <attrs>?     '>' };
-    rule closing { '</' <ident>              '>' };
-    rule empty   { '<'  <ident> <attrs>? '/' '>' };
+    rule empty   { '<'  <name=ident> <attrs> '/>' {*} };
 
-    rule attrs { <attr>+ }
-    rule attr { <.ident>[':'<.ident>]? '=' '"' <-["]>+ '"' }
+    token attrs { <attr>* {*} }
+    rule attr { $<name>=[<.ident>[':'<.ident>]?] '=' '"' $<value>=[<-["]>+] '"' }
 
     token ident { <+alnum + [\-]>+ }
 
-    regex content { <-[<]>+ }
+    regex content { <-[<]>+ {*} }
 };
 
-my $xml = $*IN.slurp;
-interp(XML.parse($xml));
-
-sub interp(Match $m) {
-    for %($m).keys -> $key {
-        if $key eq 'opening'|'closing'|'empty'|'content' {
-            print $m{$key}.text;
-        }
-        elsif $key eq 'xmlcontent' {
-            for $m{$key}.values -> $chunk {
-                if $chunk<opening><attrs>
-                   && ~($chunk<opening><attrs>).index('pe:') { # problem here
-                    say "omitted", $m{$key}<opening><ident>;
-                }
-                else {
-                    interp($chunk);
-                }
-            }
-        }
-        else {
-            given $m{$key} {
-                when Match {
-                    interp($m{$key});
-                }
-                when List {
-                    for $m{$key}.values -> $element {
-                        interp($element);
-                    }
-                }
-            }
-        }
+class XML::Node {
+    has $.name is rw;
+    has %.attrs is rw;
+    has @.contents is rw;
+    method Str {
+        my $str = "<$.name";
+        $str ~= [~] map {" $^k=\"$^v\""}, %.attrs.kv;
+        $str ~=">";
+        $str ~= [~] @.contents;
+        $str ~= "</$.name>";
+        return $str;
     }
+}
+
+class XML::Actions {
+    method TOP($/) {
+        my @items = gather for $<xmlcontent> {
+            take $_.ast;
+        }
+        make @items;
+    }
+    method xmlcontent($/, $key) {
+        make $/{$key}.ast;
+    }
+
+    method node($/) {
+        my @items = gather for $<xmlcontent> {
+            take $_.ast;
+        }
+        make XML::Node.new(
+            :name(~$<name>),
+            :contents(@items),
+            :attrs($<attrs>.ast),
+        );
+    }
+
+    method empty($/) {
+        make XML::Node.new(
+            :name(~$<name>),
+            :attrs($<attrs>.ast),
+        );
+    }
+
+    method attrs($/) {
+        my %a;
+        for @($<attr>) {
+            %a{~$_<name>} = ~$_<value> if $_;
+        }
+        make %a;
+    }
+    method content($/) {
+        make ~$/;
+    }
+}
+
+my $xml = $*IN.slurp;
+my $result = XML.parse($xml, :action(XML::Actions.new()));
+for $result.ast {
+    say $_;
 }
