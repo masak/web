@@ -44,18 +44,18 @@ class XML::Node {
 
 class XML::Actions {
     method TOP($/) {
-        my @items = gather for $<xmlcontent> {
-            take $_.ast;
+        make gather for $<xmlcontent> {
+            take .ast;
         }
-        make @items;
     }
+
     method xmlcontent($/, $key) {
         make $/{$key}.ast;
     }
 
     method node($/) {
         my @items = gather for $<xmlcontent> {
-            take $_.ast;
+            take .ast;
         }
         make XML::Node.new(
             :name(~$<name>),
@@ -74,7 +74,7 @@ class XML::Actions {
     method attrs($/) {
         my %a;
         for @($<attr>) {
-            %a{~$_<name>} = ~$_<value> if $_;
+            %a{~.<name>} = ~.<value> if $_;
         }
         make %a;
     }
@@ -85,6 +85,4 @@ class XML::Actions {
 
 my $xml = $*IN.slurp;
 my $result = XML.parse($xml, :action(XML::Actions.new()));
-for $result.ast {
-    say $_;
-}
+(~.value).print for $result.chunks;
