@@ -33,9 +33,8 @@ method match (@chunks) {
     for @chunks Z @tmp_pattern -> $chunk, Object $rule {
         if ~$chunk ~~ ($rule ~~ Pair ?? $rule.value !! $rule) {
             given $rule {
-                # RAKUDO: /./ ~~ Regex is false, but /./ ~~ Code is true  
-                when Code | Whatever { @!arga.push($/ || $chunk) } # should be Regex | Whatever
-                when Pair            { %!argh{$rule.key}  = $/ || $chunk }
+                when Regex | Whatever { @!arga.push($/ || $chunk) }
+                when Pair             { %!argh{$rule.key}  = $/ || $chunk }
             }
         }
         else {
@@ -56,7 +55,7 @@ method apply (%param) {
     # mb we should use differnet containers for params and args fetched from path. 
     my %named = %!argh.pairs, %param.pairs;
 
-    say 'call: (|' ~ @!arga.perl ~  ', |' ~ %named.perl ~ ')';
+    #say 'call: (|' ~ @!arga.perl ~  ', |' ~ %named.perl ~ ')';
  
     $!code(| @!arga, | %named );
 }
