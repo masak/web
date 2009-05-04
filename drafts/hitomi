@@ -27,62 +27,84 @@ grammar XML {
 
     regex content { <-[<]>+ {*} }
 };
-
-class XML::Node {
-    has $.name is rw;
-    has %.attrs is rw;
-    has @.contents is rw;
-    method Str {
-        my $str = "<$.name";
-        $str ~= [~] map {" $^k=\"$^v\""}, %.attrs.kv;
-        $str ~=">";
-        $str ~= [~] @.contents;
-        $str ~= "</$.name>";
-        return $str;
-    }
-}
-
 class XML::Actions {
-    method TOP($/) {
-        make gather for $<xmlcontent> {
-            take .ast;
+    my $h = -> $/ {
+        make [~] gather {
+            for $/.chunks{
+                if .key eq '~' {
+                    take .value;
+                } else {
+                    take .value.ast;
+                }
+            }
         }
+    }
+    method TOP($/) {
+        $h($/);
     }
 
     method xmlcontent($/, $key) {
-        make $/{$key}.ast;
+        $h($/);
     }
 
     method node($/) {
-        my @items = gather for $<xmlcontent> {
-            take .ast;
+        if $<attrs><attr> {
+            for $<attrs><attr> -> $a {
+                if $a<name> eq "pe:if" {
+                    make eval(~$a<value>) ?? matching-if($/) !! q[];
+                    return;
+                }
+                elsif $a<name> ~~ /^ 'pe:'/ {
+                    make "Unknown 'pe:' attribute!";
+                    return;
+                }
+            }
         }
-        make XML::Node.new(
-            :name(~$<name>),
-            :contents(@items),
-            :attrs($<attrs>.ast),
-        );
+        $h($/);
     }
 
     method empty($/) {
-        make XML::Node.new(
-            :name(~$<name>),
-            :attrs($<attrs>.ast),
-        );
+        $h($/);
     }
 
     method attrs($/) {
-        my %a;
-        for @($<attr>) {
-            %a{~.<name>} = ~.<value> if $_;
-        }
-        make %a;
+        $h($/);
     }
     method content($/) {
         make ~$/;
     }
+
+    sub matching-if($/) {
+        return $/.ast;
+    }
 }
+
+# RAKUDO: Arguably wrong that this has to be here and not in the class.
+#         [perl #65238]
+sub links() {
+    return [
+        {
+            :url<http://ihrd.livejournal.com/>,
+            :title("ihrd's blog"),
+            :username<ihrd>,
+            :time(1240904601)
+        },
+        {   :url<http://blogs.gurulabs.com/stephen/>,
+            :title("Tene's blog"),
+            :username<Tene>,
+            :time(1240905184),
+        },
+        {   :url<http://use.perl.org/~masak/journal/>,
+            :title("masak's blog"),
+            :username<masak>,
+            :time(1240905293),
+        },
+    ];
+}
+
 
 my $xml = $*IN.slurp;
 my $result = XML.parse($xml, :action(XML::Actions.new()));
-(~.value).print for $result.chunks;
+print $result.ast;
+
+# vim: ft=perl6
