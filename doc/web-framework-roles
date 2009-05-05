@@ -47,7 +47,7 @@ role Action::Chained {
    }
 
    multi method execute(*@_, :¢_parent_action_capture, *%_) {
-     $.parent.*execute(|¢_parent_action_capture);
+     $.parent.*execute(|¢_parent_action_capture)
        if $.parent;
      $.execute-closure.(self, |@_, |%_)
        if $.execute-closure;
@@ -87,7 +87,7 @@ role Dispatcher {
       if %!actions.exists($a.private-name);
     %!actions{$a.private-name} = $a;
     if $a ~~ Action::Public {
-      @!public = (@!public, $a).sort { $_.priority }
+      @!public = (@!public, $a).sort { .priority };
     }
   }
 
@@ -107,7 +107,7 @@ role Dispatcher {
 
     my @subregexes;
 
-    for @!public --> $action {
+    for @!public -> $action {
         push @subregexes, buildspec($action);
     }
 
@@ -152,8 +152,8 @@ role Application {
 
   # this is where the several steps performed by catalyst should
   # reside, so application-wide plugins can modify
-  multi method prepare { };
-  multi method finalize { };
+  multi method prepare { ... }
+  multi method finalize { ... }
 
 
   multi method handle($request? is context = $*request,
