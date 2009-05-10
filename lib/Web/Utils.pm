@@ -21,7 +21,9 @@ module Web::Utils {
     # Unescapes a URI escaped string.
     sub unescape(Str $s) is export {
         return $s.trans('+' => ' ').subst(/['%'<[0..9a..fA..F]>**2]+/,
-            { $/.subst('%', '', :global).pack('H*') },
+            # RAKUDO: pack not implemented yet
+#            { $/.subst('%', '', :global).pack('H*') },
+            { $/.subst('%', '', :global) },
             :global);
     }
 
