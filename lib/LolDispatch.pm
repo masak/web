@@ -5,21 +5,17 @@ module LolDispatch::EXPORT::DEFAULT { }
 module LolDispatch {
     my @routes;
     ::LolDispatch::EXPORT::DEFAULT<!sub_trait_handler> = sub ($trait, $block, $arg) {
-        # Debugging... can be removed
-        warn "installing handler for $block";
         @routes.push({:route($arg[0]), :block($block)});
     }
 
     sub dispatch($r) is export {
-        my $flag = Bool::False;
         for @routes -> $item{
             if $r.url.path ~~ $item<route> {
-                $item<block>($r,$/);
-                $flag = Bool::True;
-                last;
+                my $ret = $item<block>($r,$/);
+                return $ret;
             }
         }
-        die "Could not dispatch {$r.url.path}" unless $flag;
+        die "Could not dispatch {$r.url.path}";
     }
 }
 
