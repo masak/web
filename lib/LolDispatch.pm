@@ -15,7 +15,7 @@ module LolDispatch {
                 return $ret;
             }
         }
-        die "Could not dispatch {$r.url.path}";
+        warn "Could not dispatch {$r.url.path}";
     }
 }
 

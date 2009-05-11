@@ -5,7 +5,7 @@ use Tags;
 my $posts-file = '/tmp/blog/posts.perl';
 our @posts;
 sub index($request, $match) is handler</> {
-    my $html = show {
+    show {
             html {
                 head {
                     title { "blog index" }
@@ -23,7 +23,6 @@ sub index($request, $match) is handler</> {
                 }
             }
         };
-    $html;
 }
 
 sub format-post($q) {
@@ -93,8 +92,8 @@ sub fetch-post($id) {
 }
 
 sub request($c) {
-    my $response = dispatch($c.get_request);
-    $c.send_response: ~$response;
+    my $response := dispatch($c.get_request);
+    $c.send_response: $response // "Error: no content";
 }
 
 @posts = $posts-file ~~ :f ?? eval(slurp($posts-file)).list !! ();
