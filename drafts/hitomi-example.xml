@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:pe="http://github.com/masak/hitomi">
+      xmlns:pl="http://github.com/masak/hitomi">
   <head>
     <title>Slurp: News</title>
   </head>
@@ -9,8 +9,8 @@
       <h1>News</h1>
     </div>
 
-    <ol pe:if="links">
-      <li pe:for="links.reverse -> $link">
+    <ol pl:if="links">
+      <li pl:for="links.reverse -> $link">
         <a href="${$link.url}">${$link.title}</a>
         posted by ${$link.username} at ${strftime('%x %X', $link.time)}
       </li>
