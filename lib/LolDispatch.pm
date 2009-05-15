@@ -1,10 +1,10 @@
-# Work around a rakudobug
-module LolDispatch::EXPORT::DEFAULT { }
+role http-handler {
+}
 
 # Needs a better name
 module LolDispatch {
     my @routes;
-    ::LolDispatch::EXPORT::DEFAULT<!sub_trait_handler> = sub ($trait, $block, $arg) {
+    multi trait_auxiliary:<is>(http-handler $trait, $block, $arg) is export {
         @routes.push({:route($arg[0]), :block($block)});
     }
 

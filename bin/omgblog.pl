@@ -4,7 +4,7 @@ use Tags;
 
 my $posts-file = '/tmp/blog/posts.perl';
 our @posts;
-sub index($request, $match) is handler</> {
+sub index($request, $match) is http-handler</> {
     show {
             html {
                 head {
@@ -32,7 +32,7 @@ sub format-post($q) {
         };
 }
 
-sub item($request, $match) is handler(/^\/post\/(\d+)/) {
+sub item($request, $match) is http-handler(/^\/post\/(\d+)/) {
     my $q = fetch-post($match[0]);
     show {
             html {
@@ -47,7 +47,7 @@ sub item($request, $match) is handler(/^\/post\/(\d+)/) {
         };
 }
 
-sub post($request, $match) is handler(/^\/post\/?$/) {
+sub post($request, $match) is http-handler(/^\/post\/?$/) {
     show {
             html {
                 head {
@@ -71,7 +71,7 @@ sub post($request, $match) is handler(/^\/post\/?$/) {
         };
 }
 
-sub submit($request, $match) is handler(/^\/submit\/?$/) {
+sub submit($request, $match) is http-handler(/^\/submit\/?$/) {
     my $id = save-post($request.query);
     show {
             p { outs 'Post number '; a :href("/post/$id"), { $id } };
