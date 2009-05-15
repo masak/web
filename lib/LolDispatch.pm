@@ -23,12 +23,12 @@ module LolDispatch {
 use LolDispatch;
 use HTTP::Daemon;
 
-sub foo($request, $match) is handler(/wtf/) {
+sub foo($request, $match) is http-handler(/wtf/) {
     say 'dispatched to foo';
     say $match.perl;
 }
 
-sub item($request, $match) is handler(/^\/item\/(\d+)/) {
+sub item($request, $match) is http-handler(/^\/item\/(\d+)/) {
     say 'dispatched to item';
     say $match.perl;
 }
