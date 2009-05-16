@@ -29,7 +29,8 @@ method connect (@pattern, *%_ is rw) {
     @!routes.push: Routes::Route.new( pattern => @pattern, code => { %!controllers{$:controller.ucfirst}."$:action"(| @_, | %_) }, argh => %_ );
 }
 
-# I think it should work as I mean without this one
+# RAKUDO: Ambiguous dispatch [perl #64922]
+# workaround:
 multi method dispatch (@chunks) { self.dispatch(@chunks, Hash.new) }
 
 multi method dispatch (@chunks, %param) {
@@ -60,7 +61,7 @@ multi method dispatch ($request) {
     %params<method> = %params<post><request_method> || $request.request_method;
 
     # Do not find this .path-chunks in rack request object, 
-    # but I hope we will add something like this with chunks from URI.pm
+    # but I hope we will add something like this worked like .chunks in URI.pm
     self.dispatch($request.path-chunks, %params);
 }
 # vim:ft=perl6
