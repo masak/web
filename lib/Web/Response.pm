@@ -20,6 +20,11 @@ class Web::Response {
         return $str;
     }
 
+    method redirect($target, Int $status = 302)
+      $!status = $status
+      %!header<Location> = $target
+    end
+
     method finish() {
         if $!status == 204 | 304 {
             %!header.delete: 'Content-Type';
