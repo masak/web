@@ -34,9 +34,9 @@ module Tags {
     }
     _setup();
 
-    sub show(&code) is export(:DEFAULT) {
+    sub show(Code $code) is export(:DEFAULT) {
         new_buffer_frame();
-        &code();
+        $code();
         return end_buffer_frame();
     }
 
