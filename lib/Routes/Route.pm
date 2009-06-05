@@ -1,16 +1,13 @@
 class Routes::Route;
 has @.pattern;
 
-# hm .new(args => {...}) init both :(
-#has @.args;
-#has %.args;
-
-has @.arga;
-has %.argh;
-
-has $.controller;
-has $.action;
 has Code $.code;
+
+has @.positional-args;
+has %.named-args;
+
+has $.controller  = 'Root';
+has $.action      = 'index';
 
 has $.slurp is rw = False;
 
@@ -33,8 +30,8 @@ method match (@chunks) {
     for @chunks Z @tmp_pattern -> $chunk, Object $rule {
         if ~$chunk ~~ ($rule ~~ Pair ?? $rule.value !! $rule) {
             given $rule {
-                when Regex | Whatever { @!arga.push($/ || $chunk) }
-                when Pair             { %!argh{$rule.key}  = $/ || $chunk }
+                when Regex | Whatever { @!positional-args.push($/ || $chunk) }
+                when Pair             { %!named-args{$rule.key}  = $/ || $chunk }
             }
         }
         else {
@@ -45,19 +42,39 @@ method match (@chunks) {
     return True;
 }
 
-method apply (%param) {
-    # RAKUDO: This is set %!args<action> and <controller> as undef, because of rakudobug
-    # $!action = %!args<action> if %!args<action>;
-    # $!controller = %!args<controller> if %!args<controller>;
-    # and call block with named params, when block do not have %_ 
-    # in signature fall with another rakudobug [perl #64844] 
+method apply ($env is rw) {
+    given %!named-args {
+        .<controller> //= $!controller;
+        .<action> //= $!action;
 
-    # mb we should use differnet containers for params and args fetched from path. 
-    my %named = %!argh.pairs, %param.pairs;
+        # RAKUDO: rt?
+        #.<controller action>.=map: *.lc.ucfirst;
+        .<controller action>.=map: *.lc;
+        .<controller action>.=map: *.ucfirst;
 
-    #say 'call: (|' ~ @!arga.perl ~  ', |' ~ %named.perl ~ ')';
- 
-    $!code(| @!arga, | %named );
+        # See POST param first because HTML4 does not support PUT and DELETE
+        #.<method> = $env ~~ Web::Request ?? ($env.POST<request_method> || $env<request_method>) !! 'GET';
+        #.<method> .= uc;
+    
+        #.<env> := $env;
+        #.<controllers> := %*controllers; # hm
+    }
+
+    # add body as last positional args if it true, this make MMD easier
+    @!positional-args.push($env<body>) if $env<body>;
+
+    say 'call: (|' ~ @!positional-args ~  ', |' ~ %!named-args.perl ~ ')';
+
+    # Rakudo bug? It is die here with:
+    # ok 3 - .add adds only complete Route objects
+    # call: (|, |{"controller" => "Root", "action" => "Index"})
+    # FixedIntegerArray: index out of bounds!
+    # in method Routes::Route::apply (t/routes/01-basics.t:14)
+    # called from method Routes::dispatch (./lib/Routes.pm:39)
+    # called from method Routes::dispatch (./lib/Routes.pm:30)
+    # called from Main (t/routes/01-basics.t:19)
+
+    $!code(| @!positional-args, | %!named-args );
 }
 
 method is_complete {
@@ -65,10 +82,8 @@ method is_complete {
 }
 
 method clear {
-    @!arga = ();
-    %!argh = ();
-    $!controller = undef;
-    $!action = undef;
+    @!positional-args = ();
+    %!named-args = ();
 }
 
 # vim:ft=perl6
