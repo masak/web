@@ -7,17 +7,16 @@ grammar Hitomi::XMLGrammar {
 
     token xmlcontent {
         || <element>
-        || <empty>
         || <textnode>
     };
 
     rule element {
+        '<' <name=ident> <attrs> '/>'
+        ||
         '<' <name=ident> <attrs> '>'
         <xmlcontent>+
         '</' $<name> '>'
     }
-
-    rule empty   { '<'  <name=ident> <attrs> '/>' }
 
     token attrs { <attr>* }
     rule attr { $<name>=[<.ident>[':'<.ident>]?] '=' '"'
@@ -38,12 +37,17 @@ class Hitomi::XMLParser {
     }
 
     submethod make-actions(Match $m, $text) {
+        return () unless $m<xmlcontent>;
         my @actions;
         for @($m<xmlcontent>) -> $part {
             if $part<element> -> $e {
-                push @actions, [Hitomi::StreamEventKind::start, '', *];
-                push @actions, self.make-actions($e, $text);
-                push @actions, [Hitomi::StreamEventKind::end, '', *];
+                my $data = [~$e<name>,
+                            [map {; ~.<name> => ~.<value> },
+                                 $e<attrs><attr> ?? $e<attrs><attr>.list !! ()]
+                           ];
+                push @actions, [Hitomi::StreamEventKind::start, $data, *],
+                               self.make-actions($e, $text),
+                               [Hitomi::StreamEventKind::end, $data, *];
             }
             elsif $part<textnode> -> $t {
                 my $line-num = +$text.substr(0, $t.from).comb(/\n/) + 1;
