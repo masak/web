@@ -105,7 +105,7 @@ bar</elem>';
     my ($kind, $data, $pos) = @events[0];
     is Hitomi::StreamEventKind::start, $kind, 'got a start event';
     $data //= [*, {}];
-    is "\x[a0]", $data[1]<title>, 'the entity was turned into a character';
+    is "\x[a0]", $data[1].hash<title>, 'the entity was turned into a character';
     $kind, $data, $pos = @events[1];
     is Hitomi::StreamEventKind::end, $kind, 'got an end event';
 }
