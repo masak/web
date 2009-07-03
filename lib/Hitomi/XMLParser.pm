@@ -50,7 +50,7 @@ class Hitomi::XMLParser {
         for @($m<xmlcontent>) -> $part {
             if $part<element> -> $e {
                 my $data = [~$e<name>,
-                            [map {; ~.<name> => ~.<value> },
+                            [map {; ~.<name> => convert-entities(~.<value>) },
                                  $e<attrs><attr> ?? $e<attrs><attr>.list !! ()]
                            ];
                 push @actions, [Hitomi::StreamEventKind::start, $data, *],
