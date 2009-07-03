@@ -44,6 +44,9 @@ class Hitomi::XMLParser {
     submethod make-actions(Match $m, $text) {
         return () unless $m<xmlcontent>;
         my @actions;
+        for @($m<doctype> // []) -> $d {
+            push @actions, [Hitomi::StreamEventKind::doctype, *, *];
+        }
         for @($m<xmlcontent>) -> $part {
             if $part<element> -> $e {
                 my $data = [~$e<name>,
