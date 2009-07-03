@@ -36,7 +36,9 @@ bar</elem>';
     my ($kind, $data, $pos) = @events[1];
     is Hitomi::StreamEventKind::text, $kind, 'got a text event';
     is "foo\nbar", $data, 'the text is "foo\nbar"';
-    is [Nil, 1, -1], $pos, '...on position -1 on line 1';
+    is [Nil, 1, 6], $pos, '...on position 6 on line 1';
+    # Genshi differs here due to Expat, see the explanation on
+    # http://genshi.edgewall.org/browser/trunk/genshi/input.py#L179
 }
 
 { # test_element_attribute_order
