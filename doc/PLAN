@@ -1,13 +1,9 @@
-[Unashamedly writing in first person until other people contribute to this
-file. Feel free to do so in any way you want, however. -- masak]
-
-It says in the grant proposal: "Specifying framework basics: 1 week". So that's
-what I'll be doing this week, specifying. I'm eager to get coding as well,
-but it's nice to see where one is going.
+This plan was drawn up in week 1 of the grant. It was later refined with
+more details in week 10 of the grant.
 
 We have something like three layers here. Here's how I view them:
 
-                         Templating   MVC   Comments
+                         Templating   MVC   Description
   ---------------------+------------+-----+----------------------------------
   LAYER ONE   (ALEPH)  |            |     | q&d get-out-of-my-way programming
                        |            |     |
@@ -21,7 +17,7 @@ We have something like three layers here. Here's how I view them:
 This is slated to be the Perl 6 equivalent of programming on top of CGI in Perl
 5.
 
-I think Rack can be ported more or less directly over to Perl 6-land. Then,
+Rack will be ported more or less directly over to Perl 6-land. Then,
 we'll be able to write very small Perl 6 web applications like this:
 
     use v6;
@@ -35,32 +31,9 @@ Currently, the things providing inspiration here are these:
   <http://rack.rubyforge.org/>
   <http://www.sinatrarb.com/>
 
-You'll note from the above example that no HTML is output, only a string.
-This could be solved by making an (X)HTML module along the same principles
-as the SVG module:
-
-  <http://github.com/masak/svg/blob/184536dc5af1388cd095e8f02e4c1987fba3d9d0/svg-example>
-
-Something like this:
-
-    HTML.serialize( :html[
-        :head[ :title('On Problems') ],
-        :body[
-            :p[ 'A grook by Piet Hein' ],
-            :pre[
-'Our choicest plans
-     have fallen through,
-our airiest castles
-     tumbled over,
-because of lines
-     we neatly drew
-and later neatly
-     stumbled over.'
-            ],
-        ]
-    ] );
-
-That could conceivably give us a native syntax, along with DTD validation.
+On top of that, the Tags module gives us HTML syntax. It would still be
+nice to have static validation also, but the state-of-the-art of Perl 6
+self-parsing is not yet ready for something like that.
 
 I need to think up more examples that do CGI-like stuff; particularly forms
 and sticky fields and all that.
@@ -75,20 +48,22 @@ also work in non-HTML contexts.
 == Layer two -- template programming without a full MVC framework
 
 In this layer, we're already quite a bit above CPAN's HTML::Template. The
-templates are all XML-based. I'm planning to be heavily inspired by Python's
-Genshi:
+templates are all XML-based, but that is only a statement of the internal
+processing; both input and output can still be HTML. We're porting Genshi
+to Perl 6, and calling the port Hitomi.
 
   <http://genshi.edgewall.org/wiki/GenshiTutorial>
 
-With reasonable syntactic modifications for Perl 6, of course.
-
-Hm, need to process this page and extract all the goodness from it:
+While not high-priority, it would be nice to port something like Hpricot,
+an HTML document query and manipulation engine, supporting both CSS and
+XPath queries.
 
  <http://wiki.github.com/why/hpricot/hpricot-challenge>
 
-Maybe we actually want to port Hpricot as well.
-
 == Layer three -- a full Rails/Jifty-like MVC framework
+
+I (masak) am currently going through different MVC frameworks to gain some
+experience, and blogging about the progress.
 
 These points were things I noticed and liked in Jifty.
 
