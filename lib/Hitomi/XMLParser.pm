@@ -60,10 +60,15 @@ class Hitomi::XMLParser {
             elsif $part<textnode> -> $t {
                 my $line-num = +$text.substr(0, $t.from).comb(/\n/) + 1;
                 my $pos = [Nil, $line-num, $t.from];
-                push @actions, [Hitomi::StreamEventKind::text, ~$t, $pos];
+                my $tt = convert-entities(~$t);
+                push @actions, [Hitomi::StreamEventKind::text, $tt, $pos];
             }
         }
         return @actions;
+    }
+
+    sub convert-entities($text) {
+        $text.subst('&nbsp;', "\x[a0]", :g)
     }
 
     # RAKUDO: https://trac.parrot.org/parrot/ticket/536 makes the method
