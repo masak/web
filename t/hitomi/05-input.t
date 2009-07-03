@@ -114,16 +114,22 @@ bar</elem>';
     my $text = q[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html>&junk;</html>];
-    my @events = (XMLParser.new($text)).llist;
-    # XXX not sure this is how we want to catch the error
-    ok $! ~~ ParseError, 'got a parse error';
+    my $survived = False;
+    try {
+        XMLParser.new($text).llist;
+        $survived = True;
+    }
+    ok !$survived, 'got a parse error';
 }
 
 { # test_undefined_entity_without_dtd
     my $text = '<html>&junk;</html>';
-    my @events = (XMLParser.new($text)).llist;
-    # XXX not sure this is how we want to catch the error
-    ok $! ~~ ParseError, 'got a parse error';
+    my $survived = False;
+    try {
+        XMLParser.new($text).llist;
+        $survived = True;
+    }
+    ok !$survived, 'got a parse error';
 }
 
 { # test_text_node_pos_single_line
