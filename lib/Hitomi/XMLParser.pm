@@ -68,6 +68,8 @@ class Hitomi::XMLParser {
     }
 
     sub convert-entities($text) {
+        die "Unrecognized entity $0"
+            if $text ~~ / ('&' <!before nbsp> \w+ ';') /;
         $text.subst('&nbsp;', "\x[a0]", :g)
     }
 
