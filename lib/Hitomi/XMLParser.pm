@@ -3,7 +3,7 @@ use v6;
 use Hitomi::Stream;
 
 grammar Hitomi::XMLGrammar {
-    regex TOP { ^ <xmlcontent>* $ };
+    regex TOP { ^ <doctype>? <xmlcontent>* $ };
 
     token xmlcontent {
         || <element>
@@ -24,6 +24,11 @@ grammar Hitomi::XMLGrammar {
     token ident { <+alnum + [\-]>+ }
 
     regex textnode { <-[<]>+ {*} }
+
+    rule doctype { '<!DOCTYPE' <name=ident> <externalId> '>' }
+    rule externalId { 'PUBLIC' <pubid> <system> }
+    token pubid  { '"' $<name>=[<-["]>+] '"' }
+    token system { '"' $<name>=[<-["]>+] '"' }
 }
 
 class Hitomi::XMLParser {
