@@ -99,10 +99,6 @@ sub save_paste($q) { # TODO save time, etc
     return $id;
 }
 
-sub daemon {
-    my HTTP::Daemon $d .= new( :host('0.0.0.0'), :port(2080) );
-    say "Browse this Perl 6 web server at http://localhost:2080/";
-    $d.daemon();
-}
-
-defined @*ARGS[0] && @*ARGS[0] eq '--request' ?? request() !! daemon();
+my HTTP::Daemon $d .= new( :host('0.0.0.0'), :port(2080) );
+say "Browse this Perl 6 web server at http://localhost:2080/";
+$d.daemon();

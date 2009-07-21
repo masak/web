@@ -1,7 +1,6 @@
 #!/usr/local/bin/perl6
 use HTTP::Daemon;
 use Web::Nibbler;
-defined @*ARGS[0] && @*ARGS[0] eq '--request' ?? request() !! daemon();
 
 # Serve one page
 sub request($c) {
@@ -23,14 +22,6 @@ sub request($c) {
     warn ' '; # blank line
 }
 
-# Executed as main parent process with an endless loop that re-starts
-# netcat after every page request.
-sub daemon {
-    my HTTP::Daemon $d .= new( host=> '127.0.0.1', port=> 8888 );
-    say "Browse this Perl 6 (Rakudo) web server at {$d.url}";
-    $d.daemon();
-}
-
 # give the current time in hh:mm format
 sub hhmm {
     my $t = int(time);
@@ -39,3 +30,8 @@ sub hhmm {
     my $hhmm = "{$h.fmt('%02d')}:{$m.fmt('%02d')}";
     return $hhmm;
 }
+
+my HTTP::Daemon $d .= new( host=> '127.0.0.1', port=> 8888 );
+say "Browse this Perl 6 (Rakudo) web server at {$d.url}";
+$d.daemon();
+

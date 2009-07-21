@@ -1,8 +1,6 @@
 use HTTP::Daemon;
 use Tags;
 
-defined @*ARGS[0] && @*ARGS[0] eq '--request' ?? request() !! daemon();
-
 sub request($c) {
     my $r = $c.get_request();
     if $r.req_method eq 'GET' {
@@ -44,8 +42,6 @@ sub pub_dir($c, $r) {
     }
 }
 
-sub daemon {
-    my HTTP::Daemon $d .= new( :host('127.0.0.1'), :port(2080) );
-    say "Browse this Perl 6 web server at {$d.url}";
-    $d.daemon();
-}
+my HTTP::Daemon $d .= new( :host('127.0.0.1'), :port(2080) );
+say "Browse this Perl 6 web server at {$d.url}";
+$d.daemon();
