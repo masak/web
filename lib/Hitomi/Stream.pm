@@ -8,7 +8,7 @@ class Hitomi::Stream {
     has @!events;
     has Hitomi::Serializer $serializer;
 
-    multi method new(@events, $serializer) {
+    multi method new(@events, $serializer?) {
         return self.new(:events(@events), :serializer($serializer));
     }
 
