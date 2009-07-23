@@ -1,34 +1,34 @@
-=title   Perl 6 ♥ the Web
-=author  Carl Mäsak
-=date    2009-08-04
+=Title   Perl 6 ♥ the Web
+=Author  Carl Mäsak
+=Date    2009-08-04
 
 =comment
     This document is written in Pod, the documentation format for Perl 6.
     It's parsed and converted into PDF form by a tool called 'Hubris', which
     doesn't exist yet. See Synopsis 26 for more information about Pod.
 
-=slide
+=Slide
 [An introduction to Perl 6, even though most people are familiar with it]
 
-=slide
+=Slide
 [An introduction to the Web, even though everyone knows about it]
 
-=slide
+=Slide
 [What's wrong with the current state of affairs? Examples.]
 
-=slide
+=Slide
 [Juerd's email to p6u that started it all.]
 
-=slide
+=Slide
 [My passing remark to pmichaud that also started it all.]
 
-=slide
+=Slide
 [Our grant proposal. What it contains.]
 
-=slide
+=Slide
 [The whole stack of applications. Rack, Sinatra, Hpricot, Genshi, MVC...]
 
-=for slide
+=for Slide
     [Dawning realization: The Web.pm project is like Perl 6 itself.
     Extremely extensible, but the defaults are so sane that you seldom
     need to extend in practice. The defaults are optimized for ease,
