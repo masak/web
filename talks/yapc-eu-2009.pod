@@ -1,6 +1,8 @@
+=begin Slide
 =Title   Perl 6 ♥ the Web
 =Author  Carl Mäsak
 =Date    2009-08-04
+=end Slide
 
 =comment
     This document is written in Pod, the documentation format for Perl 6.
