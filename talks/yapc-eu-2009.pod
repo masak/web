@@ -1,0 +1,8 @@
+=title   Perl 6 ♥ the Web
+=author  Carl Mäsak
+=date    2009-08-04
+
+=comment
+    This document is written in Pod, the documentation format for Perl 6.
+    It's parsed and converted into PDF form by a tool called 'Hubris', which
+    doesn't exist yet. See Synopsis 26 for more information about Pod.
