@@ -6,3 +6,34 @@
     This document is written in Pod, the documentation format for Perl 6.
     It's parsed and converted into PDF form by a tool called 'Hubris', which
     doesn't exist yet. See Synopsis 26 for more information about Pod.
+
+=slide
+[An introduction to Perl 6, even though most people are familiar with it]
+
+=slide
+[An introduction to the Web, even though everyone knows about it]
+
+=slide
+[What's wrong with the current state of affairs? Examples.]
+
+=slide
+[Juerd's email to p6u that started it all.]
+
+=slide
+[My passing remark to pmichaud that also started it all.]
+
+=slide
+[Our grant proposal. What it contains.]
+
+=slide
+[The whole stack of applications. Rack, Sinatra, Hpricot, Genshi, MVC...]
+
+=for slide
+    [Dawning realization: The Web.pm project is like Perl 6 itself.
+    Extremely extensible, but the defaults are so sane that you seldom
+    need to extend in practice. The defaults are optimized for ease,
+    safety, convenience and flexibility. There's a spec (well, there
+    should be!) and a test suite (though a really crappy one). It is
+    a testing bed for ideas -- we don't really know where we'll end up,
+    because we're a bunch of ants. But we're excited, and we're making
+    progress.]
