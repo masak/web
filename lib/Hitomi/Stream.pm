@@ -1,15 +1,16 @@
 use v6;
-use Hitomi::Serializer;
-
-enum Hitomi::StreamEventKind <start end text xml-decl doctype start-ns end-ns
-                              start-cdata end-cdata pi comment>;
+use Hitomi::StreamEventKind;
+use Hitomi::Output;
 
 class Hitomi::Stream {
     has @!events;
-    has Hitomi::Serializer $serializer;
+    has $serializer;
 
     multi method new(@events, $serializer?) {
-        return self.new(:events(@events), :serializer($serializer));
+        return self.new(
+            :events(@events),
+            :serializer($serializer // Hitomi::XHTMLSerializer.new())
+        );
     }
 
     # RAKUDO: We shouldn't have to provide this method. It should be handed
@@ -19,7 +20,7 @@ class Hitomi::Stream {
     }
 
     method Str() {
-        return [~] @!events;
+        return $serializer.serialize(self);
     }
 
     method llist() {
