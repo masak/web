@@ -41,7 +41,7 @@ constant Markup = Hitomi::Markup;
     my $tmpl = MarkupTemplate.new($stream);
     my $buf = $tmpl.perl;
     my $unpickled = eval($buf);
-    is '<root>42</root>', ~$unpickled.generate(:var(42)),
+    is '<root>42</root>', ~$unpickled.?generate(:var(42)),
        'template survives pickling';
 }
 

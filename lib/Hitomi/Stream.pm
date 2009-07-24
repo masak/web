@@ -21,4 +21,8 @@ class Hitomi::Stream {
     method Str() {
         return [~] @!events;
     }
+
+    method llist() {
+        return @!events;
+    }
 }
