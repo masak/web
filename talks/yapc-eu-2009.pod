@@ -39,3 +39,6 @@
     a testing bed for ideas -- we don't really know where we'll end up,
     because we're a bunch of ants. But we're excited, and we're making
     progress.]
+
+=Slide
+[(10) One size never fits all. http://www.faqs.org/rfcs/rfc1925.html]
