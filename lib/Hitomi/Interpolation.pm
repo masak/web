@@ -11,7 +11,8 @@ grammar Hitomi::Interpolation::Grammar {
     regex identifier { <.ident> [ <.apostrophe> <.ident> ]* }
     token apostrophe { <[ ' \- ]> }
 
-    regex block { '{' <-[{}]>+ '}' }
+    regex block { '{' <content> '}' }
+    regex content { <-[{}]>+ }
 }
 
 # Note: It _is_ possible for the above grammar to fail, even though it's
@@ -33,7 +34,8 @@ sub interpolate($text, $filepath, $lineno = -1, $offset = 0,
             take [Hitomi::StreamEventKind::text, ~$plain, $pos];
         }
         elsif $chunk<expr> -> $expr {
-            take [Hitomi::StreamEventKind::expr, ~$expr, $pos];
+            my $data = $expr<block> ?? $expr<block><content> !! $expr;
+            take [Hitomi::StreamEventKind::expr, ~$data, $pos];
         }
     }
 }

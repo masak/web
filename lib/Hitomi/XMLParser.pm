@@ -10,7 +10,7 @@ grammar Hitomi::XMLGrammar {
         || <textnode>
     };
 
-    rule element {
+    token element {
         '<' <name=ident> <attrs> '/>'
         ||
         '<' <name=ident> <attrs> '>'
@@ -25,8 +25,8 @@ grammar Hitomi::XMLGrammar {
 
     regex textnode { <-[<]>+ {*} }
 
-    rule doctype { '<!DOCTYPE' <name=ident> <externalId> '>' }
-    rule externalId { 'PUBLIC' <pubid> <system> }
+    token doctype { '<!DOCTYPE' <name=ident> <externalId> '>' }
+    token externalId { 'PUBLIC' <pubid> <system> }
     token pubid  { '"' $<name>=[<-["]>+] '"' }
     token system { '"' $<name>=[<-["]>+] '"' }
 }

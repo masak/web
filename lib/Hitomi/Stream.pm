@@ -23,13 +23,17 @@ class Hitomi::Stream {
         # RAKUDO: A complex set of circumstances may cause the
         #         array to have been nested one level too deeply at
         #         this point. Compensating.
-        if @!events.elems == 1 && @!events[0] ~~ Array {
-            @!events = @(@!events[0]);
-        }
+        @!events = @(@!events[0])
+            while @!events.elems == 1 && @!events[0] ~~ Array;
         return $serializer.serialize(self);
     }
 
     method llist() {
+        # RAKUDO: A complex set of circumstances may cause the
+        #         array to have been nested one level too deeply at
+        #         this point. Compensating.
+        @!events = @(@!events[0])
+            while @!events.elems == 1 && @!events[0] ~~ Array;
         return @!events;
     }
 }

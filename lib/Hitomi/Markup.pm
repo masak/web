@@ -1,5 +1,27 @@
+use Hitomi::Stream;
 use Hitomi::XMLParser;
 use Hitomi::Interpolation;
+
+class Hitomi::Context {
+    # I see from the Genshi source that %!vars will eventually be replaced by
+    # @!frames. This suffices for now.
+    has %!vars;
+
+    method new(*%nameds, *@pairs) {
+        my %vars = %nameds;
+        for @pairs {
+            %vars{.key} = .value;
+        }
+        return self.bless(*, :%vars);
+    }
+
+    method get($thing is copy) {
+        if $thing ~~ /^ '$'/ {
+            $thing .= substr(1);
+        }
+        %!vars{$thing};
+    }
+}
 
 class Hitomi::Template {
     has $!source;
@@ -39,7 +61,29 @@ class Hitomi::Template {
     }
 
     method generate(*%nameds, *@pairs) {
-        return $!stream;
+        my $context = Hitomi::Context.new(|%nameds, |@pairs);
+        return self._flatten($!stream, $context);
+    }
+
+    method _flatten($stream, $context) {
+        my @newstream = gather for $stream.llist -> $event {
+            my ($kind, $data, $pos) = @($event);
+            if ($kind ~~ Hitomi::StreamEventKind::expr) {
+                take [Hitomi::StreamEventKind::text,
+                      self._eval($data, $context),
+                      $pos];
+            }
+            else {
+                take [$kind, $data, $pos];
+            }
+        };
+        return Hitomi::Stream.new(@newstream);
+    }
+
+    method _eval($data, $context) {
+        # Well, this works for expressions which consist of one variable
+        # and nothing more. Will expand later.
+        $context.get($data);
     }
 }
 
@@ -67,7 +111,6 @@ class Hitomi::MarkupTemplate is Hitomi::Template {
             }
         }
 
-        warn .perl for @stream;
         return Hitomi::Stream.new(@stream);
     }
 }
