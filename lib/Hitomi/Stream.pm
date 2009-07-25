@@ -20,6 +20,12 @@ class Hitomi::Stream {
     }
 
     method Str() {
+        # RAKUDO: A complex set of circumstances may cause the
+        #         array to have been nested one level too deeply at
+        #         this point. Compensating.
+        if @!events.elems == 1 && @!events[0] ~~ Array {
+            @!events = @(@!events[0]);
+        }
         return $serializer.serialize(self);
     }
 

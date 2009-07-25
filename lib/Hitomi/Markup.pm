@@ -1,4 +1,5 @@
 use Hitomi::XMLParser;
+use Hitomi::Interpolation;
 
 class Hitomi::Template {
     has $!source;
@@ -57,9 +58,16 @@ class Hitomi::MarkupTemplate is Hitomi::Template {
         for $source.llist -> @event {
             my ($kind, $data, $pos) = @event;
 
-            @stream.push( [$kind, $data, $pos] );
+            if $kind ~~ Hitomi::StreamEventKind::text {
+                @stream.push:
+                    interpolate($data, $!filepath, $pos[1], $pos[2], $!lookup);
+            }
+            else {
+                @stream.push( [$kind, $data, $pos] );
+            }
         }
 
+        warn .perl for @stream;
         return Hitomi::Stream.new(@stream);
     }
 }

@@ -52,7 +52,7 @@ class Hitomi::XMLParser {
                            ];
                 push @events, [Hitomi::StreamEventKind::start, $data, *],
                               self.make-events($e, $text),
-                              [Hitomi::StreamEventKind::end, $data, *];
+                              [Hitomi::StreamEventKind::end, ~$e<name>, *];
             }
             elsif $part<textnode> -> $t {
                 my $line-num = +$text.substr(0, $t.from).comb(/\n/) + 1;
