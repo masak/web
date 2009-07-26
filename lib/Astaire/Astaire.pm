@@ -1,4 +1,6 @@
 #!/usr/bin/perl6
+use Web::Request;
+
 
 class Handler {
 
@@ -15,10 +17,18 @@ class Dispatch {
     method push ( Handler $handler ){
         @.handlers.push( $handler );
     }
-    
+
+    method call ( Web::Request $request ){
+
+
+        #return( $status, $headers, $body );
+    }
+
 };
 
 class Environnement{
+
+    
 
 };
 
@@ -27,8 +37,10 @@ class AstaireApp {
 
     has $.dispatch;
 
-    method call ( Environnement $environnement ){
-        #return( $status, $headers, $body );
+    method call ( Web::Request $request ){
+
+        return $.dispatch.call( $request );
+        
     }
     
 };
