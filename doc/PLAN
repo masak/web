@@ -21,7 +21,7 @@ Rack will be ported more or less directly over to Perl 6-land. Then,
 we'll be able to write very small Perl 6 web applications like this:
 
     use v6;
-    use Sinatra;
+    use Astaire;
     get '/hi' => {
       "Hello World!"
     };

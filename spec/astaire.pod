@@ -1,0 +1,11 @@
+=head1 Astaire spec
+
+Sometimes you just want to write a really small web app, mapping a few
+URIs into actions, without all the wiring to make it work. Astaire is
+the library that allows you to do that:
+
+    use v6;
+    use Astaire;
+    get '/hi' => {
+        "OH HAI"
+    }
