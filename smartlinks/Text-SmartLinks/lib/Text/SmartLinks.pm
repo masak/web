@@ -930,7 +930,7 @@ sub gen_preamble {
     $pugs_rev ||= $smoke_rev;
 
     return qq{
-            <I>This page was generated at $time.</I>
+            <I>This page was generated at $time.</I><BR>
             &nbsp; [ <a href="http://feather.perl6.nl/~masak/web-spec/">Index of Synopses</a> ] <br/>
             <a id='__top'></a>
      };
