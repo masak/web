@@ -661,10 +661,10 @@ sub gen_code_snippet {
 $snippet
 </div>
 <span id="smartlink_skipto_${snippet_id}">&nbsp;</span>
-<span style="color:DarkBlue">Highlighted:
+<!--span style="color:DarkBlue">Highlighted:
 <a href="#" 
 onclick="return toggle_hilite('$simple_snippet_id','/~azawawi/html/$simple_html')">small</a>|<a href="/~azawawi/html/$full_html" target="_blank">full</a>
-</span>
+</span-->
 <iframe id="$simple_snippet_id" style="display:none;" width="100%"></iframe>
 _EOC_
     $self->set_snippet($snippet_id, $html);
