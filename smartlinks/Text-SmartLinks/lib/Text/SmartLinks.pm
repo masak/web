@@ -821,7 +821,8 @@ sub process_yml_file {
 sub gen_html {
     my ($self, $pod, $title) = @_;
 
-    $Pod::Simple::HTML::Perldoc_URL_Prefix  = 'http://perlcabal.org/syn/';
+    $Pod::Simple::HTML::Perldoc_URL_Prefix
+        = 'http://feather.perl6.nl/~masak/web-spec/';
     $Pod::Simple::HTML::Perldoc_URL_Postfix = '.html';
 
     $Pod::Simple::HTML::Content_decl =
@@ -880,7 +881,8 @@ sub add_footer {
     my ($self, $html) = @_;
     $$html =~ s{</body>}{
         [ <a href="#__top">Top</a> ] &nbsp;
-        [ <a href="http://perlcabal.org/syn/">Index of Synopses</a> ]
+        [ <a href="http://feather.perl6.nl/~masak/web-spec/">Index
+          of Synopses</a> ]
         </body>};
 }
 
@@ -928,9 +930,8 @@ sub gen_preamble {
     $pugs_rev ||= $smoke_rev;
 
     return qq{
-            <I>This page was generated at $time.<br/>
-            (<a href="http://svn.pugscode.org/pugs/docs/Perl6/spec/">syn</a> <strong>$pugs_rev</strong>$smoke_info)</I>
-            &nbsp; [ <a href="http://perlcabal.org/syn/">Index of Synopses</a> ] <br/>
+            <I>This page was generated at $time.</I>
+            &nbsp; [ <a href="http://feather.perl6.nl/~masak/web-spec/">Index of Synopses</a> ] <br/>
             <a id='__top'></a>
      };
 }
