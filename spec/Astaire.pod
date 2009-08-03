@@ -84,7 +84,7 @@ Or with a block parameter:
 Routes may include a variety of matching conditions, such as the user
 agent:
 
-    get ('/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/) => {
+    get ('/foo', :agent(/Songbird (\d\.\d)[\d\/]*?/)) => {
         "You're using Songbird version %params<agent>[0]" # RAKUDO: "{...}"
     }
     
