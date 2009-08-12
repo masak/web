@@ -1,53 +1,48 @@
 #!/usr/bin/perl6
 use Web::Request;
-
+use Web::Response;
 
 class Handler {
-
-    has $.condition;
-    has $.code;
-    has $.http_method;
-
+    has Str $.condition;
+    has Block $.code;
+    has Str $.http_method;
 };
 
 class Dispatch {
-
     has @.handlers;
 
     method push ( Handler $handler ){
         @.handlers.push( $handler );
     }
 
-    method call ( Web::Request $request ){
+    method dispatch ( Web::Request $request ){
+        my Web::Response $response .= new();
 
-
-        #return( $status, $headers, $body );
+        for @.handlers -> $candidate {
+            if $candidate.condition eq $request.path_info {
+                my $code = $candidate.code;
+                $response.write( $code() );
+            }
+        }
+        
+        return $response;
     }
-
 };
 
-class Environnement{
-
-    
-
-};
 
 #Rack compliant application
 class AstaireApp {
 
-    has $.dispatch;
+    has Dispatch $.dispatch is rw;
 
     method call ( Web::Request $request ){
-
-        return $.dispatch.call( $request );
-        
+        return $.dispatch.dispatch( $request );
     }
-    
 };
 
 module Astaire {
 
-    my $dispatch = Dispatch.new();
+    my Dispatch $dispatch .= new();
     
     sub get( Pair $param ) is export {
         my ( $condition, $code ) = $param.kv;
@@ -60,13 +55,14 @@ module Astaire {
     };
 
     sub _push_to_dispatch ( $condition, $code, $http_method ){
-        $dispatch.push( Handler.new( :condition<$condition>, :code<$code>, :http_method<$http_method> ) );
+        $dispatch.push( Handler.new( condition => $condition, code => $code, http_method => $http_method ) );
     }
 
+    multi sub infix:<means>(Str $condition, Code $code) is export { return ( $condition => $code ) }
+
     sub application () is export {
-        $dispatch.handlers.perl.say;
-        
-        return AstaireApp.new( :dispatch<$dispatch> );
+        my AstaireApp $application .= new( dispatch => $dispatch );
+        return $application;
     }
 };
 
