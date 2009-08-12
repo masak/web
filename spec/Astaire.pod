@@ -1,0 +1,93 @@
+=head1 Astaire spec
+
+Sometimes you just want to write a really small web app, mapping a few
+URIs into actions, without all the wiring to make it work. Astaire is
+the library that allows you to do that:
+
+    use v6;
+    use Astaire;
+    get '/hi' => {
+        "OH HAI"
+    }
+
+Astaire ships with the Web.pm modules, so if you have those in your path,
+the above program will work.
+
+=head1 Routes
+
+In Astaire, a route is an HTTP method paired with a URI matching pattern.
+Each route is associated with a block:
+
+    get '/' => {
+        # ... show something ...
+    }
+    
+    post '/' => {
+        # ... create something ...
+    }
+    
+    put '/' => {
+        # ... update something ...
+    }
+    
+    delete '/' => {
+        # ... annihilate something ...
+    }
+
+Routes are matched in the order they are defined. The first route that
+matches the request is invoked.
+
+Route patterns may include named parameters, accessible via the C<%params>
+hash:
+
+    get '/hello/:name' => {
+        # matches "GET /hello/foo" and "GET /hello/bar"
+        # %params<name> is 'foo' or 'bar'
+        "Hello %params<name>!" # RAKUDO: "{%params<name>}"
+    }
+
+You can also access named parameters via block parameters:
+
+    get '/hello/:name' => -> $n {
+        "Hello $n!"
+    }
+    
+    get '/hello/:name' => {
+        "Hello $^n!"
+    }
+
+Route patterns may also include splat (or wildcard) parameters, accessible
+via the C<< %params<splat> >> array.
+
+    get '/say/*/to/*' => {
+        # matches /say/hello/to/world
+        %params<splat>.perl   # ["hello", "world"]
+    }
+    
+    get '/download/*.*' => {
+        # matches /download/path/to/file.xml
+        %params<splat>.perl   # ["path/to/file.xml", "xml"]
+    }
+
+Route matching with regex objects:
+
+    get rx[ '/hello/' (\w+) ] => {
+        "Hello %params<captures>[0]!"  # RAKUDO: "{%params<captures>[0]}"
+    }
+
+Or with a block parameter:
+
+    get rx[ '/hello/' (\w+) ] => {
+        "Hello $^c!"
+    }
+
+Routes may include a variety of matching conditions, such as the user
+agent:
+
+    get ('/foo', :agent(/Songbird (\d\.\d)[\d\/]*?/)) => {
+        "You're using Songbird version %params<agent>[0]" # RAKUDO: "{...}"
+    }
+    
+    get '/foo' => {
+        # Matches non-songbird browsers
+    }

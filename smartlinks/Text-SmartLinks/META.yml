@@ -1,0 +1,37 @@
+---
+abstract: 'connecting test files with pod documentation'
+author:
+  - 'Gabor Szabo'
+build_requires:
+  ExtUtils::MakeMaker: 6.11
+  Test::More: 0.47
+  Test::NoWarnings: 0.084
+distribution_type: module
+generated_by: 'Module::Install version 0.79'
+license: artistic2
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Text-SmartLinks
+no_index:
+  directory:
+    - eg
+    - inc
+    - share
+    - t
+requires:
+  Carp: 0
+  Class::Accessor: 0
+  Cwd: 0
+  File::Basename: 0
+  File::Find::Rule: 0.30
+  File::ShareDir: 1.00
+  File::Slurp: 0
+  File::Spec: 0
+  FindBin: 0
+  Getopt::Long: 0
+  Pod::Simple::HTML: 0
+  perl: 5.006
+resources:
+  repository: http://svn.pugscode.org/pugs/util/Text-SmartLinks
+version: 0.01

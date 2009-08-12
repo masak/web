@@ -4,7 +4,7 @@ class Web::Request {
     has %.env;
 
     method new(%env) {
-        return self.bless( :env(%env) );
+        return self.bless(*, :env(%env));
     }
 
     method body           {  %!env<web.input>      }
