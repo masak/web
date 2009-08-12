@@ -7,12 +7,12 @@ class Web::Response {
     # Append to body and update Content-Length.
     #
     # NOTE: Do not mix #write and direct #body access!
-    #<masak> seems it should be an rw array attribute.
-    #<masak> i.e. 'has @body is rw;'
-    #<arthur-_> maybe perl6 has some way we can update $.length when @body is changed from the outside ...
-    #<masak> arthur-_: oh, for sure.
-    #<arthur-_> that would solve the problem
-    #<masak> I think it would require overriding STORE on @body, and that's likely not implemented yet.
+    # <masak> seems it should be an rw array attribute.
+    # <masak> i.e. 'has @body is rw;'
+    # <arthur-_> maybe perl6 has some way we can update $.length when @body is changed from the outside ...
+    # <masak> arthur-_: oh, for sure.
+    # <arthur-_> that would solve the problem
+    # <masak> I think it would require overriding STORE on @body, and that's likely not implemented yet.
 
     
     #
