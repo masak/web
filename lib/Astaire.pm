@@ -19,12 +19,15 @@ class Dispatch {
         my Web::Response $response .= new();
 
         for @.handlers -> $candidate {
-            if $candidate.condition eq $request.path_info {
+            if $candidate.condition eq $request.path_info and $candidate.http_method eq $request.request_method {
                 my $code = $candidate.code;
                 $response.write( $code() );
+                return $response;
             }
         }
         
+        #Not found
+        $response.status = 404;
         return $response;
     }
 };
@@ -46,12 +49,12 @@ module Astaire {
     
     sub get( Pair $param ) is export {
         my ( $condition, $code ) = $param.kv;
-        _push_to_dispatch( $condition, $code,'get' );
+        _push_to_dispatch( $condition, $code,'GET' );
     };
 
     sub post( Pair $param ) is export {
         my ( $condition, $code ) = $param.kv;
-        _push_to_dispatch( $condition, $code,'post' );
+        _push_to_dispatch( $condition, $code,'POST' );
     };
 
     sub _push_to_dispatch ( $condition, $code, $http_method ){

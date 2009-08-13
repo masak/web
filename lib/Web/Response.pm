@@ -1,6 +1,6 @@
 class Web::Response {
     has $.length is rw = 0;
-    has Int $!status = 200;
+    has Int $.status is rw = 200;
     has %!header;
     has @!body = '';
 
@@ -17,7 +17,7 @@ class Web::Response {
     
     #
     # RAKUDO: '$str as Str'
-    method write(Str $str) {
+    method write($str) {
         $!length += $str.chars;
         # XXX: For now, we skip the whole 'writer' abstraction found in Rack.
         #      The support for it in Rakudo is flaky, and I don't yet grok
@@ -29,17 +29,17 @@ class Web::Response {
     }
 
     method redirect($target, Int $status = 302) {
-      $!status = $status
+      $.status = $status
       %!header<Location> = $target
     }
 
     method finish() {
-        if $!status == 204 | 304 {
+        if $.status == 204 | 304 {
             %!header.delete: 'Content-Type';
-            return [$!status, \%!header, []];
+            return [$.status, \%!header, []];
         }
         else {
-            return [$!status, \%!header, \@!body];
+            return [$.status, \%!header, \@!body];
         }
     }
 
