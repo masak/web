@@ -6,7 +6,8 @@ SOURCES=lib/Routes.pm lib/Routes/Route.pm \
 	lib/Tags.pm lib/Test.pm \
 	lib/Web/Nibbler.pm \
 	lib/Web/Utils.pm \
-	lib/Web/Request.pm lib/Web/Response.pm
+	lib/Web/Request.pm lib/Web/Response.pm \
+	lib/Astaire.pm
 
 PIRS=$(SOURCES:.pm=.pir)
 
