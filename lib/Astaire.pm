@@ -8,17 +8,24 @@ class Handler {
     has Str $.http_method;
 
     method matches( $path ){
-        my @condition = self.explode( $.condition);
-        my @path = self.explode( $path );
-        return 0 if @condition != @path;
-        for @condition Z @path -> $condition, $path {
-            if $condition ~~ m/ \* / {
-                 $condition.subst( / \* /, '(.*?)', :g ).say;
-                 next;            
-            }
-            return 0 if $condition ne $path;
+        my %result;
+        my $clean_path = $path.subst( / ^\/ /, '', :g );
+        my $condition = $.condition.subst( / ^\/ /, '', :g ).subst( / \. /, '\.', :g ).subst( / \/ /, '\/', :g ).subst( / \* /, '(.*)', :g );
+        $condition = "/^ $condition \$/";
+        #"$condition against $clean_path".say;
+        # RAKUDO : There must be a nicer way to do this ( eg. no eval ) once we have regex interpolation stuff
+        # RAKUDO : submethod BUILD doesn't work ( forgets its args ), we should eval the regex only on BUILD and then store it
+        my $condition_regex = (eval " $condition ");
+        my $match = $clean_path.match($condition_regex);
+        my @splat = @($match).map({ ~$_ });
+        %result{'splat'} = @splat;
+        if $match {
+            %result{'success'} = 1;
+            return %result;   
+        }else{
+            %result{'success'} = 0;
+            return %result;   
         }
-        return 1;
     }
 
     method explode( Str $target ){
@@ -40,9 +47,11 @@ class Dispatch {
         my Web::Response $response .= new();
 
         for @.handlers -> $candidate {
-            if $candidate.matches( $request.path_info ) and $candidate.http_method eq $request.request_method {
+            my %match = $candidate.matches( $request.path_info );
+            if %match{'success'} and $candidate.http_method eq $request.request_method {
+                %match{'splat'}.perl.say;
                 my $code = $candidate.code;
-                $response.write( $code() );
+                $response.write( $code(|%match) );
                 return $response;
             }
         }

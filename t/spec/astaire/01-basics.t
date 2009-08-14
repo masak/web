@@ -108,3 +108,12 @@ get '/path/to/file/*.*' answers {
     my $response = $astaire_app.call( Web::Request.new({ PATH_INFO => "/path/to/file/my_file.xml", REQUEST_METHOD => "GET" }) );
     ok( $response.body eq "Starz" , 'path with several wildcards');
 }
+
+get '/this/has/stars/*/*.*' answers -> :@splat {
+    @splat.join(',');
+};
+
+{
+    my $response = $astaire_app.call( Web::Request.new({ PATH_INFO => "/this/has/stars/1/2.3", REQUEST_METHOD => "GET" }) );
+    ok( $response.body eq "1,2,3" , 'path with several wildcards, splat capturing');
+}
