@@ -6,6 +6,27 @@ class Handler {
     has Str $.condition;
     has Block $.code;
     has Str $.http_method;
+
+    method matches( $path ){
+        my @condition = self.explode( $.condition);
+        my @path = self.explode( $path );
+        return 0 if @condition != @path;
+        for @condition Z @path -> $condition, $path {
+            if $condition ~~ m/ \* / {
+                 $condition.subst( / \* /, '(.*?)', :g ).say;
+                 next;            
+            }
+            return 0 if $condition ne $path;
+        }
+        return 1;
+    }
+
+    method explode( Str $target ){
+        my @path = $target.split('/');
+        @path.shift() if @path[0] eq '';
+        return @path
+    }
+
 };
 
 class Dispatch {
@@ -19,7 +40,7 @@ class Dispatch {
         my Web::Response $response .= new();
 
         for @.handlers -> $candidate {
-            if $candidate.condition eq $request.path_info and $candidate.http_method eq $request.request_method {
+            if $candidate.matches( $request.path_info ) and $candidate.http_method eq $request.request_method {
                 my $code = $candidate.code;
                 $response.write( $code() );
                 return $response;

@@ -2,7 +2,7 @@
 use v6;
 use Test;
 
-plan 14;
+plan 18;
 
 #Basic test 
 use Astaire;
@@ -34,26 +34,22 @@ ok(1, 'set up application without errors');
 }
 
 {
-    my Web::Request $req .= new({ PATH_INFO => "/test", REQUEST_METHOD => "POST" });
-    my Web::Response $response = $astaire_app.call( $req );
+    my $response = $astaire_app.call( Web::Request.new({ PATH_INFO => "/test", REQUEST_METHOD => "POST" }) );
     ok( $response.body == 4 , 'response to post was as excpected');
 }
 
 {
-    my Web::Request $req .= new({ PATH_INFO => "/doez_not_existz", REQUEST_METHOD => "GET" });
-    my Web::Response $response = $astaire_app.call( $req );
+    my $response = $astaire_app.call( Web::Request.new({ PATH_INFO => "/doez_not_existz", REQUEST_METHOD => "GET" }) );
     ok( $response.status == 404 , 'nonexistant page gives 404 error');
 }
 
 {
-    my Web::Request $req .= new({ PATH_INFO => "/hi", REQUEST_METHOD => "POST" });
-    my Web::Response $response = $astaire_app.call( $req );
+    my $response = $astaire_app.call( Web::Request.new({ PATH_INFO => "/hi", REQUEST_METHOD => "POST" }) );
     ok( $response.status == 404 , 'request to get action with post fails as excpected');
 }
 
 {
-    my Web::Request $req .= new({ PATH_INFO => "/test", REQUEST_METHOD => "GET" });
-    my Web::Response $response = $astaire_app.call( $req );
+    my $response = $astaire_app.call( Web::Request.new({ PATH_INFO => "/test", REQUEST_METHOD => "GET" }) );
     ok( $response.status == 404 , 'request to post action with get fails as excpected');
 }
 
@@ -62,8 +58,7 @@ get '/second_test' answers {
 };
 
 {
-    my Web::Request $req .= new({ PATH_INFO => "/second_test", REQUEST_METHOD => "GET" });
-    my Web::Response $response = $astaire_app.call( $req );
+    my $response = $astaire_app.call( Web::Request.new({ PATH_INFO => "/second_test", REQUEST_METHOD => "GET" }) );
     ok( $response.body eq 'ho!' , 'can add actions after application object was created');
 }
 
@@ -72,7 +67,44 @@ get '/hi' answers {
 };
 
 {
-    my Web::Request $req .= new({ PATH_INFO => "/hi", REQUEST_METHOD => "GET" });
-    my Web::Response $response = $astaire_app.call( $req );
+    my $response = $astaire_app.call( Web::Request.new({ PATH_INFO => "/hi", REQUEST_METHOD => "GET" }) );
     ok( $response.body eq "Hello World!" , 'double action matching same request works as excpected');
+}
+
+get '/this/is/a/long/path' answers {
+    "Long path test";
+};
+
+{
+    my $response = $astaire_app.call( Web::Request.new({ PATH_INFO => "this/is/a/long/path", REQUEST_METHOD => "GET" }) );
+    ok( $response.body eq "Long path test" , 'matched on long ( > 1 ) path');
+}
+
+{ 
+
+    my $response = $astaire_app.call( Web::Request.new({ PATH_INFO => "this/is/a/very/long/path", REQUEST_METHOD => "GET" }) );
+    ok(  $response.status == 404, '404 error with wrong long path ( different length )');
+}
+
+{ 
+    my $response = $astaire_app.call( Web::Request.new({ PATH_INFO => "this/is/a/wrong/path", REQUEST_METHOD => "GET" }) );
+    ok(  $response.status == 404, '404 error with wrong long path ( same length )');
+}
+
+get '/with/*/star' answers {
+    "Star";
+};
+
+{
+    my $response = $astaire_app.call( Web::Request.new({ PATH_INFO => "with/anything/star", REQUEST_METHOD => "GET" }) );
+    ok( $response.body eq "Star" , 'path with wildcard');
+}
+
+get '/path/to/file/*.*' answers {
+    "Starz";
+};
+
+{
+    my $response = $astaire_app.call( Web::Request.new({ PATH_INFO => "/path/to/file/my_file.xml", REQUEST_METHOD => "GET" }) );
+    ok( $response.body eq "Starz" , 'path with several wildcards');
 }
