@@ -1,37 +1,7 @@
 #!/usr/local/bin/perl6
-use HTTP::Daemon;
 use Web::Nibbler;
+use Web::Handler::HTTPDaemon;
 
-# Serve one page
-sub request($c) {
-    my $r = $c.get_request;
-    if $r.req_method eq 'GET' {
-        # log request info to the standard error stream
-        warn "{hhmm} GET {$r.url.path} {$r.header('User-Agent')}";
-        my $qs = $r.url.path ~~ / '?' (.*) $/
-                    ?? $0
-                    !! '';
-        $c.send_response(
-            ~([~] Web::Nibbler.call({"QUERY_STRING" => $qs}).[2])
-        );
-    }
-    else {
-        warn "{hhmm} rejected {$r.req_method} {$r.url.path}";
-        $c.send_error('RC_FORBIDDEN');
-    }
-    warn ' '; # blank line
-}
-
-# give the current time in hh:mm format
-sub hhmm {
-    my $t = int(time);
-    my $m = int( $t / 60 ) % 60;
-    my $h = int( $t / 3600 ) % 24;
-    my $hhmm = "{$h.fmt('%02d')}:{$m.fmt('%02d')}";
-    return $hhmm;
-}
-
-my HTTP::Daemon $d .= new( host=> '127.0.0.1', port=> 8888 );
-say "Browse this Perl 6 (Rakudo) web server at {$d.url}";
-$d.daemon();
-
+my $port = 8888;
+say "Try out the Nibbler on http://127.0.0.1:$port/";
+Web::Handler::HTTPDaemon.run( Web::Nibbler.new );

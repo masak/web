@@ -7,7 +7,7 @@ use v6;
 use Web::Request;
 use Web::Response;
 
-class Web::Nibbler {
+class Web::Nibbler does Callable {
     # Somewhat less cool than the Ruby solution, we have to include the
     # lobster verbatim, for lack of a zlib module (hint, hint).
     my $nibbler-string = q[
@@ -39,9 +39,7 @@ Z         =MM,,:MMMMMI,:MMM     . .D.
      . .Z+,::.+::,,,,,,,,,,:M M
         . ..I~::,:,,,,,,,,8..];
 
-    # RAKUDO: Should really be 'method postcircumfix:<( )>($env)' once this
-    #         is supported.
-    method call($env) {
+    method postcircumfix:<( )>($env) {
         my Web::Request $req .= new($env);
         my Str ($nibbler, $href);
         given $req.GET<flip> // '' {
