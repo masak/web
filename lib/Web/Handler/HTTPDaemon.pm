@@ -8,7 +8,7 @@ class Web::Handler::HTTPDaemon {
         while my $c = $d.accept and my HTTP::Request $r = $c.get_request {
             my $qs = $r.url.path ~~ / '?' (.*) $/ ?? $0 !! '';
             my %env = { "QUERY_STRING" => $qs };
-            $c.send_response(&app(%env)[2].Str)
+            $c.send_response([~] &app(%env)[2].list);
         }
     }
 }
