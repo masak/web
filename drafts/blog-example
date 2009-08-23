@@ -1,0 +1,17 @@
+use v6;
+use Viper;
+
+class User is Viper::Base {
+}
+
+class Post is Viper::Base {
+    has $user_id is persisted;
+}
+
+class Comment is Viper::Base {
+    has $user_id is persisted;
+}
+
+my $session = Viper.new( :types[User, Post, Comment], :db('data/') );
+my Post @posts = Post.find($session, :all);
+say .name for @posts;
