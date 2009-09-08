@@ -1,6 +1,6 @@
 use Squirrel;
 
-my $DB = Squirrel.csv;
+my $DB = Squirrel.sqlite;
 
 $DB.create_table: <items
     primary_key id
