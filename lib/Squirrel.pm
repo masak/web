@@ -1,11 +1,20 @@
 use SQLite3;
 
 class Squirrel::Dataset {
+    has $!db;
+    has $!table;
+
     method insert(*@values) {
+        my $values = @values>>.perl.join(', ');
+        given $!db {
+            .open;
+            .exec("INSERT INTO $!table VALUES($values)");
+            .close;
+        }
     }
 
     method all() {
-        return [];
+        $!db.select("*", $!table);
     }
 }
 
@@ -46,8 +55,21 @@ class Squirrel::Database {
         .close;
     }
 
+    method select($_: $what, $table) {
+        my @rows;
+        .open;
+        warn "SELECT $what FROM $table";
+        my $sth = $!dbh.prepare("SELECT $what FROM $table");
+        while $sth.step() == 100 {
+            warn "In the loop";
+            push @rows, [map { $sth.column_text($_) }, ^$sth.column_count()];
+        }
+        .close;
+        return @rows;
+    }
+
     method from($table) {
-        return Squirrel::Dataset.new();
+        return Squirrel::Dataset.new(:db(self), :$table);
     }
 }
 
