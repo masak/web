@@ -32,8 +32,17 @@ class Squirrel::Database {
     }
 
     method create_table($_: *@args) {
+        my $table-name = @args[0];
+        my $columns = join ', ', gather for @args[1..^*] -> $type, $name {
+            given $type.lc {
+                when 'primary_key'   { take "$name INTEGER PRIMARY KEY ASC" }
+                when 'int'|'integer' { take "$name INTEGER" }
+                when 'str'|'string'  { take "$name TEXT" }
+                default              { die "Unknown type $type" }
+            }
+        };
         .open;
-        .exec('CREATE TABLE foo (item,count)');
+        .exec("CREATE TABLE $table-name ($columns)");
         .close;
     }
 
