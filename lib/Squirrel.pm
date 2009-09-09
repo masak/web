@@ -3,6 +3,10 @@ use SQLite3;
 class Squirrel::Dataset {
     method insert(*@values) {
     }
+
+    method all() {
+        return [];
+    }
 }
 
 class Squirrel::Database {
@@ -27,12 +31,10 @@ class Squirrel::Database {
         $sth.finalize();
     }
 
-    method create_table(*@args) {
-        given self {
-            .open;
-            .exec('CREATE TABLE foo (item,count)');
-            .close;
-        }
+    method create_table($_: *@args) {
+        .open;
+        .exec('CREATE TABLE foo (item,count)');
+        .close;
     }
 
     method from($table) {

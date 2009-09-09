@@ -18,4 +18,9 @@ my $posts = $DB.from('posts');
 $posts.insert(1, 'Hello Austria!');
 
 ok $file ~~ :e, 'could create the database file';
+
+my $number-of-posts = +$posts.all;
+
+is $number-of-posts, 1, 'could insert and then retrieve a row';
+
 unlink $file;
