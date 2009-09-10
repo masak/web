@@ -58,10 +58,8 @@ class Squirrel::Database {
     method select($_: $what, $table) {
         my @rows;
         .open;
-        warn "SELECT $what FROM $table";
         my $sth = $!dbh.prepare("SELECT $what FROM $table");
         while $sth.step() == 100 {
-            warn "In the loop";
             push @rows, [map { $sth.column_text($_) }, ^$sth.column_count()];
         }
         .close;

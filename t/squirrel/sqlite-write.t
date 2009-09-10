@@ -15,7 +15,7 @@ $DB.create_table: <posts
 #my $posts = $DB<posts>;
 my $posts = $DB.from('posts');
 
-$posts.insert(1, 'Hello Austria!');
+$posts.insert(0, 1, 'Hello Austria!');
 
 ok $file ~~ :e, 'could create the database file';
 
