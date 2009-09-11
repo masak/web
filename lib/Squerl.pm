@@ -1,6 +1,6 @@
 use SQLite3;
 
-class Squirrel::Dataset {
+class Squerl::Dataset {
     has $!db;
     has $!table;
 
@@ -18,7 +18,7 @@ class Squirrel::Dataset {
     }
 }
 
-class Squirrel::Database {
+class Squerl::Database {
     has $!file;
     has $!dbh;
 
@@ -67,12 +67,12 @@ class Squirrel::Database {
     }
 
     method from($table) {
-        return Squirrel::Dataset.new(:db(self), :$table);
+        return Squerl::Dataset.new(:db(self), :$table);
     }
 }
 
-class Squirrel {
+class Squerl {
     method sqlite($file) {
-        return Squirrel::Database.new(:$file);
+        return Squerl::Database.new(:$file);
     }
 }

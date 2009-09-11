@@ -1,10 +1,10 @@
 use v6;
 use Test;
 
-use Squirrel;
+use Squerl;
 
 unlink (my $file = 't/squirrel/posts.db');
-my $DB = Squirrel.sqlite($file);
+my $DB = Squerl.sqlite($file);
 
 $DB.create_table: <posts
     primary_key id
