@@ -1,20 +1,25 @@
 use SQLite3;
 
 class Squerl::Dataset {
-    has $!db;
-    has $!table;
+    has $.db;
+    has %.opts;
+
+    multi method new($db, *%opts) {
+        return self.bless(self.CREATE(), :$db, :%opts);
+    }
 
     method insert(*@values) {
         my $values = @values>>.perl.join(', ');
         given $!db {
             .open;
-            .exec("INSERT INTO $!table VALUES($values)");
+            # RAKUDO: Real string interpolation
+            .exec("INSERT INTO {%!opts<table>} VALUES($values)");
             .close;
         }
     }
 
     method all() {
-        $!db.select("*", $!table);
+        $!db.select("*", %!opts<table>);
     }
 }
 
@@ -67,7 +72,7 @@ class Squerl::Database {
     }
 
     method from($table) {
-        return Squerl::Dataset.new(:db(self), :$table);
+        return Squerl::Dataset.new(self, :$table);
     }
 }
 

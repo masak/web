@@ -3,7 +3,7 @@ use Test;
 
 use Squerl;
 
-unlink (my $file = 't/squirrel/posts.db');
+unlink (my $file = 't/squerl/posts.db');
 my $DB = Squerl.sqlite($file);
 
 $DB.create_table: <posts
@@ -22,5 +22,7 @@ ok $file ~~ :e, 'could create the database file';
 my $number-of-posts = +$posts.all;
 
 is $number-of-posts, 1, 'could insert and then retrieve a row';
+
+done_testing;
 
 unlink $file;
