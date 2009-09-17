@@ -18,4 +18,14 @@ my $dataset = Squerl::Dataset.new('db');
     is_deeply $d.opts, {}, 'attribute .opts is empty';
 }
 
+{
+    my $d1 = $dataset.clone( :from( ['test'] ) );
+    is $d1.WHAT, $dataset.WHAT, 'clone has the same class as original';
+    ok $d1 !=== $dataset, 'clone is distinct from original';
+    ok $d1.db === $dataset.db, 'clone has the same .db attribute';
+    is_deeply $d1.opts<from>, ['test'],
+              'the attribute passed with the .clone method is there';
+    ok !$dataset.opts.exists('from'), 'the original is unchanged';
+}
+
 done_testing;

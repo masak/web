@@ -5,7 +5,12 @@ class Squerl::Dataset {
     has %.opts;
 
     multi method new($db, *%opts) {
-        return self.bless(self.CREATE(), :$db, :%opts);
+        self.bless(self.CREATE(), :$db, :%opts);
+    }
+
+    multi method clone(*%opts) {
+        my %new-opts = %!opts, %opts;
+        self.bless(self.CREATE(), :db($!db), :opts(%new-opts));
     }
 
     method insert(*@values) {
