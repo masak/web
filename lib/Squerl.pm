@@ -5,7 +5,7 @@ class Squerl::Dataset does Positional {
     has %.opts;
     # RAKUDO: Cannot type this attribute as Bool
     has $.quote_identifiers is rw;
-    has Str $.identifier_input_method;
+    has Str $.identifier_input_method is rw;
     has Str $.identifier_output_method;
 
     multi method new($db, :$quote_identifiers,
@@ -36,7 +36,12 @@ class Squerl::Dataset does Positional {
         $!db.select("*", %!opts<table>);
     }
 
-    method literal($name) {
+    method literal($name is copy) {
+        given $!identifier_input_method {
+            when 'upcase'   | 'uc'   { $name .= uc }
+            when 'downcase' | 'lc'   { $name .= lc }
+            when 'reverse'  | 'flip' { $name .= flip }
+        }
         $!quote_identifiers ?? qq["$name"] !! $name;
     }
 }

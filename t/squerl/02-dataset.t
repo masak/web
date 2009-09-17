@@ -82,4 +82,26 @@ $dataset = Squerl::Dataset.new('db');
        ~ 'not quote identifiers';
 }
 
+{
+    $dataset.identifier_input_method = 'upcase';
+    is $dataset.literal('a'), 'A',
+        'identifier_input_method changes literalization of identifiers I';
+    $dataset.identifier_input_method = 'downcase';
+    is $dataset.literal('A'), 'a',
+        'identifier_input_method changes literalization of identifiers II';
+    $dataset.identifier_input_method = 'reverse';
+    is $dataset.literal('at_b'), 'b_ta',
+        'identifier_input_method changes literalization of identifiers III';
+
+    $dataset.identifier_input_method = 'uc';
+    is $dataset.literal('a'), 'A',
+        'identifier_input_method changes literalization of identifiers IV';
+    $dataset.identifier_input_method = 'lc';
+    is $dataset.literal('A'), 'a',
+        'identifier_input_method changes literalization of identifiers V';
+    $dataset.identifier_input_method = 'flip';
+    is $dataset.literal('at_b'), 'b_ta',
+        'identifier_input_method changes literalization of identifiers VI';
+}
+
 done_testing;
