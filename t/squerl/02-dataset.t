@@ -70,4 +70,16 @@ my $dataset = Squerl::Dataset.new('db');
         'should get identifier_output_method default from database II';
 }
 
+$dataset = Squerl::Dataset.new('db');
+
+{
+    $dataset.quote_identifiers = True;
+    is $dataset.literal('a'), '"a"',
+       'setting quote_identifiers to True makes .literal quote identifiers';
+    $dataset.quote_identifiers = False;
+    is $dataset.literal('a'), 'a',
+       'setting quote_identifiers to False makes .literal '
+       ~ 'not quote identifiers';
+}
+
 done_testing;

@@ -4,7 +4,7 @@ class Squerl::Dataset does Positional {
     has $.db;
     has %.opts;
     # RAKUDO: Cannot type this attribute as Bool
-    has $.quote_identifiers;
+    has $.quote_identifiers is rw;
     has Str $.identifier_input_method;
     has Str $.identifier_output_method;
 
@@ -34,6 +34,10 @@ class Squerl::Dataset does Positional {
 
     method all() {
         $!db.select("*", %!opts<table>);
+    }
+
+    method literal($name) {
+        $!quote_identifiers ?? qq["$name"] !! $name;
     }
 }
 
