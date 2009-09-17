@@ -3,9 +3,11 @@ use SQLite3;
 class Squerl::Dataset does Positional {
     has $.db;
     has %.opts;
+    # RAKUDO: Cannot type this attribute as Bool
+    has $.quote_identifiers;
 
-    multi method new($db, *%opts) {
-        self.bless(self.CREATE(), :$db, :%opts);
+    multi method new($db, :$quote_identifiers, *%opts) {
+        self.bless(self.CREATE(), :$db, :$quote_identifiers, :%opts);
     }
 
     multi method clone(*%opts) {
@@ -31,10 +33,8 @@ class Squerl::Dataset does Positional {
 class Squerl::Database {
     has $!file;
     has $!dbh;
-
-    submethod BUILD(:$file!) {
-        $!file = $file; # RAKUDO: This shouldn't be needed
-    }
+    # RAKUDO: Cannot type this attribute as Bool
+    has $.quote_identifiers;
 
     method open() {
         $!dbh = sqlite_open($!file);
@@ -77,7 +77,8 @@ class Squerl::Database {
     }
 
     method from($table) {
-        return Squerl::Dataset.new(self, :$table);
+        return Squerl::Dataset.new(self, :$table,
+                                   :quote_identifiers($!quote_identifiers));
     }
 }
 

@@ -43,4 +43,13 @@ my $dataset = Squerl::Dataset.new('db');
     ok Squerl::Dataset ~~ Positional, 'you can index into Squerl::Dataset';
 }
 
+{
+    my $db = Squerl::Database.new( :quote_identifiers );
+    ok $db.from('a').quote_identifiers,
+       'should get quote_identifiers default from database I';
+    $db = Squerl::Database.new( :!quote_identifiers );
+    nok $db.from('a').quote_identifiers,
+       'should get quote_identifiers default from database II';
+}
+
 done_testing;
