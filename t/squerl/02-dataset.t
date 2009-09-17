@@ -61,4 +61,13 @@ my $dataset = Squerl::Dataset.new('db');
         'should get identifier_input_method default from database II';
 }
 
+{
+    my $db = Squerl::Database.new( :identifier_output_method<upcase> );
+    ok $db.from('a').identifier_output_method eq 'upcase',
+        'should get identifier_output_method default from database I';
+    $db = Squerl::Database.new( :identifier_output_method<downcase> );
+    ok $db.from('a').identifier_output_method eq 'downcase',
+        'should get identifier_output_method default from database II';
+}
+
 done_testing;

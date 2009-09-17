@@ -6,11 +6,15 @@ class Squerl::Dataset does Positional {
     # RAKUDO: Cannot type this attribute as Bool
     has $.quote_identifiers;
     has Str $.identifier_input_method;
+    has Str $.identifier_output_method;
 
-    multi method new($db, :$quote_identifiers, :$identifier_input_method,
+    multi method new($db, :$quote_identifiers,
+                     :$identifier_input_method, :$identifier_output_method,
                      *%opts) {
         self.bless(self.CREATE(), :$db, :$quote_identifiers,
-                                  :$identifier_input_method, :%opts);
+                                  :$identifier_input_method,
+                                  :$identifier_output_method,
+                                  :%opts);
     }
 
     multi method clone(*%opts) {
@@ -39,6 +43,7 @@ class Squerl::Database {
     # RAKUDO: Cannot type this attribute as Bool
     has $.quote_identifiers;
     has Str $.identifier_input_method;
+    has Str $.identifier_output_method;
 
     method open() {
         $!dbh = sqlite_open($!file);
@@ -85,6 +90,9 @@ class Squerl::Database {
                                    :quote_identifiers($!quote_identifiers),
                                    :identifier_input_method(
                                      $!identifier_input_method
+                                   ),
+                                   :identifier_output_method(
+                                     $!identifier_output_method
                                    ));
     }
 }
