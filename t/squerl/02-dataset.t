@@ -39,4 +39,8 @@ my $dataset = Squerl::Dataset.new('db');
     ok !$d1.opts.exists('order'), 'the original clone is unchanged';
 }
 
+{
+    ok Squerl::Dataset ~~ Positional, 'you can index into Squerl::Dataset';
+}
+
 done_testing;

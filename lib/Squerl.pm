@@ -1,6 +1,6 @@
 use SQLite3;
 
-class Squerl::Dataset {
+class Squerl::Dataset does Positional {
     has $.db;
     has %.opts;
 
