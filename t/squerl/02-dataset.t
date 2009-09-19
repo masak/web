@@ -150,4 +150,12 @@ $dataset = Squerl::Dataset.new(undef).from('items');
               'changing original.opts leaves clone.opts unchanged';
 }
 
+{
+    my $clone = $dataset.clone;
+
+    is $clone.WHAT, $dataset.WHAT, 'should return a clone self I';
+    is $clone.db, $dataset.db, 'should return a clone self II';
+    is_deeply $clone.opts, $dataset.opts, 'should return a clone self III';
+}
+
 done_testing;
