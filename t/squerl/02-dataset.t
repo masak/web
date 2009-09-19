@@ -129,4 +129,17 @@ $dataset = Squerl::Dataset.new('db');
         'identifier_output_method changes identifiers returned from the db VII';
 }
 
+$dataset = Sequel::Dataset.new('');
+$dataset.=from('items');
+
+{
+    $dataset.row_proc = { $^r };
+    my $clone = $dataset.clone;
+
+    ok $clone !=== $dataset, 'the clone is not the original';
+    is $clone.WHAT, $dataset.WHAT, 'clone has the same type as original';
+    is_deeply $clone.opts, $dataset.opts, 'opts attributes are equivalent';
+    ok $clone.row_proc === $dataset.row_proc, 'row_proc attributes equal';
+}
+
 done_testing;

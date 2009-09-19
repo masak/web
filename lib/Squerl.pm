@@ -22,6 +22,10 @@ class Squerl::Dataset does Positional {
         self.bless(self.CREATE(), :db($!db), :opts(%new-opts));
     }
 
+    method from($value) {
+        self.clone(:from($value));
+    }
+
     method insert(*@values) {
         my $values = @values>>.perl.join(', ');
         given $!db {
