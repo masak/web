@@ -129,8 +129,7 @@ $dataset = Squerl::Dataset.new('db');
         'identifier_output_method changes identifiers returned from the db VII';
 }
 
-$dataset = Sequel::Dataset.new('');
-$dataset.=from('items');
+$dataset = Squerl::Dataset.new(undef).from('items');
 
 {
     $dataset.row_proc = { $^r };

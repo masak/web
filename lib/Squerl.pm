@@ -7,19 +7,31 @@ class Squerl::Dataset does Positional {
     has $.quote_identifiers is rw;
     has Str $.identifier_input_method is rw;
     has Str $.identifier_output_method is rw;
+    has &.row_proc is rw;
 
     multi method new($db, :$quote_identifiers,
                      :$identifier_input_method, :$identifier_output_method,
+                     :$row_proc,
                      *%opts) {
         self.bless(self.CREATE(), :$db, :$quote_identifiers,
                                   :$identifier_input_method,
                                   :$identifier_output_method,
+                                  :$row_proc,
                                   :%opts);
     }
 
     multi method clone(*%opts) {
         my %new-opts = %!opts, %opts;
-        self.bless(self.CREATE(), :db($!db), :opts(%new-opts));
+        self.bless(self.CREATE(), :db($!db),
+                                  :quote_identifiers($!quote_identifiers),
+                                  :identifier_input_method(
+                                     $!identifier_input_method
+                                   ),
+                                  :identifier_output_method(
+                                     $!identifier_output_method
+                                   ),
+                                  :row_proc(&!row_proc),
+                                  :opts(%new-opts));
     }
 
     method from($value) {
