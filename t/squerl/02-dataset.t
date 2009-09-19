@@ -193,12 +193,8 @@ $dataset = Squerl::Dataset.new(undef).from('items');
 
 $dataset = Squerl::Dataset.new(undef).from('test');
 
-{
-    is $dataset.select_sql, 'SELECT * FROM test', 'format a select statement';
-}
-
-{
-    is $dataset.delete_sql, 'DELETE FROM test', 'format a delete statement';
-}
+is $dataset.select_sql, 'SELECT * FROM test', 'format a select statement';
+is $dataset.delete_sql, 'DELETE FROM test', 'format a delete statement';
+is $dataset.truncate_sql, 'TRUNCATE TABLE test', 'format a truncate statement';
 
 done_testing;

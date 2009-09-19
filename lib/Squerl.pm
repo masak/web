@@ -91,6 +91,11 @@ class Squerl::Dataset does Positional {
         # RAKUDO: Real string interpolation
         "DELETE FROM {%!opts<from>}";
     }
+
+    method truncate_sql() {
+        # RAKUDO: Real string interpolation
+        "TRUNCATE TABLE {%!opts<from>}";
+    }
 }
 
 class Squerl::Database {
