@@ -181,4 +181,20 @@ $dataset = Squerl::Dataset.new(undef).from('items');
     is_deeply $clone.opts<from>, ['other'], 'cloned .opts<from> changed'
 }
 
+{
+    # TODO: Can't realisticly do this one yet.
+
+    # m = Module.new do
+    #   def __xyz__; "xyz"; end
+    # end
+    # @dataset.extend(m)
+    # @dataset.clone({}).should respond_to(:__xyz__)
+}
+
+$dataset = Squerl::Dataset.new(undef).from('test');
+
+{
+    is $dataset.select_sql, 'SELECT * FROM test';
+}
+
 done_testing;

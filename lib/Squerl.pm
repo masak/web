@@ -81,6 +81,11 @@ class Squerl::Dataset does Positional {
         }
         $name;
     }
+
+    method select_sql() {
+        # RAKUDO: Real string interpolation
+        "SELECT * FROM {%!opts<from>}";
+    }
 }
 
 class Squerl::Database {
