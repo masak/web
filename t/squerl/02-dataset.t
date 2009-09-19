@@ -174,4 +174,11 @@ $dataset = Squerl::Dataset.new(undef).from('items');
         'should overwrite existing options';
 }
 
+{
+    my $clone = $dataset.clone( :from(['other']) );
+
+    is_deeply $dataset.opts<from>, 'items', 'original .opts<from> unharmed';
+    is_deeply $clone.opts<from>, ['other'], 'cloned .opts<from> changed'
+}
+
 done_testing;
