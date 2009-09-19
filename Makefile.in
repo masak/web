@@ -8,7 +8,7 @@ SOURCES=lib/Routes.pm lib/Routes/Route.pm \
 	lib/Web/Utils.pm \
 	lib/Web/Request.pm lib/Web/Response.pm \
     lib/Web/Handler/HTTPDaemon.pm \
-	lib/Astaire.pm lib/Viper.pm
+	lib/Astaire.pm lib/Squerl.pm
 
 PIRS=$(SOURCES:.pm=.pir)
 
