@@ -6,7 +6,7 @@ class Squerl::Dataset does Positional {
     # RAKUDO: Cannot type this attribute as Bool
     has $.quote_identifiers is rw;
     has Str $.identifier_input_method is rw;
-    has Str $.identifier_output_method;
+    has Str $.identifier_output_method is rw;
 
     multi method new($db, :$quote_identifiers,
                      :$identifier_input_method, :$identifier_output_method,
@@ -37,12 +37,29 @@ class Squerl::Dataset does Positional {
     }
 
     method literal($name is copy) {
-        given $!identifier_input_method {
-            when 'upcase'   | 'uc'   { $name .= uc }
-            when 'downcase' | 'lc'   { $name .= lc }
-            when 'reverse'  | 'flip' { $name .= flip }
+        $!identifier_input_method
+          = { 'upcase' => 'uc', 'downcase' => 'lc',
+              'reverse' => 'flip' }.{$!identifier_input_method}
+            // $!identifier_input_method;
+        if $!identifier_input_method {
+            # RAKUDO: Would like to have spaces around the operator:
+            #         [perl #69204]
+            $name.="$!identifier_input_method";
         }
         $!quote_identifiers ?? qq["$name"] !! $name;
+    }
+
+    method output_identifier($name is copy) {
+        $!identifier_output_method
+          = { 'upcase' => 'uc', 'downcase' => 'lc',
+              'reverse' => 'flip' }.{$!identifier_output_method}
+            // $!identifier_output_method;
+        if $!identifier_output_method {
+            # RAKUDO: Would like to have spaces around the operator:
+            #         [perl #69204]
+            $name.="$!identifier_output_method";
+        }
+        $name;
     }
 }
 

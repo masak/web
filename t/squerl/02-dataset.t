@@ -104,4 +104,29 @@ $dataset = Squerl::Dataset.new('db');
         'identifier_input_method changes literalization of identifiers VI';
 }
 
+{
+    is $dataset.output_identifier('at_b_C'), 'at_b_C',
+        'identifier_output_method changes identifiers returned from the db I';
+
+    $dataset.identifier_output_method = 'upcase';
+    is $dataset.output_identifier('at_b_C'), 'AT_B_C',
+        'identifier_output_method changes identifiers returned from the db II';
+    $dataset.identifier_output_method = 'downcase';
+    is $dataset.output_identifier('at_b_C'), 'at_b_c',
+        'identifier_output_method changes identifiers returned from the db III';
+    $dataset.identifier_output_method = 'reverse';
+    is $dataset.output_identifier('at_b_C'), 'C_b_ta',
+        'identifier_output_method changes identifiers returned from the db IV';
+
+    $dataset.identifier_output_method = 'uc';
+    is $dataset.output_identifier('at_b_C'), 'AT_B_C',
+        'identifier_output_method changes identifiers returned from the db V';
+    $dataset.identifier_output_method = 'lc';
+    is $dataset.output_identifier('at_b_C'), 'at_b_c',
+        'identifier_output_method changes identifiers returned from the db VI';
+    $dataset.identifier_output_method = 'flip';
+    is $dataset.output_identifier('at_b_C'), 'C_b_ta',
+        'identifier_output_method changes identifiers returned from the db VII';
+}
+
 done_testing;
