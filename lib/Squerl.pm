@@ -96,6 +96,11 @@ class Squerl::Dataset does Positional {
         # RAKUDO: Real string interpolation
         "TRUNCATE TABLE {%!opts<from>}";
     }
+
+    method insert_sql() {
+        # RAKUDO: Real string interpolation
+        "INSERT INTO {%!opts<from>} DEFAULT VALUES";
+    }
 }
 
 class Squerl::Database {
