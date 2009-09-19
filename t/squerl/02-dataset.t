@@ -167,4 +167,11 @@ $dataset = Squerl::Dataset.new(undef).from('items');
         'should merge the specified options';
 }
 
+{
+    my $clone = $dataset.clone( :from(['other']) );
+
+    is_deeply $clone.opts, { :from(['other']) },
+        'should overwrite existing options';
+}
+
 done_testing;
