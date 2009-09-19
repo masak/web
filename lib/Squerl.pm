@@ -38,6 +38,10 @@ class Squerl::Dataset does Positional {
         self.clone(:from($value));
     }
 
+    method filter($value) {
+        self.clone(:filter($value));
+    }
+
     method insert(*@values) {
         my $values = @values>>.perl.join(', ');
         given $!db {

@@ -141,4 +141,13 @@ $dataset = Squerl::Dataset.new(undef).from('items');
     ok $clone.row_proc === $dataset.row_proc, 'row_proc attributes equal';
 }
 
+{
+    my $clone = $dataset.clone;
+
+    ok $clone.opts !=== $dataset.opts, 'cloning deep-copies .opts';
+    $dataset.=filter( 'a' => 'b' );
+    ok !$clone.opts.exists('filter'),
+              'changing original.opts leaves clone.opts unchanged';
+}
+
 done_testing;
