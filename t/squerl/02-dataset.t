@@ -158,4 +158,13 @@ $dataset = Squerl::Dataset.new(undef).from('items');
     is_deeply $clone.opts, $dataset.opts, 'should return a clone self III';
 }
 
+$dataset = Squerl::Dataset.new(undef).from('items');
+
+{
+    my $clone = $dataset.clone( one => 2 );
+
+    is_deeply $clone.opts, { one => 2, from => 'items' },
+        'should merge the specified options';
+}
+
 done_testing;
