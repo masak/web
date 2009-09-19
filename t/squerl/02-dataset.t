@@ -74,33 +74,33 @@ $dataset = Squerl::Dataset.new('db');
 
 {
     $dataset.quote_identifiers = True;
-    is $dataset.literal('a'), '"a"',
+    is $dataset.literal(:a), '"a"',
        'setting quote_identifiers to True makes .literal quote identifiers';
     $dataset.quote_identifiers = False;
-    is $dataset.literal('a'), 'a',
+    is $dataset.literal(:a), 'a',
        'setting quote_identifiers to False makes .literal '
        ~ 'not quote identifiers';
 }
 
 {
     $dataset.identifier_input_method = 'upcase';
-    is $dataset.literal('a'), 'A',
+    is $dataset.literal(:a), 'A',
         'identifier_input_method changes literalization of identifiers I';
     $dataset.identifier_input_method = 'downcase';
-    is $dataset.literal('A'), 'a',
+    is $dataset.literal(:A), 'a',
         'identifier_input_method changes literalization of identifiers II';
     $dataset.identifier_input_method = 'reverse';
-    is $dataset.literal('at_b'), 'b_ta',
+    is $dataset.literal(:at_b), 'b_ta',
         'identifier_input_method changes literalization of identifiers III';
 
     $dataset.identifier_input_method = 'uc';
-    is $dataset.literal('a'), 'A',
+    is $dataset.literal(:a), 'A',
         'identifier_input_method changes literalization of identifiers IV';
     $dataset.identifier_input_method = 'lc';
-    is $dataset.literal('A'), 'a',
+    is $dataset.literal(:A), 'a',
         'identifier_input_method changes literalization of identifiers V';
     $dataset.identifier_input_method = 'flip';
-    is $dataset.literal('at_b'), 'b_ta',
+    is $dataset.literal(:at_b), 'b_ta',
         'identifier_input_method changes literalization of identifiers VI';
 }
 
@@ -198,5 +198,14 @@ is $dataset.delete_sql, 'DELETE FROM test', 'format a delete statement';
 is $dataset.truncate_sql, 'TRUNCATE TABLE test', 'format a truncate statement';
 is $dataset.insert_sql, 'INSERT INTO test DEFAULT VALUES',
     'format an insert statement with default values';
+
+{
+    my $sql = $dataset.insert_sql(:name<wxyz>, :price(342));
+    ok $sql eq q[INSERT INTO test (name, price) VALUES ('wxyz', 342)]
+             | q[INSERT INTO test (price, name) VALUES (342, 'wxyz')],
+        'format an insert statement with hash';
+    is $dataset.insert_sql({}), 'INSERT INTO test DEFAULT VALUES',
+        'empty hash gives an insert statement with default values';
+}
 
 done_testing;

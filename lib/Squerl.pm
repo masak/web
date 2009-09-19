@@ -9,6 +9,8 @@ class Squerl::Dataset does Positional {
     has Str $.identifier_output_method is rw;
     has &.row_proc is rw;
 
+    my $COMMA_SEPARATOR = ', ';
+
     multi method new($db, :$quote_identifiers,
                      :$identifier_input_method, :$identifier_output_method,
                      :$row_proc,
@@ -56,7 +58,16 @@ class Squerl::Dataset does Positional {
         $!db.select("*", %!opts<table>);
     }
 
-    method literal($name is copy) {
+    method literal($value? is copy) {
+        $value //= %_.pairs[0];
+        given $value {
+            when Int { return literal_integer($value) }
+            when Str { return literal_string($value) }
+            when Pair { return self.literal_symbol($value.key) }
+        }
+    }
+
+    method literal_symbol($name is copy) {
         $!identifier_input_method
           = { 'upcase' => 'uc', 'downcase' => 'lc',
               'reverse' => 'flip' }.{$!identifier_input_method}
@@ -97,9 +108,29 @@ class Squerl::Dataset does Positional {
         "TRUNCATE TABLE {%!opts<from>}";
     }
 
-    method insert_sql() {
+    method insert_sql(*@positionals, *%nameds) {
+        my (@columns, @values);
+        for %nameds.pairs {
+            @columns.push(.key);
+            @values.push(.value);
+        }
+        my $values = [~] '(', (join $COMMA_SEPARATOR, @columns), ')',
+                         ' VALUES ', self.literal_array(@values);
         # RAKUDO: Real string interpolation
-        "INSERT INTO {%!opts<from>} DEFAULT VALUES";
+        @values ?? "INSERT INTO {%!opts<from>} $values"
+                !! "INSERT INTO {%!opts<from>} DEFAULT VALUES";
+    }
+
+    submethod literal_array(@values) {
+        "({join $COMMA_SEPARATOR, map { self.literal($^value) }, @values})";
+    }
+
+    sub literal_integer($value) {
+        ~$value
+    }
+
+    sub literal_string($value) {
+        "'{$value.subst('\\', '\\\\', :g).subst("'", "''", :g)}'"
     }
 }
 
