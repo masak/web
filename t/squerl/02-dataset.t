@@ -208,4 +208,11 @@ is $dataset.insert_sql, 'INSERT INTO test DEFAULT VALUES',
         'empty hash gives an insert statement with default values';
 }
 
+{
+    my $sql = $dataset.insert_sql( 'name' => 'wxyz', 'price' => 342 );
+    ok $sql eq q[INSERT INTO test (name, price) VALUES ('wxyz', 342)]
+             | q[INSERT INTO test (price, name) VALUES (342, 'wxyz')],
+        'format an insert statement with string keys';
+}
+
 done_testing;

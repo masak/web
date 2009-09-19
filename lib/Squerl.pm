@@ -110,6 +110,12 @@ class Squerl::Dataset does Positional {
 
     method insert_sql(*@positionals, *%nameds) {
         my (@columns, @values);
+        for @positionals {
+            when Pair {
+                @columns.push(.key);
+                @values.push(.value);
+            }
+        }
         for %nameds.pairs {
             @columns.push(.key);
             @values.push(.value);
