@@ -215,4 +215,17 @@ is $dataset.insert_sql, 'INSERT INTO test DEFAULT VALUES',
         'format an insert statement with string keys';
 }
 
+role R1 { method values { 'a' => 1; } }
+role R2 { method values { {} } }
+
+{
+    my $v = Object.new but R1;
+    is $dataset.insert_sql($v), 'INSERT INTO test (a) VALUES (1)',
+        'format an insert statement with an object that .can("values") I';
+
+    $v = Object.new but R2;
+    is $dataset.insert_sql($v), 'INSERT INTO test DEFAULT VALUES',
+        'format an insert statement with an object that .can("values") II';
+}
+
 done_testing;

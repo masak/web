@@ -115,6 +115,14 @@ class Squerl::Dataset does Positional {
                 @columns.push(.key);
                 @values.push(.value);
             }
+            when .^can('values') {
+                for .values.pairs {
+                    die "Expected a Pair, got a {.WHAT}"
+                        unless $_ ~~ Pair;
+                    @columns.push(.key);
+                    @values.push(.value);
+                }
+            }
         }
         for %nameds.pairs {
             @columns.push(.key);
