@@ -228,4 +228,9 @@ role R2 { method values { {} } }
         'format an insert statement with an object that .can("values") II';
 }
 
+{
+    is $dataset.insert_sql(123), 'INSERT INTO test VALUES (123)',
+        'format an insert statement with an arbitrary value';
+}
+
 done_testing;

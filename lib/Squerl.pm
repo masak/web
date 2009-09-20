@@ -115,6 +115,9 @@ class Squerl::Dataset does Positional {
                 @columns.push(.key);
                 @values.push(.value);
             }
+            when Num|Str {
+                @values.push($_);
+            }
             when .^can('values') {
                 for .values.pairs {
                     die "Expected a Pair, got a {.WHAT}"
@@ -128,11 +131,12 @@ class Squerl::Dataset does Positional {
             @columns.push(.key);
             @values.push(.value);
         }
-        my $values = [~] '(', (join $COMMA_SEPARATOR, @columns), ')',
-                         ' VALUES ', self.literal_array(@values);
+        my $columns = @columns ?? "({join $COMMA_SEPARATOR, @columns}) "
+                               !! '';
+        my $values = @values ?? 'VALUES ' ~ self.literal_array(@values)
+                             !! 'DEFAULT VALUES';
         # RAKUDO: Real string interpolation
-        @values ?? "INSERT INTO {%!opts<from>} $values"
-                !! "INSERT INTO {%!opts<from>} DEFAULT VALUES";
+        "INSERT INTO {%!opts<from>} $columns$values";
     }
 
     submethod literal_array(@values) {
