@@ -233,4 +233,11 @@ role R2 { method values { {} } }
         'format an insert statement with an arbitrary value';
 }
 
+{
+    my $sub = Squerl::Dataset.new('').from('something').filter('x' => 2);
+    is $dataset.insert_sql($sub),
+       'INSERT INTO test SELECT * FROM something WHERE (x = 2)',
+       'format an insert statement with sub-query';
+}
+
 done_testing;

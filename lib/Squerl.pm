@@ -95,7 +95,10 @@ class Squerl::Dataset does Positional {
 
     method select_sql() {
         # RAKUDO: Real string interpolation
-        "SELECT * FROM {%!opts<from>}";
+        "SELECT * FROM {%!opts<from>}"
+        ~ (%!opts.exists('filter')
+            ?? " WHERE ({%!opts<filter>.fmt('%s = %s')})"
+            !! '');
     }
 
     method delete_sql() {
@@ -115,7 +118,7 @@ class Squerl::Dataset does Positional {
                 @columns.push(.key);
                 @values.push(.value);
             }
-            when Num|Str {
+            when Num|Str|Squerl::Dataset {
                 @values.push($_);
             }
             when .^can('values') {
@@ -133,8 +136,11 @@ class Squerl::Dataset does Positional {
         }
         my $columns = @columns ?? "({join $COMMA_SEPARATOR, @columns}) "
                                !! '';
-        my $values = @values ?? 'VALUES ' ~ self.literal_array(@values)
-                             !! 'DEFAULT VALUES';
+        my $values = @values
+                       ?? (@values[0] ~~ Squerl::Dataset
+                          ?? @values[0].select_sql()
+                          !! 'VALUES ' ~ self.literal_array(@values))
+                       !! 'DEFAULT VALUES';
         # RAKUDO: Real string interpolation
         "INSERT INTO {%!opts<from>} $columns$values";
     }
