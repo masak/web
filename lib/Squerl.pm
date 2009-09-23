@@ -62,6 +62,7 @@ class Squerl::Dataset does Positional {
         $value //= %_.pairs[0];
         given $value {
             when Int { return literal_integer($value) }
+            when Num { return literal_number($value) }
             when Str { return literal_string($value) }
             when Pair { return self.literal_symbol($value.key) }
         }
@@ -150,6 +151,10 @@ class Squerl::Dataset does Positional {
     }
 
     sub literal_integer($value) {
+        ~$value
+    }
+
+    sub literal_number($value) {
         ~$value
     }
 

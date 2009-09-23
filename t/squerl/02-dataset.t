@@ -240,4 +240,10 @@ role R2 { method values { {} } }
        'format an insert statement with sub-query';
 }
 
+{
+    is $dataset.insert_sql('a', 2, 6.5),
+       q[INSERT INTO test VALUES ('a', 2, 6.5)],
+       'format an insert statement with array';
+}
+
 done_testing;
