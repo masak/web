@@ -78,7 +78,27 @@ class Squerl::Dataset does Positional {
             #         [perl #69204]
             $name.="$!identifier_input_method";
         }
-        $!quote_identifiers ?? qq["$name"] !! $name;
+        $!quote_identifiers ?? quoted_identifier($name) !! $name;
+    }
+
+    submethod literal_array(@values) {
+        "({join $COMMA_SEPARATOR, map { self.literal($^value) }, @values})";
+    }
+
+    sub literal_integer($value) {
+        ~$value
+    }
+
+    sub literal_number($value) {
+        ~$value
+    }
+
+    sub literal_string($value) {
+        "'{$value.subst('\\', '\\\\', :g).subst("'", "''", :g)}'"
+    }
+
+    sub quoted_identifier($name) {
+        qq["{$name.subst(q["], q[""], :g)}"]
     }
 
     method output_identifier($name is copy) {
@@ -146,20 +166,11 @@ class Squerl::Dataset does Positional {
         "INSERT INTO {%!opts<from>} $columns$values";
     }
 
-    submethod literal_array(@values) {
-        "({join $COMMA_SEPARATOR, map { self.literal($^value) }, @values})";
-    }
-
-    sub literal_integer($value) {
-        ~$value
-    }
-
-    sub literal_number($value) {
-        ~$value
-    }
-
-    sub literal_string($value) {
-        "'{$value.subst('\\', '\\\\', :g).subst("'", "''", :g)}'"
+    method update_sql(*%nameds) {
+        my $values = join $COMMA_SEPARATOR, map {
+            "{.key} = {self.literal(.value)}" 
+        }, %nameds.pairs;
+        "UPDATE {%!opts<from>} SET $values";
     }
 }
 

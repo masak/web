@@ -246,4 +246,9 @@ role R2 { method values { {} } }
        'format an insert statement with array';
 }
 
+{
+    is $dataset.update_sql(:name<abc>), q[UPDATE test SET name = 'abc'],
+       'format an update statement';
+}
+
 done_testing;
