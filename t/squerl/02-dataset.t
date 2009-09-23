@@ -256,4 +256,14 @@ role R2 { method values { {} } }
        'return rows for arbitrary SQL';
 }
 
+{
+    my $sql = 'X';
+    my $ds = Squerl::Dataset.new(undef, :$sql);
+    is $ds.select_sql(), $sql, ':sql option works for .select_sql';
+    is $ds.insert_sql(), $sql, ':sql option works for .insert_sql';
+    is $ds.delete_sql(), $sql, ':sql option works for .delete_sql';
+    is $ds.update_sql(), $sql, ':sql option works for .update_sql';
+    is $ds.truncate_sql(), $sql, ':sql option works for .truncate_sql';
+}
+
 done_testing;

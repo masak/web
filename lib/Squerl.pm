@@ -130,16 +130,25 @@ class Squerl::Dataset does Positional {
     }
 
     method delete_sql() {
+        return self.static_sql(%!opts<sql>)
+            if %!opts.exists('sql');
+
         # RAKUDO: Real string interpolation
         "DELETE FROM {%!opts<from>}";
     }
 
     method truncate_sql() {
+        return self.static_sql(%!opts<sql>)
+            if %!opts.exists('sql');
+
         # RAKUDO: Real string interpolation
         "TRUNCATE TABLE {%!opts<from>}";
     }
 
     method insert_sql(*@positionals, *%nameds) {
+        return self.static_sql(%!opts<sql>)
+            if %!opts.exists('sql');
+
         my (@columns, @values);
         for @positionals {
             when Pair {
@@ -174,6 +183,9 @@ class Squerl::Dataset does Positional {
     }
 
     method update_sql(*%nameds) {
+        return self.static_sql(%!opts<sql>)
+            if %!opts.exists('sql');
+
         my $values = join $COMMA_SEPARATOR, map {
             "{.key} = {self.literal(.value)}"
         }, %nameds.pairs;
