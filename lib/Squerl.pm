@@ -114,7 +114,14 @@ class Squerl::Dataset does Positional {
         $name;
     }
 
+    method static_sql($sql) {
+        $sql
+    }
+
     method select_sql() {
+        return self.static_sql(%!opts<sql>)
+            if %!opts.exists('sql');
+
         # RAKUDO: Real string interpolation
         "SELECT * FROM {%!opts<from>}"
         ~ (%!opts.exists('filter')
@@ -168,7 +175,7 @@ class Squerl::Dataset does Positional {
 
     method update_sql(*%nameds) {
         my $values = join $COMMA_SEPARATOR, map {
-            "{.key} = {self.literal(.value)}" 
+            "{.key} = {self.literal(.value)}"
         }, %nameds.pairs;
         "UPDATE {%!opts<from>} SET $values";
     }

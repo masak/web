@@ -251,4 +251,9 @@ role R2 { method values { {} } }
        'format an update statement';
 }
 
+{
+    is $dataset.clone(:sql('xxx yyy zzz')).select_sql(), 'xxx yyy zzz',
+       'return rows for arbitrary SQL';
+}
+
 done_testing;
