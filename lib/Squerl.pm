@@ -1,5 +1,17 @@
 use SQLite3;
 
+class Squerl::InvalidOperation is Exception {
+    has $.message;
+
+    multi method new($message) {
+        self.bless(*, :$message);
+    }
+
+    method Str() {
+        "{self.WHAT}: $!message";
+    }
+}
+
 class Squerl::Dataset does Positional {
     has $.db;
     has %.opts;
@@ -36,8 +48,8 @@ class Squerl::Dataset does Positional {
                                   :opts(%new-opts));
     }
 
-    method from($value) {
-        self.clone(:from($value));
+    method from(*@tables) {
+        self.clone(:from(@tables.elems > 1 ?? @tables !! @tables[0]));
     }
 
     method filter($value) {
@@ -185,6 +197,9 @@ class Squerl::Dataset does Positional {
     method update_sql(*%nameds) {
         return self.static_sql(%!opts<sql>)
             if %!opts.exists('sql');
+
+        die ~Squerl::InvalidOperation.new('Joined datasets cannot be modified')
+            if %!opts<from> ~~ Array && %!opts<from>.elems > 1;
 
         my $values = join $COMMA_SEPARATOR, map {
             "{.key} = {self.literal(.value)}"

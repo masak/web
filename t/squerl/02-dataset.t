@@ -266,4 +266,26 @@ role R2 { method values { {} } }
     is $ds.truncate_sql(), $sql, ':sql option works for .truncate_sql';
 }
 
+sub throws_exception(&block, $expected-type, $message = '') {
+    try {
+        &block();
+    }
+    if $! {
+        my $got-type = ~$!;
+        ok $got-type.substr(0, $expected-type.chars) eq $expected-type,
+           $message;
+    }
+    else {
+        is 'ran without failure', $expected-type, $message;
+    }
+}
+
+$dataset = Squerl::Dataset.new(undef).from('t1', 't2');
+
+{
+    throws_exception { $dataset.update_sql( a => 1 ) },
+                     'Squerl::InvalidOperation',
+                     'multi-table dataset dies on .update_sql';
+}
+
 done_testing;
