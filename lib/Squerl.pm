@@ -130,6 +130,11 @@ class Squerl::Dataset does Positional {
         $sql
     }
 
+    method check_modification_allowed() {
+        die ~Squerl::InvalidOperation.new('Joined datasets cannot be modified')
+            if %!opts<from> ~~ Array && %!opts<from>.elems > 1;
+    }
+
     method select_sql() {
         return self.static_sql(%!opts<sql>)
             if %!opts.exists('sql');
@@ -145,6 +150,8 @@ class Squerl::Dataset does Positional {
         return self.static_sql(%!opts<sql>)
             if %!opts.exists('sql');
 
+        self.check_modification_allowed();
+
         # RAKUDO: Real string interpolation
         "DELETE FROM {%!opts<from>}";
     }
@@ -153,6 +160,8 @@ class Squerl::Dataset does Positional {
         return self.static_sql(%!opts<sql>)
             if %!opts.exists('sql');
 
+        self.check_modification_allowed();
+
         # RAKUDO: Real string interpolation
         "TRUNCATE TABLE {%!opts<from>}";
     }
@@ -160,6 +169,8 @@ class Squerl::Dataset does Positional {
     method insert_sql(*@positionals, *%nameds) {
         return self.static_sql(%!opts<sql>)
             if %!opts.exists('sql');
+
+        self.check_modification_allowed();
 
         my (@columns, @values);
         for @positionals {
@@ -198,8 +209,7 @@ class Squerl::Dataset does Positional {
         return self.static_sql(%!opts<sql>)
             if %!opts.exists('sql');
 
-        die ~Squerl::InvalidOperation.new('Joined datasets cannot be modified')
-            if %!opts<from> ~~ Array && %!opts<from>.elems > 1;
+        self.check_modification_allowed();
 
         my $values = join $COMMA_SEPARATOR, map {
             "{.key} = {self.literal(.value)}"

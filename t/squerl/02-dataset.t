@@ -286,6 +286,18 @@ $dataset = Squerl::Dataset.new(undef).from('t1', 't2');
     throws_exception { $dataset.update_sql( a => 1 ) },
                      'Squerl::InvalidOperation',
                      'multi-table dataset dies on .update_sql';
+
+    throws_exception { $dataset.delete_sql() },
+                     'Squerl::InvalidOperation',
+                     'multi-table dataset dies on .delete_sql';
+
+    throws_exception { $dataset.truncate_sql() },
+                     'Squerl::InvalidOperation',
+                     'multi-table dataset dies on .truncate_sql';
+
+    throws_exception { $dataset.insert_sql() },
+                     'Squerl::InvalidOperation',
+                     'multi-table dataset dies on .insert_sql';
 }
 
 done_testing;
