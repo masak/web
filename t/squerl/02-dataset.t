@@ -300,4 +300,9 @@ $dataset = Squerl::Dataset.new(undef).from('t1', 't2');
                      'multi-table dataset dies on .insert_sql';
 }
 
+{
+    is $dataset.select_sql, 'SELECT * FROM t1, t2',
+       'generate a select query FROM all specified tables';
+}
+
 done_testing;

@@ -135,12 +135,19 @@ class Squerl::Dataset does Positional {
             if %!opts<from> ~~ Array && %!opts<from>.elems > 1;
     }
 
+    sub source_list(@source) {
+        die 'No source specified for query'
+            if !defined @source || !@source;
+
+        @source.join($COMMA_SEPARATOR);
+    }
+
     method select_sql() {
         return self.static_sql(%!opts<sql>)
             if %!opts.exists('sql');
 
         # RAKUDO: Real string interpolation
-        "SELECT * FROM {%!opts<from>}"
+        "SELECT * FROM {source_list(%!opts<from>.list)}"
         ~ (%!opts.exists('filter')
             ?? " WHERE ({%!opts<filter>.fmt('%s = %s')})"
             !! '');
