@@ -74,33 +74,33 @@ $dataset = Squerl::Dataset.new('db');
 
 {
     $dataset.quote_identifiers = True;
-    is $dataset.literal(:a), '"a"',
+    is $dataset.literal(ident('a')), '"a"',
        'setting quote_identifiers to True makes .literal quote identifiers';
     $dataset.quote_identifiers = False;
-    is $dataset.literal(:a), 'a',
+    is $dataset.literal(ident('a')), 'a',
        'setting quote_identifiers to False makes .literal '
        ~ 'not quote identifiers';
 }
 
 {
     $dataset.identifier_input_method = 'upcase';
-    is $dataset.literal(:a), 'A',
+    is $dataset.literal(ident('a')), 'A',
         'identifier_input_method changes literalization of identifiers I';
     $dataset.identifier_input_method = 'downcase';
-    is $dataset.literal(:A), 'a',
+    is $dataset.literal(ident('A')), 'a',
         'identifier_input_method changes literalization of identifiers II';
     $dataset.identifier_input_method = 'reverse';
-    is $dataset.literal(:at_b), 'b_ta',
+    is $dataset.literal(ident('at_b')), 'b_ta',
         'identifier_input_method changes literalization of identifiers III';
 
     $dataset.identifier_input_method = 'uc';
-    is $dataset.literal(:a), 'A',
+    is $dataset.literal(ident('a')), 'A',
         'identifier_input_method changes literalization of identifiers IV';
     $dataset.identifier_input_method = 'lc';
-    is $dataset.literal(:A), 'a',
+    is $dataset.literal(ident('A')), 'a',
         'identifier_input_method changes literalization of identifiers V';
     $dataset.identifier_input_method = 'flip';
-    is $dataset.literal(:at_b), 'b_ta',
+    is $dataset.literal(ident('at_b')), 'b_ta',
         'identifier_input_method changes literalization of identifiers VI';
 }
 
@@ -303,6 +303,20 @@ $dataset = Squerl::Dataset.new(undef).from('t1', 't2');
 {
     is $dataset.select_sql, 'SELECT * FROM t1, t2',
        'generate a select query FROM all specified tables';
+}
+
+my $ds1 = Squerl::Dataset.new(undef).from('test');
+# RAKUDO: A bug prevents us from writing this:
+# my $ds2 = $ds1.filter(sql_number('price') < 100);
+# my $ds3 = $ds1.filter(sql_number('price') > 50);
+my $ds2 = $ds1.filter(sql_number('price').lt(100));
+my $ds3 = $ds1.filter(sql_number('price').gt(50));
+
+{
+    is $ds1.filter($ds2.exists).sql,
+       'SELECT * FROM test WHERE (EXISTS '
+       ~ '(SELECT * FROM test WHERE (price < 100)))',
+       'Dataset#exists works in filters';
 }
 
 done_testing;

@@ -1,5 +1,58 @@
 use SQLite3;
 
+class Squerl::BooleanExpression {
+    has Str $.op;
+    has $.rhs;
+    has $.lhs;
+
+    method Str() { "($.rhs $.op $.lhs)" }
+}
+
+class Squerl::NumericExpression {
+    has $.expr;
+
+    # RAKUDO: Due to a custom-defined infix:<< < >> causing #66552,
+    #         we're going to do it like this for the time being.
+    method lt($lhs) {
+        Squerl::BooleanExpression.new(:op<< < >>, :rhs(self), :$lhs);
+    }
+
+    method gt($lhs) {
+        Squerl::BooleanExpression.new(:op<< > >>, :rhs(self), :$lhs);
+    }
+
+    method Str() { ~$.expr }
+}
+
+class Squerl::LiteralString {
+    has Str $.value;
+
+    method new($value) { self.bless(self.CREATE(), :$value) }
+    method Str() { ~$.value }
+}
+
+sub sql_number($column) {
+    Squerl::NumericExpression.new(:expr($column));
+}
+
+# Ruby has symbols, Perl 6 doesn't. This class stands in as an
+# impedance matcher.
+class Squerl::Symbol {
+    has Str $.name;
+
+    method new($name) {
+        self.bless(self.CREATE(), :$name);
+    }
+
+    method Str() {
+        $.name;
+    }
+}
+
+sub ident($name) {
+    Squerl::Symbol.new($name);
+}
+
 class Squerl::InvalidOperation is Exception {
     has $.message;
 
@@ -53,7 +106,11 @@ class Squerl::Dataset does Positional {
     }
 
     method filter($value) {
-        self.clone(:filter($value));
+        self.clone(:where($value));
+    }
+
+    method exists() {
+        Squerl::LiteralString.new("(EXISTS ({self.select_sql}))");
     }
 
     method insert(*@values) {
@@ -75,9 +132,17 @@ class Squerl::Dataset does Positional {
         given $value {
             when Int { return literal_integer($value) }
             when Num { return literal_number($value) }
+            when Squerl::Symbol { return self.literal_symbol($value) }
+            when Squerl::LiteralString { return $value.Str }
             when Str { return literal_string($value) }
-            when Pair { return self.literal_symbol($value.key) }
+            when Pair { return literal_pair($value) }
+            when Squerl::BooleanExpression { $value.Str }
+            default { die "Can't handle {$value.WHAT}" }
         }
+    }
+
+    sub literal_pair($pair) {
+        sprintf '(%s = %s)', $pair.key, $pair.value;
     }
 
     method literal_symbol($name is copy) {
@@ -142,14 +207,18 @@ class Squerl::Dataset does Positional {
         @source.join($COMMA_SEPARATOR);
     }
 
+    method sql() {
+        self.select_sql();
+    }
+
     method select_sql() {
         return self.static_sql(%!opts<sql>)
             if %!opts.exists('sql');
 
         # RAKUDO: Real string interpolation
         "SELECT * FROM {source_list(%!opts<from>.list)}"
-        ~ (%!opts.exists('filter')
-            ?? " WHERE ({%!opts<filter>.fmt('%s = %s')})"
+        ~ (%!opts.exists('where')
+            ?? " WHERE {self.literal(%!opts<where>)}"
             !! '');
     }
 
