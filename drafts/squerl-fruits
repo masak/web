@@ -1,0 +1,29 @@
+use v6;
+use Squerl;
+
+my $DB = Squerl.sqlite('example.db');
+
+$DB.create_table: 'fruits',
+    'id'   => 'primary_key',
+    'name' => 'String',
+    'qty'  => 'Int',
+;
+
+my $fruits = $DB<fruits>;
+
+my $i = 0;
+for <apples pears oranges ninjas peaches papayas>
+  Z <    50    20      70      3      15      35> -> $name, $qty {
+
+    $fruits.insert($i++, $name, +$qty);
+}
+
+# those ninjas get in anywhere
+$fruits.filter('name' => 'ninjas').delete;
+
+# new shipment of pears
+$fruits.filter('name' => 'pears').update('qty' => 40);
+
+for $fruits.filter(sql_number('qty').gt(35)).llist {
+    say sprintf 'There are %d %s', .[2], .[1];
+}
