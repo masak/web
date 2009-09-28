@@ -113,18 +113,40 @@ class Squerl::Dataset does Positional {
         Squerl::LiteralString.new("(EXISTS ({self.select_sql}))");
     }
 
-    method insert(*@values) {
-        my $values = @values>>.perl.join(', ');
+    method insert(*@positionals, *%nameds) {
         given $!db {
             .open;
             # RAKUDO: Real string interpolation
-            .exec("INSERT INTO {%!opts<table>} VALUES($values)");
+            .exec(self.insert_sql(|@positionals, |%nameds));
+            .close;
+        }
+    }
+
+    method delete() {
+        given $!db {
+            .open;
+            # RAKUDO: Real string interpolation
+            .exec(self.delete_sql());
+            .close;
+        }
+    }
+
+    method update(*@pairs) {
+        given $!db {
+            .open;
+            # RAKUDO: Real string interpolation
+            .exec(self.update_sql(|@pairs));
             .close;
         }
     }
 
     method all() {
-        $!db.select("*", %!opts<table>);
+        $!db.do-select(self.select_sql()).list;
+    }
+
+    # RAKUDO: Strange Parrot global namespace bug
+    method llist() {
+        $!db.do-select(self.select_sql()).list;
     }
 
     method literal($value? is copy) {
@@ -135,14 +157,14 @@ class Squerl::Dataset does Positional {
             when Squerl::Symbol { return self.literal_symbol($value) }
             when Squerl::LiteralString { return $value.Str }
             when Str { return literal_string($value) }
-            when Pair { return literal_pair($value) }
+            when Pair { return self.literal_pair($value) }
             when Squerl::BooleanExpression { $value.Str }
             default { die "Can't handle {$value.WHAT}" }
         }
     }
 
-    sub literal_pair($pair) {
-        sprintf '(%s = %s)', $pair.key, $pair.value;
+    method literal_pair($pair) {
+        sprintf '(%s = %s)', $pair.key, self.literal($pair.value);
     }
 
     method literal_symbol($name is copy) {
@@ -229,7 +251,10 @@ class Squerl::Dataset does Positional {
         self.check_modification_allowed();
 
         # RAKUDO: Real string interpolation
-        "DELETE FROM {%!opts<from>}";
+        "DELETE FROM {%!opts<from>}"
+        ~ (%!opts.exists('where')
+            ?? " WHERE {self.literal(%!opts<where>)}"
+            !! '');
     }
 
     method truncate_sql() {
@@ -281,7 +306,7 @@ class Squerl::Dataset does Positional {
         "INSERT INTO {%!opts<from>} $columns$values";
     }
 
-    method update_sql(*%nameds) {
+    method update_sql(*@pairs) {
         return self.static_sql(%!opts<sql>)
             if %!opts.exists('sql');
 
@@ -289,8 +314,11 @@ class Squerl::Dataset does Positional {
 
         my $values = join $COMMA_SEPARATOR, map {
             "{.key} = {self.literal(.value)}"
-        }, %nameds.pairs;
-        "UPDATE {%!opts<from>} SET $values";
+        }, @pairs;
+        "UPDATE {%!opts<from>} SET $values"
+        ~ (%!opts.exists('where')
+            ?? " WHERE {self.literal(%!opts<where>)}"
+            !! '');
     }
 }
 
@@ -331,10 +359,14 @@ class Squerl::Database {
         .close;
     }
 
-    method select($_: $what, $table) {
+    method select($what, $table) {
+        self.do-select("SELECT $what FROM $table");
+    }
+
+    method do-select($_: $query) {
         my @rows;
         .open;
-        my $sth = $!dbh.prepare("SELECT $what FROM $table");
+        my $sth = $!dbh.prepare($query);
         while $sth.step() == 100 {
             push @rows, [map { $sth.column_text($_) }, ^$sth.column_count()];
         }
@@ -343,7 +375,7 @@ class Squerl::Database {
     }
 
     method from($table) {
-        return Squerl::Dataset.new(self, :$table,
+        return Squerl::Dataset.new(self, :from($table),
                                    :quote_identifiers($!quote_identifiers),
                                    :identifier_input_method(
                                      $!identifier_input_method
@@ -351,6 +383,10 @@ class Squerl::Database {
                                    :identifier_output_method(
                                      $!identifier_output_method
                                    ));
+    }
+
+    method postcircumfix:<{ }>($table) {
+        self.from($table);
     }
 }
 

@@ -5,6 +5,9 @@ use Squerl;
 
 my $dataset = Squerl::Dataset.new('db');
 
+# RAKUDO: There are plenty of unnecessary semicolons at the end of blocks
+#         in this file, due to [perl #69438]
+
 {
     my $db = 'db';
     my %opts = :from<test>;
@@ -16,7 +19,7 @@ my $dataset = Squerl::Dataset.new('db');
     is $d.db, $db, 'attribtue .db was properly set';
     ok $d.opts ~~ Hash, 'attribute .opts is a hash even when not set';
     is_deeply $d.opts, {}, 'attribute .opts is empty';
-}
+};
 
 {
     my $d1 = $dataset.clone( :from( ['test'] ) );
@@ -37,11 +40,11 @@ my $dataset = Squerl::Dataset.new('db');
     is_deeply $d2.opts<order>, ['name'],
               'the attribute passed with the .clone method is there';
     ok !$d1.opts.exists('order'), 'the original clone is unchanged';
-}
+};
 
 {
     ok Squerl::Dataset ~~ Positional, 'you can index into Squerl::Dataset';
-}
+};
 
 {
     my $db = Squerl::Database.new( :quote_identifiers );
@@ -50,7 +53,7 @@ my $dataset = Squerl::Dataset.new('db');
     $db = Squerl::Database.new( :!quote_identifiers );
     nok $db.from('a').quote_identifiers,
        'should get quote_identifiers default from database II';
-}
+};
 
 {
     my $db = Squerl::Database.new( :identifier_input_method<upcase> );
@@ -59,7 +62,7 @@ my $dataset = Squerl::Dataset.new('db');
     $db = Squerl::Database.new( :identifier_input_method<downcase> );
     ok $db.from('a').identifier_input_method eq 'downcase',
         'should get identifier_input_method default from database II';
-}
+};
 
 {
     my $db = Squerl::Database.new( :identifier_output_method<upcase> );
@@ -68,7 +71,7 @@ my $dataset = Squerl::Dataset.new('db');
     $db = Squerl::Database.new( :identifier_output_method<downcase> );
     ok $db.from('a').identifier_output_method eq 'downcase',
         'should get identifier_output_method default from database II';
-}
+};
 
 $dataset = Squerl::Dataset.new('db');
 
@@ -80,7 +83,7 @@ $dataset = Squerl::Dataset.new('db');
     is $dataset.literal(ident('a')), 'a',
        'setting quote_identifiers to False makes .literal '
        ~ 'not quote identifiers';
-}
+};
 
 {
     $dataset.identifier_input_method = 'upcase';
@@ -102,7 +105,7 @@ $dataset = Squerl::Dataset.new('db');
     $dataset.identifier_input_method = 'flip';
     is $dataset.literal(ident('at_b')), 'b_ta',
         'identifier_input_method changes literalization of identifiers VI';
-}
+};
 
 {
     is $dataset.output_identifier('at_b_C'), 'at_b_C',
@@ -127,7 +130,7 @@ $dataset = Squerl::Dataset.new('db');
     $dataset.identifier_output_method = 'flip';
     is $dataset.output_identifier('at_b_C'), 'C_b_ta',
         'identifier_output_method changes identifiers returned from the db VII';
-}
+};
 
 $dataset = Squerl::Dataset.new(undef).from('items');
 
@@ -139,7 +142,7 @@ $dataset = Squerl::Dataset.new(undef).from('items');
     is $clone.WHAT, $dataset.WHAT, 'clone has the same type as original';
     is_deeply $clone.opts, $dataset.opts, 'opts attributes are equivalent';
     ok $clone.row_proc === $dataset.row_proc, 'row_proc attributes equal';
-}
+};
 
 {
     my $clone = $dataset.clone;
@@ -148,7 +151,7 @@ $dataset = Squerl::Dataset.new(undef).from('items');
     $dataset.=filter( 'a' => 'b' );
     ok !$clone.opts.exists('filter'),
               'changing original.opts leaves clone.opts unchanged';
-}
+};
 
 {
     my $clone = $dataset.clone;
@@ -156,7 +159,7 @@ $dataset = Squerl::Dataset.new(undef).from('items');
     is $clone.WHAT, $dataset.WHAT, 'should return a clone self I';
     is $clone.db, $dataset.db, 'should return a clone self II';
     is_deeply $clone.opts, $dataset.opts, 'should return a clone self III';
-}
+};
 
 $dataset = Squerl::Dataset.new(undef).from('items');
 
@@ -165,21 +168,21 @@ $dataset = Squerl::Dataset.new(undef).from('items');
 
     is_deeply $clone.opts, { one => 2, from => 'items' },
         'should merge the specified options';
-}
+};
 
 {
     my $clone = $dataset.clone( :from(['other']) );
 
     is_deeply $clone.opts, { :from(['other']) },
         'should overwrite existing options';
-}
+};
 
 {
     my $clone = $dataset.clone( :from(['other']) );
 
     is_deeply $dataset.opts<from>, 'items', 'original .opts<from> unharmed';
     is_deeply $clone.opts<from>, ['other'], 'cloned .opts<from> changed'
-}
+};
 
 {
     # TODO: Can't realisticly do this one yet.
@@ -189,7 +192,7 @@ $dataset = Squerl::Dataset.new(undef).from('items');
     # end
     # @dataset.extend(m)
     # @dataset.clone({}).should respond_to(:__xyz__)
-}
+};
 
 $dataset = Squerl::Dataset.new(undef).from('test');
 
@@ -206,17 +209,17 @@ is $dataset.insert_sql, 'INSERT INTO test DEFAULT VALUES',
         'format an insert statement with hash';
     is $dataset.insert_sql({}), 'INSERT INTO test DEFAULT VALUES',
         'empty hash gives an insert statement with default values';
-}
+};
 
 {
     my $sql = $dataset.insert_sql( 'name' => 'wxyz', 'price' => 342 );
     ok $sql eq q[INSERT INTO test (name, price) VALUES ('wxyz', 342)]
              | q[INSERT INTO test (price, name) VALUES (342, 'wxyz')],
         'format an insert statement with string keys';
-}
+};
 
 role R1 { method values { 'a' => 1; } }
-role R2 { method values { {} } }
+role R2 { method values { {} } };
 
 {
     my $v = Object.new but R1;
@@ -226,35 +229,36 @@ role R2 { method values { {} } }
     $v = Object.new but R2;
     is $dataset.insert_sql($v), 'INSERT INTO test DEFAULT VALUES',
         'format an insert statement with an object that .can("values") II';
-}
+};
 
 {
     is $dataset.insert_sql(123), 'INSERT INTO test VALUES (123)',
         'format an insert statement with an arbitrary value';
-}
+};
 
 {
     my $sub = Squerl::Dataset.new('').from('something').filter('x' => 2);
     is $dataset.insert_sql($sub),
        'INSERT INTO test SELECT * FROM something WHERE (x = 2)',
        'format an insert statement with sub-query';
-}
+};
 
 {
     is $dataset.insert_sql('a', 2, 6.5),
        q[INSERT INTO test VALUES ('a', 2, 6.5)],
        'format an insert statement with array';
-}
+};
 
 {
-    is $dataset.update_sql(:name<abc>), q[UPDATE test SET name = 'abc'],
+    is $dataset.update_sql('name' => 'abc'),
+       q[UPDATE test SET name = 'abc'],
        'format an update statement';
-}
+};
 
 {
     is $dataset.clone(:sql('xxx yyy zzz')).select_sql(), 'xxx yyy zzz',
        'return rows for arbitrary SQL';
-}
+};
 
 {
     my $sql = 'X';
@@ -264,7 +268,7 @@ role R2 { method values { {} } }
     is $ds.delete_sql(), $sql, ':sql option works for .delete_sql';
     is $ds.update_sql(), $sql, ':sql option works for .update_sql';
     is $ds.truncate_sql(), $sql, ':sql option works for .truncate_sql';
-}
+};
 
 sub throws_exception(&block, $expected-type, $message = '') {
     try {
@@ -298,7 +302,7 @@ $dataset = Squerl::Dataset.new(undef).from('t1', 't2');
     throws_exception { $dataset.insert_sql() },
                      'Squerl::InvalidOperation',
                      'multi-table dataset dies on .insert_sql';
-}
+};
 
 {
     is $dataset.select_sql, 'SELECT * FROM t1, t2',
