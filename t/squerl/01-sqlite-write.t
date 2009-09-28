@@ -6,11 +6,11 @@ use Squerl;
 unlink (my $file = 't/squerl/posts.db');
 my $DB = Squerl.sqlite($file);
 
-$DB.create_table: <posts
-    primary_key id
-    Int         user_id
-    String      name
->;
+$DB.create_table: 'posts',
+    'id'      => 'primary_key',
+    'user_id' => 'Int',
+    'name'    => 'String',
+;
 
 #my $posts = $DB<posts>;
 my $posts = $DB.from('posts');

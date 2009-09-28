@@ -346,7 +346,10 @@ class Squerl::Database {
 
     method create_table($_: *@args) {
         my $table-name = @args[0];
-        my $columns = join ', ', gather for @args[1..^*] -> $type, $name {
+        my $columns = join ', ', gather for @args[1..^*] {
+            die "Expected a Pair, got a {.WHAT}"
+                unless $_ ~~ Pair;
+            my ($name, $type) = .key, .value;
             given $type.lc {
                 when 'primary_key'   { take "$name INTEGER PRIMARY KEY ASC" }
                 when 'int'|'integer' { take "$name INTEGER" }
