@@ -1,0 +1,60 @@
+=head1 Core
+
+The part of Web.pm called Core aims to abstract away the tasks common to
+most web applications: getting information from the environment, parsing
+URLs, escapting HTML content, handling C<GET> and C<POST> requests, etc.
+It also decouples the server engine from the web application logic, making
+the former easier to swap out for some other server engine.
+
+The assumption made by the Web.pm core is that your web application is a
+C<Callable> object taking the environment as a parameter, and returning an
+HTTP response code, a header, and a body. In pseudocode:
+
+ sub my-web-app(%env) {
+     # here's where the actual web application happens
+     # ...
+     return [$response, %header, @body];
+ }
+
+ Web::Handler::HTTPDaemon.run( &my-web-app );
+
+That last line there plugs together the web application contained in the
+subroutine C<my-web-app> with a particular server engine (in this case
+C<HTTP::Daemon>), mediated through a C<Web::Handler>. More about those below.
+
+In a way, C<Core> is the glue that ties all the things together in an
+application such as the above. Something has to make sure that the server
+engine (say, C<HTTP::Daemon>) sends the request information in the form
+of an environment hash over to your web application, and then that the
+web application sends the response-header-body tuple back. That's what
+C<Core> does. It talks to the backend for you.
+
+The scheme is quite simple as it is, but it can be made even simpler. Two
+convenience classes unburden most of the tedium of handling the environment
+and the response-header-body tuple, respectively: C<Web::Request> and
+C<Web::Response>.
+
+=head2 C<Web::Request>
+
+C<Web::Request> wraps the environment. The environment is just a C<Hash>,
+much like the Perl 6 C<%*ENV>. In fact, in the case of CGI scripts, it
+I<is> C<%*ENV>. C<Web::Request> provides a read/write API through which
+you can access this hash efficiently.
+
+ my $req = Web::Request.new(%env);
+ # do things with $req, described below
+
+The class does not copy the environment C<Hash>. Any modifications you
+make through C<Web::Request> are made on the original object you sent in.
+
+=head2 C<Web::Response>
+
+Using C<Web::Response>, you don't have to construct the response-header-body
+tuple manually. Instead, you prep your C<Web::Response> object in various ways,
+until it contains what you want, and then serialize the object into a tuple.
+
+ my $res = Web::Response.new();
+ # do things with $res, described below
+ return $res.finish(); # the finish method returns [$response, %header, @body]
+
+
