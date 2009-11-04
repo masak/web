@@ -133,7 +133,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -150,7 +150,7 @@
        style="fill-opacity:1;fill:url(#linearGradient12852);stroke:none" />
     <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Geneva CY;-inkscape-font-specification:Bitstream Vera Sans"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Optima;-inkscape-font-specification:Optima"
        x="207.52663"
        y="180.26036"
        id="text12919"><tspan
@@ -158,49 +158,49 @@
          id="tspan12921"
          x="207.52663"
          y="180.26036">neat, <tspan
-   style="font-style:italic;-inkscape-font-specification:Bitstream Vera Sans Oblique"
+   style="font-style:normal;-inkscape-font-specification:Optima;font-family:Optima;font-weight:normal;font-stretch:normal;font-variant:normal"
    id="tspan12923">adjective, -er, -est</tspan></tspan></text>
     <g
-       id="g12941"
-       transform="translate(128.81293,22.208176)">
+       id="g19101"
+       transform="translate(24.912,-1.377859)">
       <text
          id="text12925"
-         y="263.57397"
-         x="169.6568"
-         style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Geneva CY;-inkscape-font-specification:Geneva CY"
+         y="285.78217"
+         x="298.46973"
+         style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Optima;-inkscape-font-specification:Optima"
          xml:space="preserve"><tspan
-           y="263.57397"
-           x="169.6568"
+           y="285.78217"
+           x="298.46973"
            id="tspan12927"
            sodipodi:role="line">1. pleasingly orderly</tspan></text>
       <text
          id="text12929"
-         y="335.77911"
-         x="171.85406"
-         style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Geneva CY;-inkscape-font-specification:Geneva CY"
+         y="357.9873"
+         x="300.66699"
+         style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Optima;-inkscape-font-specification:Optima"
          xml:space="preserve"><tspan
-           y="335.77911"
-           x="171.85406"
+           y="357.9873"
+           x="300.66699"
            id="tspan12931"
            sodipodi:role="line">2. of a simple design</tspan></text>
       <text
          id="text12933"
-         y="407.98422"
-         x="171.97711"
-         style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Geneva CY;-inkscape-font-specification:Geneva CY"
+         y="430.19241"
+         x="300.79004"
+         style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Optima;-inkscape-font-specification:Optima"
          xml:space="preserve"><tspan
-           y="407.98422"
-           x="171.97711"
+           y="430.19241"
+           x="300.79004"
            id="tspan12935"
            sodipodi:role="line">3. cleverly effective</tspan></text>
       <text
          id="text12937"
-         y="480.18936"
-         x="173.06696"
-         style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Geneva CY;-inkscape-font-specification:Geneva CY"
+         y="502.39755"
+         x="301.87988"
+         style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Optima;-inkscape-font-specification:Optima"
          xml:space="preserve"><tspan
-           y="480.18936"
-           x="173.06696"
+           y="502.39755"
+           x="301.87988"
            id="tspan12939"
            sodipodi:role="line">4. great; wonderful; fine</tspan></text>
     </g>

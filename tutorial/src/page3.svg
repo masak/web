@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1024px"
+   height="768px"
+   id="svg2816"
+   version="1.1"
+   inkscape:version="0.47pre4 r22446"
+   sodipodi:docname="page3.svg">
+  <defs
+     id="defs2818">
+    <linearGradient
+       id="linearGradient12953">
+      <stop
+         style="stop-color:#fbf73d;stop-opacity:1;"
+         offset="0"
+         id="stop12955" />
+      <stop
+         style="stop-color:#f7fdad;stop-opacity:1;"
+         offset="1"
+         id="stop12957" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient12846">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop12848" />
+      <stop
+         style="stop-color:#80c080;stop-opacity:1;"
+         offset="1"
+         id="stop12850" />
+    </linearGradient>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 384 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1024 : 384 : 1"
+       inkscape:persp3d-origin="512 : 256 : 1"
+       id="perspective2824" />
+    <font
+       horiz-adv-x="2048"
+       id="EmbeddedFont_1">
+      <font-face
+         id="font-face6562"
+         descent="582"
+         ascent="1958"
+         units-per-em="2048"
+         font-family="Nimbus Sans L embedded" />
+      <missing-glyph
+         id="missing-glyph6564"
+         horiz-adv-x="2048">
+        <path
+           id="path6566"
+           d="M 0,2048 L 2047,2048 2047,1 0,1 0,2048 Z"
+           style="fill:none;stroke:black;stroke-width:33" />
+      </missing-glyph>
+      <glyph
+         id="glyph6568"
+         horiz-adv-x="1350"
+         unicode="M">
+        <path
+           id="path6570"
+           d="M 958,0 L 1378,1251 1378,0 1559,0 1559,1493 1294,1493 860,193 418,1493 154,1493 154,0 334,0 334,1251 758,0 958,0 Z" />
+      </glyph>
+      <glyph
+         id="glyph6572"
+         horiz-adv-x="1166"
+         unicode="T">
+        <path
+           id="path6574"
+           d="M 725,1325 L 1214,1325 1214,1493 43,1493 43,1325 535,1325 535,0 725,0 725,1325 Z" />
+      </glyph>
+    </font>
+    <inkscape:perspective
+       id="perspective10232"
+       inkscape:persp3d-origin="13970 : 7196.6667 : 1"
+       inkscape:vp_z="27940 : 10795 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 10795 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient12846"
+       id="linearGradient12852"
+       x1="512"
+       y1="-7.5739746"
+       x2="512"
+       y2="775.57397"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient12953"
+       id="linearGradient12959"
+       x1="863.43195"
+       y1="630.15387"
+       x2="863.43195"
+       y2="418.08286"
+       gradientUnits="userSpaceOnUse" />
+    <inkscape:perspective
+       id="perspective5775"
+       inkscape:persp3d-origin="526.18109 : 248.03149 : 1"
+       inkscape:vp_z="1052.3622 : 372.04724 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 372.04724 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient12953"
+       id="linearGradient13365"
+       gradientUnits="userSpaceOnUse"
+       x1="863.43195"
+       y1="630.15387"
+       x2="863.43195"
+       y2="418.08286" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.66015625"
+     inkscape:cx="545.59542"
+     inkscape:cy="350.11501"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:window-width="904"
+     inkscape:window-height="755"
+     inkscape:window-x="165"
+     inkscape:window-y="138"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata2821">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <rect
+       id="rect12072"
+       width="1042.1775"
+       height="783.14795"
+       x="-9.0887451"
+       y="-7.5739746"
+       style="fill-opacity:1;fill:url(#linearGradient12852);stroke:none" />
+    <g
+       id="g13353"
+       transform="matrix(0.97916432,0.20306953,-0.20306953,0.97916432,128.41734,-18.531404)">
+      <g
+         transform="translate(-708.92308,92.402367)"
+         id="g12970">
+        <path
+           style="fill:url(#linearGradient13365);fill-opacity:1;stroke:#12101e;stroke-opacity:1"
+           d="m 757.40625,418.09375 0,212.0625 181.4375,0 30.625,-30.625 0,-181.4375 -212.0625,0 z"
+           id="rect12951" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m 939.24001,629.88705 0.11336,-30.34315 29.83716,0"
+           id="path12966"
+           sodipodi:nodetypes="ccc" />
+      </g>
+      <text
+         id="text12976"
+         y="559.05664"
+         x="65.129654"
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Comic Sans MS;-inkscape-font-specification:Comic Sans MS"
+         xml:space="preserve"><tspan
+           id="tspan12994"
+           y="559.05664"
+           x="65.129654"
+           sodipodi:role="line">Any callable object</tspan><tspan
+           y="584.05664"
+           x="65.129654"
+           sodipodi:role="line"
+           id="tspan13333">can be used as a</tspan><tspan
+           y="609.05664"
+           x="65.129654"
+           sodipodi:role="line"
+           id="tspan13335">web application by</tspan><tspan
+           y="634.05664"
+           x="65.129654"
+           sodipodi:role="line"
+           id="tspan13337">Web.pm. It should</tspan><tspan
+           y="659.05664"
+           x="65.129654"
+           sodipodi:role="line"
+           id="tspan13339">return status,</tspan><tspan
+           y="684.05664"
+           x="65.129654"
+           sodipodi:role="line"
+           id="tspan13341">header, and body.</tspan></text>
+    </g>
+    <path
+       style="fill:#31445b;fill-opacity:1;stroke:none"
+       id="rect3222"
+       d="m 306.46761,210.16725 0,285.16504 c 0.0115,34.32677 27.74301,62.22235 62.00731,62.50046 l 617.54308,0 0,-285.16504 c -0.0116,-34.32677 -27.76445,-62.22236 -62.02872,-62.50046 l -617.52167,0 z" />
+    <text
+       xml:space="preserve"
+       style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Optima;-inkscape-font-specification:Optima"
+       x="251.77371"
+       y="99.976334"
+       id="text13367"><tspan
+         sodipodi:role="line"
+         id="tspan13369"
+         x="251.77371"
+         y="99.976334">Web.pm CORE lets you construct</tspan><tspan
+         sodipodi:role="line"
+         x="251.77371"
+         y="144.97633"
+         id="tspan13371">web applications out of anything</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans Mono;-inkscape-font-specification:Bitstream Vera Sans Mono"
+       x="374.73108"
+       y="286.22461"
+       id="text36067"><tspan
+         sodipodi:role="line"
+         id="tspan36069"
+         x="374.73108"
+         y="286.22461"><tspan
+           style="font-weight:bold;fill:#e3ba35;fill-opacity:1;-inkscape-font-specification:Bitstream Vera Sans Bold"
+           id="tspan36595">class</tspan><tspan
+           style="fill:#ffffff;fill-opacity:1"
+           id="tspan36697"> HelloWorld {</tspan></tspan><tspan
+         sodipodi:role="line"
+         x="374.73108"
+         y="316.22461"
+         id="tspan36071"><tspan
+           style="font-weight:bold;fill:#e3ba35;fill-opacity:1;-inkscape-font-specification:Bitstream Vera Sans Bold"
+           id="tspan36609">  method</tspan><tspan
+           style="fill:#ffffff;fill-opacity:1"
+           id="tspan36711"> postcircumfix:&lt;( )&gt;($env) {</tspan></tspan><tspan
+         sodipodi:role="line"
+         x="374.73108"
+         y="346.22461"
+         id="tspan36073"><tspan
+           style="fill:#ffffff;fill-opacity:1"
+           id="tspan36725">    [</tspan><tspan
+           style="fill:#50be1f;fill-opacity:1"
+           id="tspan36641">200</tspan><tspan
+           style="fill:#ffffff;fill-opacity:1"
+           id="tspan36739">,</tspan></tspan><tspan
+         sodipodi:role="line"
+         x="374.73108"
+         y="376.22461"
+         id="tspan36075"><tspan
+           style="fill:#ffffff;fill-opacity:1"
+           id="tspan36741">     {</tspan><tspan
+           style="fill:#50be1f;fill-opacity:1"
+           id="tspan36655">'Content-Type'</tspan><tspan
+           style="fill:#ffffff;fill-opacity:1"
+           id="tspan36755"> =&gt;</tspan><tspan
+           style="fill:#50be1f;fill-opacity:1"
+           id="tspan36669"> 'text/plain'</tspan><tspan
+           style="fill:#fff000;fill-opacity:0"
+           id="tspan36769">},</tspan></tspan><tspan
+         sodipodi:role="line"
+         x="374.73108"
+         y="406.22461"
+         id="tspan36077"><tspan
+           style="fill:#fff000;fill-opacity:0"
+           id="tspan36771">     [</tspan><tspan
+           style="fill:#50be1f;fill-opacity:1"
+           id="tspan36683">'Hello world!'</tspan><tspan
+           style="fill:#ffffff;fill-opacity:1"
+           id="tspan36773">]</tspan></tspan><tspan
+         sodipodi:role="line"
+         x="374.73108"
+         y="436.22461"
+         id="tspan36079"
+         style="fill:#ffffff;fill-opacity:1">    ]</tspan><tspan
+         sodipodi:role="line"
+         x="374.73108"
+         y="466.22461"
+         id="tspan36081"
+         style="fill:#ffffff;fill-opacity:1">  }</tspan><tspan
+         sodipodi:role="line"
+         x="374.73108"
+         y="496.22461"
+         id="tspan36083"
+         style="fill:#ffffff;fill-opacity:1">}</tspan></text>
+  </g>
+</svg>

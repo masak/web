@@ -5,10 +5,10 @@ my $inkscape_executable
     = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
 
 system
-    "$inkscape_executable --export-text-to-path "
+    "$inkscape_executable "
     . "--without-gui --file=src/page$_.svg "
     . "--export-pdf=pdf/page$_.pdf"
-        for 1..2;
+        for 1..4;
 
 system
     'gs -q -sPAPERSIZE=letter -dNOPAUSE -dBATCH -sDEVICE=pdfwrite'
