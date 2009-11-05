@@ -4,13 +4,16 @@ use strict;
 my $inkscape_executable
     = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
 
+die 'Could not find inkscape'
+    unless -f $inkscape_executable;
+
 system
     "$inkscape_executable "
     . "--without-gui --file=src/page$_.svg "
-    . "--export-pdf=pdf/page$_.pdf"
+    . "--export-pdf=pdf/page$_.pdf 2> /dev/null"
         for 1..4;
 
 system
     'gs -q -sPAPERSIZE=letter -dNOPAUSE -dBATCH -sDEVICE=pdfwrite'
-    . " -sOutputFile=win.pdf pdf/*.pdf";
+    . " -sOutputFile=win.pdf pdf/*.pdf 2> /dev/null";
 
