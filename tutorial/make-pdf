@@ -6,11 +6,15 @@ my $inkscape_executable
 die 'Could not find inkscape'
     unless $inkscape_executable ~~ :f;
 
-run
-    "$inkscape_executable "
-    ~ "--without-gui --file=src/page$_.svg "
-    ~ "--export-pdf=pdf/page$_.pdf 2> /dev/null"
-        for 1..5;
+run 'rm -rf pdf/*';
+
+my $i = 0;
+while 'src/' ~ (my $page = 'page' ~ ++$i) ~ '.svg' ~~ :f {
+    run
+        "$inkscape_executable "
+        ~ "--without-gui --file=src/$page.svg "
+        ~ "--export-pdf=pdf/$page.pdf 2> /dev/null";
+}
 
 run
     'gs -q -sPAPERSIZE=letter -dNOPAUSE -dBATCH -sDEVICE=pdfwrite'
