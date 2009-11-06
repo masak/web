@@ -200,6 +200,15 @@
        x2="512"
        y2="775.57397"
        gradientTransform="translate(-177.23077,-252.21302)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient12953"
+       id="linearGradient4767"
+       gradientUnits="userSpaceOnUse"
+       x1="863.43195"
+       y1="630.15387"
+       x2="863.43195"
+       y2="418.08286" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -227,7 +236,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -243,13 +252,12 @@
        y="-7.5739746"
        style="fill-opacity:1;fill:url(#linearGradient12852);stroke:none" />
     <g
-       id="g19190"
-       transform="translate(6.0591716,-169.6568)">
+       id="g4779">
       <g
-         transform="matrix(0.96974175,-0.24413302,0.24413302,0.96974175,-809.39753,318.744)"
+         transform="matrix(0.96974175,-0.24413302,0.24413302,0.96974175,-803.33836,149.0872)"
          id="g12970">
         <path
-           style="fill:url(#linearGradient13365);fill-opacity:1;stroke:#12101e;stroke-opacity:1"
+           style="fill:url(#linearGradient4767);fill-opacity:1;stroke:#12101e;stroke-opacity:1"
            d="m 757.40625,418.09375 0,212.0625 181.4375,0 30.625,-30.625 0,-181.4375 -212.0625,0 z"
            id="rect12951" />
         <path
@@ -261,34 +269,34 @@
       <text
          transform="matrix(0.96974175,-0.24413302,0.24413302,0.96974175,0,0)"
          id="text12976"
-         y="575.25519"
-         x="-89.742195"
+         y="418.33551"
+         x="-32.890972"
          style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Comic Sans MS;-inkscape-font-specification:Comic Sans MS"
          xml:space="preserve"><tspan
-           y="575.25519"
-           x="-89.742195"
+           y="418.33551"
+           x="-32.890972"
            sodipodi:role="line"
-           id="tspan13341">You can switch</tspan><tspan
-           y="600.25519"
-           x="-89.742195"
+           id="tspan19178">It's easy to switch</tspan><tspan
+           y="443.33551"
+           x="-32.890972"
            sodipodi:role="line"
-           id="tspan19170">server engines for</tspan><tspan
-           y="625.25519"
-           x="-89.742195"
+           id="tspan4727">to another server</tspan><tspan
+           y="468.33551"
+           x="-32.890972"
            sodipodi:role="line"
-           id="tspan19172">your web application,</tspan><tspan
-           y="650.25519"
-           x="-89.742195"
+           id="tspan4731">engine, and back-</tspan><tspan
+           y="493.33551"
+           x="-32.890972"
            sodipodi:role="line"
-           id="tspan19174">and everything just</tspan><tspan
-           y="675.25519"
-           x="-89.742195"
+           id="tspan4735">end code won't</tspan><tspan
+           y="518.33551"
+           x="-32.890972"
            sodipodi:role="line"
-           id="tspan19176">keeps working like</tspan><tspan
-           y="700.25519"
-           x="-89.742195"
+           id="tspan4737">get tangled with</tspan><tspan
+           y="543.33551"
+           x="-32.890972"
            sodipodi:role="line"
-           id="tspan19178">before.</tspan></text>
+           id="tspan4739">application code.</tspan></text>
     </g>
     <text
        xml:space="preserve"

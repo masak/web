@@ -205,9 +205,9 @@
            sodipodi:role="line">4. great; wonderful; fine</tspan></text>
     </g>
     <g
-       id="g12996"
-       transform="matrix(0.98334096,-0.18177063,0.18177063,0.98334096,-127.84507,248.99261)">
+       id="g4865">
       <g
+         transform="matrix(0.98334096,-0.18177063,0.18177063,0.98334096,-127.84507,248.99261)"
          id="g12970">
         <path
            style="fill:url(#linearGradient13007);fill-opacity:1;stroke:#12101e;stroke-opacity:1"
@@ -220,31 +220,28 @@
            sodipodi:nodetypes="ccc" />
       </g>
       <text
+         transform="matrix(0.98334096,-0.18177063,0.18177063,0.98334096,0,0)"
          id="text12976"
-         y="479.12012"
-         x="774.88281"
+         y="713.79614"
+         x="608.37769"
          style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Comic Sans MS;-inkscape-font-specification:Comic Sans MS"
          xml:space="preserve"><tspan
-           id="tspan12982"
-           y="479.12012"
-           x="774.88281"
-           sodipodi:role="line">We contend that</tspan><tspan
-           id="tspan12988"
-           y="504.12012"
-           x="774.88281"
-           sodipodi:role="line">Web.pm is all of</tspan><tspan
-           id="tspan12990"
-           y="529.12012"
-           x="774.88281"
-           sodipodi:role="line">these things. This</tspan><tspan
-           id="tspan12992"
-           y="554.12012"
-           x="774.88281"
-           sodipodi:role="line">tutorial aims to</tspan><tspan
            id="tspan12994"
-           y="579.12012"
-           x="774.88281"
-           sodipodi:role="line">show why, and how.</tspan></text>
+           y="713.79614"
+           x="608.37769"
+           sodipodi:role="line">In this tutorial, we</tspan><tspan
+           y="738.79614"
+           x="608.37769"
+           sodipodi:role="line"
+           id="tspan4851">want to show what</tspan><tspan
+           y="763.79614"
+           x="608.37769"
+           sodipodi:role="line"
+           id="tspan4853">we think is great</tspan><tspan
+           y="788.79614"
+           x="608.37769"
+           sodipodi:role="line"
+           id="tspan4855">about Web.pm.</tspan></text>
     </g>
   </g>
 </svg>
