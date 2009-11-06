@@ -1,19 +1,18 @@
-#!/usr/bin/perl -w
-use strict;
+#!/usr/local/bin/perl6
 
 my $inkscape_executable
     = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
 
 die 'Could not find inkscape'
-    unless -f $inkscape_executable;
+    unless $inkscape_executable ~~ :f;
 
-system
+run
     "$inkscape_executable "
-    . "--without-gui --file=src/page$_.svg "
-    . "--export-pdf=pdf/page$_.pdf 2> /dev/null"
+    ~ "--without-gui --file=src/page$_.svg "
+    ~ "--export-pdf=pdf/page$_.pdf 2> /dev/null"
         for 1..5;
 
-system
+run
     'gs -q -sPAPERSIZE=letter -dNOPAUSE -dBATCH -sDEVICE=pdfwrite'
-    . " -sOutputFile=win.pdf pdf/*.pdf 2> /dev/null";
+    ~ " -sOutputFile=win.pdf pdf/*.pdf 2> /dev/null";
 
