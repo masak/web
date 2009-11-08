@@ -1,0 +1,6 @@
+* mysql bindings for Squerl
+
+* a nopaste which uses the modern Web.pm utilities (Web::Request and
+  Web::Response), and preferably does syntax highlighting of Perl 6.
+
+* a LolDispatch updated to modern Web.pm.
