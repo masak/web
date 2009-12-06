@@ -371,7 +371,11 @@ class Squerl::Database {
         .open;
         my $sth = $!dbh.prepare($query);
         while $sth.step() == 100 {
-            push @rows, [map { $sth.column_text($_) }, ^$sth.column_count()];
+            my %row;
+            # RAKUDO: Can't use hash indexing here. [perl #71064]
+            %row.push($sth.column_name($_) => $sth.column_text($_))
+                for ^$sth.column_count();
+            push @rows, {%row};
         }
         .close;
         return @rows;
