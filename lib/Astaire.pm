@@ -46,7 +46,14 @@ class Dispatch {
             if %match<success>
                && $candidate.http_method eq $request.request_method {
                 my $code = $candidate.code;
-                $response.write( $code(|%match<splat>) );
+                my $body;
+                if $code.arity {
+                    $body = $code(|%match<splat>);
+                }
+                else {
+                    $body = $code();
+                }
+                $response.write($body);
                 return $response;
             }
         }
