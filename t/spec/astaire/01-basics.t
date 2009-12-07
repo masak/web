@@ -2,7 +2,7 @@
 use v6;
 use Test;
 
-plan 12;
+plan 14;
 
 #Basic test 
 use Astaire;
