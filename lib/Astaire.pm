@@ -47,7 +47,11 @@ class Dispatch {
                && $candidate.http_method eq $request.request_method {
                 my $code = $candidate.code;
                 my $body;
-                if $code.arity {
+                if $code.signature.params == 1
+                   && $code.signature.params[0].name eq '@splat' {
+                    $body = $code(:splat(%match<splat>));
+                }
+                elsif $code.arity {
                     $body = $code(|%match<splat>);
                 }
                 else {
