@@ -84,8 +84,6 @@ module Astaire {
         $dispatch.push( Handler.new( condition => $condition, code => $code, http_method => $http_method ) );
     }
 
-    multi sub infix:<answers>(Str $condition, Code $code) is export { return ( $condition => $code ) }
-
     sub application () is export {
         my AstaireApp $application .= new( dispatch => $dispatch );
         return $application;

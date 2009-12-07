@@ -8,12 +8,12 @@ plan 18;
 use Astaire;
 ok(1, 'used Astaire without errors');
 
-get '/hi' answers {
+get '/hi' => {
     "Hello World!"
 };
 ok(1, 'set up get action without errors');
 
-post '/test' answers {
+post '/test' => {
     2+2
 };
 ok(1, 'set up post action without errors');
@@ -53,7 +53,7 @@ ok(1, 'set up application without errors');
     ok( $response.status == 404 , 'request to post action with get fails as excpected');
 }
 
-get '/second_test' answers {
+get '/second_test' => {
     "ho!"
 };
 
@@ -62,7 +62,7 @@ get '/second_test' answers {
     ok( $response.body eq 'ho!' , 'can add actions after application object was created');
 }
 
-get '/hi' answers {
+get '/hi' => {
     "This is a second action matching '/hi', it should never be called";
 };
 
@@ -71,7 +71,7 @@ get '/hi' answers {
     ok( $response.body eq "Hello World!" , 'double action matching same request works as excpected');
 }
 
-get '/this/is/a/long/path' answers {
+get '/this/is/a/long/path' => {
     "Long path test";
 };
 
@@ -91,7 +91,7 @@ get '/this/is/a/long/path' answers {
     ok(  $response.status == 404, '404 error with wrong long path ( same length )');
 }
 
-get '/with/*/star' answers {
+get '/with/*/star' => {
     "Star";
 };
 
@@ -100,7 +100,7 @@ get '/with/*/star' answers {
     ok( $response.body eq "Star" , 'path with wildcard');
 }
 
-get '/path/to/file/*.*' answers {
+get '/path/to/file/*.*' => {
     "Starz";
 };
 
@@ -109,7 +109,7 @@ get '/path/to/file/*.*' answers {
     ok( $response.body eq "Starz" , 'path with several wildcards');
 }
 
-get '/this/has/stars/*/*.*' answers -> :@splat {
+get '/this/has/stars/*/*.*' => -> :@splat {
     @splat.join(',');
 };
 
