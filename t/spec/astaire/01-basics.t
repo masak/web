@@ -2,31 +2,25 @@
 use v6;
 use Test;
 
-plan 18;
+plan 12;
 
 #Basic test 
 use Astaire;
-ok(1, 'used Astaire without errors');
 
 get '/hi' => {
     "Hello World!"
 };
-ok(1, 'set up get action without errors');
 
 post '/test' => {
     2+2
 };
-ok(1, 'set up post action without errors');
 
 my $astaire_app = application();
-ok(1, 'set up application without errors');
 
 {
     my Web::Request $req .= new({ PATH_INFO => "/hi", REQUEST_METHOD => "GET" });
-    ok(1, 'set up request without errors');
 
     my Web::Response $response = $astaire_app.call( $req );
-    ok(1, 'got response without errors');
 
     ok( $response.body eq "Hello World!" , 'body of response to get was as excpected');
     ok( $response.status == 200 , 'status of response to get was as excpected');
