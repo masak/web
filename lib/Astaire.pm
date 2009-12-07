@@ -4,13 +4,12 @@ use Web::Request;
 use Web::Response;
 
 class Handler {
-    has Str $.condition;
+    has Str   $.condition;
+    has Regex $!condition_regex;
     has Block $.code;
-    has Str $.http_method;
+    has Str   $.http_method;
 
-    method matches($path) {
-        my %result;
-        my $clean_path = $path.subst(/ ^\/ /, '');
+    submethod BUILD(:$!condition, :$!code, :$!http_method) {
         my $condition
             = $.condition.subst(/ ^\/ /, '',     :g )\
                          .subst(/ \. /,  '\.',   :g )\
@@ -19,12 +18,15 @@ class Handler {
         $condition = "/^ $condition \$/";
         # RAKUDO: Doing eval here until we get variable interpolation in
         #         regexes.
-        # RAKUDO: submethod BUILD doesn't work (forgets its args), we
-        #         should eval the regex only on BUILD and then store it
-        my $condition_regex = eval $condition;
-        my $match = $clean_path.match($condition_regex);
-        %result<splat> = @($match).map({ ~$_ });
-        %result<success> = ?$match;
+        $!condition_regex = eval $condition;
+    }
+
+    method matches($path) {
+        my %result;
+        my $clean_path = $path.subst(/ ^\/ /, '');
+        $clean_path ~~ $!condition_regex;
+        %result<splat> = @($/).map({ ~$_ });
+        %result<success> = ?$/;
         return %result;
     }
 }
