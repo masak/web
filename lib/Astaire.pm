@@ -5,26 +5,30 @@ use Web::Response;
 
 class Handler {
     has Str   $.condition;
-    has Regex $!condition_regex;
+    has Regex $!condition-regex;
     has Block $.code;
     has Str   $.http_method;
 
+    sub remove-initial-slash($s) {
+        # RAKUDO: prefix:<~> needed because of [perl #71088]
+        ~$s.subst(rx[ ^ '/' ], '');
+    }
+
     submethod BUILD(:$!condition, :$!code, :$!http_method) {
         my $condition
-            = $.condition.subst(/ ^\/ /, '',     :g )\
-                         .subst(/ \. /,  '\.',   :g )\
-                         .subst(/ \/ /,  '\/',   :g )\
-                         .subst(/ \* /,  '(.*)', :g );
+            = remove-initial-slash($.condition)\
+              .trans(    [<  .  /   *  >]
+                      => [< \. \/ (.*) >] );
         $condition = "/^ $condition \$/";
         # RAKUDO: Doing eval here until we get variable interpolation in
         #         regexes.
-        $!condition_regex = eval $condition;
+        $!condition-regex = eval $condition;
     }
 
     method matches($path) {
         my %result;
-        my $clean_path = $path.subst(/ ^\/ /, '');
-        $clean_path ~~ $!condition_regex;
+        my $clean-path = remove-initial-slash($path);
+        $clean-path ~~ $!condition-regex;
         %result<splat> = @($/).map({ ~$_ });
         %result<success> = ?$/;
         return %result;
