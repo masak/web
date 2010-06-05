@@ -13,14 +13,9 @@ class Ratel {
         $!compiled = $source.subst(/(['%]' | ^ ] .*? [ $ | '[%' ])/, {";\$.emit-hunk({$index++});"}, :g);
     }
     method emit-hunk(Int $i) {
-        $.emit(@.hunks[$i][0]);
-    }
-    method emit($t) {
-        $*RESULT ~= $t;
+        print @.hunks[$i][0];
     }
     method do(*%attrs) {
-        my $*RESULT = '';
         eval $.compiled;
-        return $*RESULT;
     }
 }
