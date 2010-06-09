@@ -11,6 +11,7 @@ class Ratel {
         my $index = 0;
         $!source = $text;
         my $source = "%]$text[%";
+        $source.=subst('[%=', '[% print ', :g);
         @!hunks = $source.comb(/'%]' (.*?) '[%'/);
         $!compiled
             = $source.subst(/(['%]' | ^ ] .*? [ $ | '[%' ])/,
