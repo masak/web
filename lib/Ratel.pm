@@ -17,17 +17,29 @@ class Ratel {
             = $source.subst(/(['%]' | ^ ] .*? [ $ | '[%' ])/,
                             {";\$.emit-hunk({$index++});"},
                             :g);
-        $!compiled = 'my sub print(*@args) { $*result ~= $_ for @args };'
-                     ~ $!compiled;
+        $!compiled = $!compiled;
         return;
     }
 
     method emit-hunk(Int $i) {
-        $*result ~= @!hunks[$i][0];
+        $.emit(@!hunks[$i][0]);
+    }
+    method emit($m) {
+        $*result ~= $m;
     }
 
-    method serialize(*%attrs) {
+    method render(*%attrs) {
         my $*result = '';
+        my $obj = self;
+        # XXX Needs cleanup...
+        my $*OUT = (class {
+                method say(*@args) {
+                    $obj.emit($_) for (@args, "\n");
+                }
+                method print(*@args) {
+                    $obj.emit($_) for @args;
+                }
+            }).new();;
         eval $!compiled;
         return $*result;
     }
