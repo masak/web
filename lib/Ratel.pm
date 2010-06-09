@@ -1,17 +1,30 @@
 class Ratel {
-    has $.source;
+    has $!source;
     has $!compiled;
     has @!hunks;
+    has %.transforms is rw;
 
-    method load(Str $filename) {
-        $.compile(slurp($filename));
+    submethod BUILD(:%transforms, :$source) {
+        # XXX Needs to be re-thought to allow wrapping the contents of the
+        # unquote, use parameterized delims, etc...
+        %!transforms = %transforms;
+        %!transforms{'[%='} = '[% print';
+        $.source($source);
+    }
+    multi method load(Str $filename) {
+        $.source(slurp($filename));
     }
 
-    method compile(Str $text) {
+    multi method source() {
+        return $!source;
+    }
+    multi method source(Str $text) {
         my $index = 0;
         $!source = $text;
         my $source = "%]$text[%";
-        $source.=subst('[%=', '[% print ', :g);
+        for %!transforms.kv -> $k, $v {
+            $source.=subst($k, $v, :g);
+        }
         @!hunks = $source.comb(/'%]' (.*?) '[%'/);
         $!compiled
             = $source.subst(/(['%]' | ^ ] .*? [ $ | '[%' ])/,
