@@ -8,7 +8,8 @@ class Ratel {
         # XXX Needs to be re-thought to allow wrapping the contents of the
         # unquote, use parameterized delims, etc...
         %!transforms = %transforms;
-        %!transforms{'[%='} = '[% print';
+        %!transforms{'='} = -> $a {"print $a"};
+        %!transforms{'!'} = -> $a {"print %attrs<$a>"};
         $.source($source);
     }
     multi method load(Str $filename) {
@@ -23,7 +24,7 @@ class Ratel {
         $!source = $text;
         my $source = "%]$text[%";
         for %!transforms.kv -> $k, $v {
-            $source.=subst($k, $v, :g);
+            $source.=subst((eval "/'[%$k' (.*?) '%]'/"), -> $match {'[%' ~ $v($match[0]) ~ '%]'}, :g);
         }
         @!hunks = $source.comb(/'%]' (.*?) '[%'/);
         $!compiled
