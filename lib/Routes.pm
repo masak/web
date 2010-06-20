@@ -14,8 +14,8 @@ multi method add (Routes::Route $route) {
     @!routes.push($route);
 }
 
-multi method add (@pattern, Code $code) {
-    @!routes.push: Routes::Route.new( pattern => @pattern, code => $code, |%_);
+multi method add (@pattern, Code $code, *%opts) {
+    @!routes.push: Routes::Route.new( pattern => @pattern, code => $code, |%opts);
 }
 
 method connect (@pattern, *%opts) {
