@@ -188,7 +188,7 @@ sub _is_deeply(Mu $this, Mu $that) {
         return $this.key eq $that.key
                && _is_deeply( $this.value, $this.value );
     }
-    elsif $this ~~ undef && $that ~~ undef && $this.WHAT eq $that.WHAT {
+    elsif $this.notdef && $that.notdef && $this.WHAT eq $that.WHAT {
         return True;
     }
 

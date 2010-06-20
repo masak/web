@@ -27,7 +27,7 @@ method match (@chunks) {
 
     #say 'pattern:' ~ @tmp_pattern.perl;
 
-    for @chunks Z @tmp_pattern -> $chunk, Object $rule {
+    for @chunks Z @tmp_pattern -> $chunk, Mu $rule {
         if ~$chunk ~~ ($rule ~~ Pair ?? $rule.value !! $rule) {
             given $rule {
                 when Regex | Whatever { @!positional-args.push($/ || $chunk) }

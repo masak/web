@@ -32,7 +32,7 @@ multi method dispatch (@chunks) { self.dispatch(@chunks, Hash.new) }
 multi method dispatch (@chunks, $env) {
 #multi method dispatch (@chunks, $env?) {
 
-    my @matched =  @!routes.grep: { .match(@chunks) };    
+    my @matched =  @!routes.grep: { .match(@chunks) };
     # my @matched = @!routes».match; # yay?!
 
     if @matched {
