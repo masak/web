@@ -24,7 +24,7 @@ is $r.dispatch(<foo baz>),
     
 is $r.dispatch(['foo']), 
     'Yep!', 
-    "Pattern with regex \w+, put Match in args";
+    'Pattern with regex \w+, put Match in args';
 
 is $r.dispatch(['foo', '50']), 
     '60', 
