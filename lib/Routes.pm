@@ -18,11 +18,11 @@ multi method add (@pattern, Code $code) {
     @!routes.push: Routes::Route.new( pattern => @pattern, code => $code, |%_);
 }
 
-method connect (@pattern, *%_ is rw) {
+method connect (@pattern, *%opts) {
     # RAKUDO: die with 'Class P6protoobject already registered!' if this just in argh
     #%_<code> //= { %!controllers{$:controller}."$:action"(| @_, | %_) };
-    say 'connect:' ~ @pattern.perl ~ ' ' ~  %_.perl;
-    @!routes.push: Routes::Route.new( pattern => @pattern, code => { %:controllers{$:controller}."$:action"(| @_, | %_) }, named-args => %_ );
+    say 'connect:' ~ @pattern.perl ~ ' ' ~  %opts.perl;
+    @!routes.push: Routes::Route.new( pattern => @pattern, code => { %:controllers{$:controller}."$:action"(| @_, | %_) }, named-args => %opts );
 }
 
 # RAKUDO: Ambiguous dispatch [perl #64922]
