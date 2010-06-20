@@ -9,7 +9,7 @@ class Ratel {
         # unquote, use parameterized delims, etc...
         %!transforms = %transforms;
         %!transforms{'='} = -> $a {"print $a"};
-        %!transforms{'!'} = -> $a {"print %attrs<$a>"};
+        %!transforms{'!'} = -> $a {'print %attrs<' ~ $a ~ '>'};
         $.source($source);
     }
     multi method load(Str $filename) {
@@ -22,7 +22,7 @@ class Ratel {
     multi method source(Str $text) {
         my $index = 0;
         $!source = $text;
-        my $source = "%]$text[%";
+        my $source = "%]{$text}[%";
         for %!transforms.kv -> $k, $v {
             $source.=subst((eval "/'[%$k' (.*?) '%]'/"), -> $match {'[%' ~ $v($match[0]) ~ '%]'}, :g);
         }
