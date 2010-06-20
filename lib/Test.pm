@@ -44,41 +44,41 @@ multi sub pass($desc) is export(:DEFAULT) {
     proclaim(1, $desc);
 }
 
-multi sub ok(Object $cond, $desc) is export(:DEFAULT) {
+multi sub ok(Mu $cond, $desc) is export(:DEFAULT) {
     proclaim(?$cond, $desc);
 }
 
-multi sub ok(Object $cond) is export(:DEFAULT) { ok(?$cond, ''); }
+multi sub ok(Mu $cond) is export(:DEFAULT) { ok(?$cond, ''); }
 
 
-multi sub nok(Object $cond, $desc) is export(:DEFAULT) {
+multi sub nok(Mu $cond, $desc) is export(:DEFAULT) {
     proclaim(!$cond, $desc);
 }
 
-multi sub nok(Object $cond) is export(:DEFAULT) { nok($cond, ''); }
+multi sub nok(Mu $cond) is export(:DEFAULT) { nok($cond, ''); }
 
 
-multi sub is(Object $got, Object $expected, $desc) is export(:DEFAULT) {
+multi sub is(Mu $got, Mu $expected, $desc) is export(:DEFAULT) {
     my $test = $got eq $expected;
     proclaim(?$test, $desc);
 }
 
-multi sub is(Object $got, Object $expected) is export(:DEFAULT) { is($got, $expected, ''); }
+multi sub is(Mu $got, Mu $expected) is export(:DEFAULT) { is($got, $expected, ''); }
 
 
-multi sub isnt(Object $got, Object $expected, $desc) is export(:DEFAULT) {
+multi sub isnt(Mu $got, Mu $expected, $desc) is export(:DEFAULT) {
     my $test = !($got eq $expected);
     proclaim($test, $desc);
 }
 
-multi sub isnt(Object $got, Object $expected) is export(:DEFAULT) { isnt($got, $expected, ''); }
+multi sub isnt(Mu $got, Mu $expected) is export(:DEFAULT) { isnt($got, $expected, ''); }
 
-multi sub is_approx(Object $got, Object $expected, $desc) is export(:DEFAULT) {
+multi sub is_approx(Mu $got, Mu $expected, $desc) is export(:DEFAULT) {
     my $test = abs($got - $expected) <= 0.00001;
     proclaim(?$test, $desc);
 }
 
-multi sub is_approx(Object $got, Object $expected) is export(:DEFAULT) {
+multi sub is_approx(Mu $got, Mu $expected) is export(:DEFAULT) {
     is_approx($got, $expected, '');
 }
 
@@ -114,10 +114,10 @@ sub diag($message) is export(:DEFAULT) { say '# '~$message; }
 multi sub flunk($reason) is export(:DEFAULT) { proclaim(0, "flunk $reason")}
 
 
-multi sub isa_ok(Object $var,$type) is export(:DEFAULT) {
+multi sub isa_ok(Mu $var,$type) is export(:DEFAULT) {
     ok($var.isa($type), "The object is-a '$type'");
 }
-multi sub isa_ok(Object $var,$type, $msg) is export(:DEFAULT) { ok($var.isa($type), $msg); }
+multi sub isa_ok(Mu $var,$type, $msg) is export(:DEFAULT) { ok($var.isa($type), $msg); }
 
 multi sub dies_ok(Callable $closure, $reason) is export(:DEFAULT) {
     try {
@@ -154,17 +154,17 @@ multi sub eval_lives_ok(Str $code) is export(:DEFAULT) {
 }
 
 
-multi sub is_deeply(Object $this, Object $that, $reason) is export(:DEFAULT) {
+multi sub is_deeply(Mu $this, Mu $that, $reason) is export(:DEFAULT) {
     my $val = _is_deeply( $this, $that );
     proclaim($val, $reason);
 }
 
-multi sub is_deeply(Object $this, Object $that) is export(:DEFAULT) {
+multi sub is_deeply(Mu $this, Mu $that) is export(:DEFAULT) {
     my $val = _is_deeply( $this, $that );
     proclaim($val, '');
 }
 
-sub _is_deeply(Object $this, Object $that) {
+sub _is_deeply(Mu $this, Mu $that) {
 
     if $this ~~ List && $that ~~ List {
         return if +$this.values != +$that.values;
