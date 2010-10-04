@@ -1,36 +1,38 @@
-Lightweight Perl 6 framework for web applications. Work-name is Web.pm.
+Web.pm is an incubator for several related but independent web application
+projects. It's united by one central goal: to bring web application crafting,
+just like the rest of Perl 6, up-to-date with current practices that have
+proven to work in other languages.
 
-See our doc/GRANT-PROPOSAL.pod if you wondering about the background to this
-project. See doc/* for other planning documents.
+At the center of this group of projects sits the Web.pm core, a set of
+modules that abstract over common tasks related to HTTP requests and responses.
 
-Ilya Belikin (ihrd), Carl Mäsak (masak), Stephen Weeks (Tene).
+Here are some other modules currently under the roof of Web.pm:
 
+Astaire
+    A Perl 6 port of Ruby's Sinatra. Think of it as abstracting away the
+    upper parts of the web stack; the part above Web.pm core. With Astaire
+    you can write a "hello world"-type web application in a few lines
+    of Perl 6.
 
-Related repos
-=============
+Squerl
+    A nice implementation-independent SQL interface. Working with 'datasets'
+    as its fundamental abstraction, Squerl allows you to construct and
+    manipulate queries in a flexible way. Not really an ORM layer, it's more
+    of an abstraction of SQL specifics and platform differences.
 
-URI.pm
-  <http://github.com/ihrd/uri>
+Ratel
+    A no-frills templating module. Write your HTML (or whatever), and inline
+    Perl 6 code between a '[%' and a '%]'. Ratel will turn your template into
+    executable Perl 6, which can then be used to generate the HTML.
 
-November (wiki engine)
-  <http://github.com/viklund/november>
+Hitomi
+    A bells-and-whistles templating module. Where Ratel is fast-and-loose,
+    Hitomi aims for strictness and scalability. A modular system based on
+    XML SAX streams, it allows for combining (X)HTML and Perl 6 code in the
+    same template.
 
-Maya (blog engine)
-  <http://github.com/ihrd/maya>
+Contact
+=======
 
-...
-
-Progress updates
-================
-
-We use the IRC channel #november-wiki over at irc.freenode.org for live
-discussions, and mail-list november-wiki@googlegroups.com for asynchronous
-ones. People are explicitly invited to participate in these discussions.
-
-All three project members are blogging weekly about their status.
-
-masak:
-  <http://use.perl.org/~masak/journal/>
-
-Tene:
-  <http://blogs.gurulabs.com/stephen/>
+Carl Mäsak <cmasak@gmail.com>
+Stephen Weeks <tene@allalone.org>
