@@ -149,7 +149,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -250,7 +250,7 @@
            style="font-weight:bold;fill:#e3ba35;fill-opacity:1;-inkscape-font-specification:Bitstream Vera Sans Bold"
            id="tspan36609">  method</tspan><tspan
            style="fill:#ffffff;fill-opacity:1"
-           id="tspan36711"> postcircumfix:&lt;( )&gt;($env) {</tspan></tspan><tspan
+           id="tspan36711"> postcircumfix:&lt;( )&gt;( ($env) ) {</tspan></tspan><tspan
          sodipodi:role="line"
          x="374.73108"
          y="346.22461"
