@@ -4,6 +4,7 @@ use Hitomi;
 
 plan 2;
 
+todo('Hitomi::Stream.render not implemented yet', 2);
 {
     my Hitomi::MarkupTemplate $template .= new('<html>
   <h1 pe:if="$flag">Hello, world!</h1>
