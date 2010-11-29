@@ -36,4 +36,8 @@ class Hitomi::Stream {
             while @!events.elems == 1 && @!events[0] ~~ Array;
         return @!events;
     }
+
+    method render($format, :$doctype) {
+        return "";
+    }
 }
