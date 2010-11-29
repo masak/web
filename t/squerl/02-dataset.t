@@ -286,6 +286,7 @@ sub throws_exception(&block, $expected-type, $message = '') {
 
 $dataset = Squerl::Dataset.new(undef).from('t1', 't2');
 
+todo('not implemented yet', 4);
 {
     throws_exception { $dataset.update_sql( a => 1 ) },
                      'Squerl::InvalidOperation',
