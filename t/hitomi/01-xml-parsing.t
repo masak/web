@@ -17,7 +17,16 @@ my @invalid-xml =
     '<a><b></a></b>',
 ;
 
+sub parse($text) {
+    my $succeeded = False;
+    try {
+        Hitomi::XMLParser.new($text).llist();
+        $succeeded = True;
+    }
+    $succeeded;
+}
+
 plan @valid-xml + @invalid-xml;
 
-ok  Hitomi::XML.parse($_), "$_ is valid"   for @valid-xml;
-nok Hitomi::XML.parse($_), "$_ is invalid" for @invalid-xml;
+ok  parse($_), "$_ is valid"   for @valid-xml;
+nok parse($_), "$_ is invalid" for @invalid-xml;
