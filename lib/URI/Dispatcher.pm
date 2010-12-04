@@ -8,11 +8,13 @@ class URI::Dispatcher {
     }
 
     sub binds(Str $matcher, Str $url) {
-        if $matcher ~~ / ':' \w+ / {
+        my $params_regex = / [':' (\w+) || ('*')] /;
+
+        if $matcher ~~ $params_regex {
             my $remainder = $matcher;
             my $index = 0;
-            my %names;
-            while $remainder ~~ / ':' (\w+) / {
+            my %names = splat => [];
+            while $remainder ~~ $params_regex {
                 my $key = $0;
                 my $constant_part = $remainder.substr(0, $/.from);
                 return False
