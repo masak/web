@@ -11,7 +11,9 @@ class URI::Dispatcher {
         if $matcher ~~ / ':' \w+ / {
             my $remainder = $matcher;
             my $index = 0;
-            while $remainder ~~ / ':' \w+ / {
+            my %names;
+            while $remainder ~~ / ':' (\w+) / {
+                my $key = $0;
                 my $constant_part = $remainder.substr(0, $/.from);
                 return False
                     unless $url.substr($index, $/.from) eq $constant_part;
@@ -20,9 +22,10 @@ class URI::Dispatcher {
                 $url.substr($index) ~~ / <-[/]>+ /;
                 my $value = ~$/;
                 $index += $value.chars;
+                %names{$key} = $value;
             }
             if $url.substr($index) eq $remainder {
-                return { url => $url };
+                return { url => $url, %names };
             }
         }
         elsif $matcher eq $url {
