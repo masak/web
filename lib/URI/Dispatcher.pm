@@ -8,7 +8,7 @@ class URI::Dispatcher {
     }
 
     sub binds(Str $matcher, Str $url) {
-        my $params_regex = / [':' (\w+) || ('*')] /;
+        my $params_regex = / [':' (\w+) || ('**') || ('*')] /;
 
         if $matcher ~~ $params_regex {
             my $remainder = $matcher;
@@ -21,10 +21,26 @@ class URI::Dispatcher {
                     unless $url.substr($index, $/.from) eq $constant_part;
                 $remainder = $remainder.substr($/.to);
                 $index += $/.from;
-                $url.substr($index) ~~ / <-[/]>+ /;
-                my $value = ~$/;
+                my $value;
+                if $key eq '**' {
+                    my $next_constant_part = $remainder;
+                    if $remainder ~~ $params_regex {
+                        $next_constant_part = $remainder.substr(0, $/.from);
+                    }
+                    # RAKUDO: Wanted to use .rindex here, but got non-isolable
+                    #         confusing results when doing so.
+                    my $next_index = $url.index($next_constant_part, $index);
+                    return False
+                        unless defined $next_index;
+                    $value
+                        = $url.substr($index, $next_index - $index);
+                }
+                else {
+                    $url.substr($index) ~~ / <-[/]>+ /;
+                    $value = ~$/;
+                }
                 $index += $value.chars;
-                if $key eq '*' {
+                if $key eq '*' | '**' {
                     %names<splat>.push($value);
                 }
                 else {
