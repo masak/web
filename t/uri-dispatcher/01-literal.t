@@ -2,6 +2,8 @@ use v6;
 
 use Test;
 
+plan 3;
+
 use URI::Dispatcher;
 
 {
@@ -13,4 +15,6 @@ use URI::Dispatcher;
 
     ok $d.dispatch('/'), 'can dispatch on provided literal URL';
     ok $callback_called, 'the provided callback was called';
+
+    nok $d.dispatch('/something/made/up'), 'failed dispatch';
 }
