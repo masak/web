@@ -24,7 +24,12 @@ class URI::Dispatcher {
                 $url.substr($index) ~~ / <-[/]>+ /;
                 my $value = ~$/;
                 $index += $value.chars;
-                %names{$key} = $value;
+                if $key eq '*' {
+                    %names<splat>.push($value);
+                }
+                else {
+                    %names{$key} = $value;
+                }
             }
             if $url.substr($index) eq $remainder {
                 return { url => $url, %names };

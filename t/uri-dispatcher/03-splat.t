@@ -2,7 +2,7 @@ use v6;
 
 use Test;
 
-plan 1;
+plan 2;
 
 use URI::Dispatcher;
 
@@ -14,4 +14,5 @@ use URI::Dispatcher;
     );
 
     ok $d.dispatch('/hello/world'), 'splat works';
+    is $name, 'world', '...and it saves the parameter';
 }
