@@ -5,9 +5,12 @@ use Test;
 use URI::Dispatcher;
 
 {
+    my $callback_called = False;
+
     my $d = URI::Dispatcher.new(
-        '/' => {}
+        '/' => { $callback_called = True }
     );
 
     ok $d.dispatch('/'), 'can dispatch on provided literal URL';
+    ok $callback_called, 'the provided callback was called';
 }
