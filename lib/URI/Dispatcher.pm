@@ -7,12 +7,37 @@ class URI::Dispatcher {
         self.bless(self.CREATE, :@rules);
     }
 
+    sub binds(Str $matcher, Str $url) {
+        if $matcher ~~ / ':' \w+ / {
+            my $remainder = $matcher;
+            my $index = 0;
+            while $remainder ~~ / ':' \w+ / {
+                my $constant_part = $remainder.substr(0, $/.from);
+                return False
+                    unless $url.substr($index, $/.from) eq $constant_part;
+                $remainder = $remainder.substr($/.to);
+                $index += $/.from;
+                $url.substr($index) ~~ / <-[/]>+ /;
+                my $value = ~$/;
+                $index += $value.chars;
+            }
+            if $url.substr($index) eq $remainder {
+                return { url => $url };
+            }
+        }
+        elsif $matcher eq $url {
+            return { url => $url };
+        }
+
+        return False;
+    }
+
     method dispatch($url) {
         for @.rules -> $rule {
             my ($matcher, &callback) = $rule.key, $rule.value;
 
-            if $matcher eq $url {
-                callback();
+            if binds($matcher, $url) -> %bindinfo {
+                callback(%bindinfo);
                 return True;
             }
 
