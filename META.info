@@ -3,6 +3,5 @@
     "version"     : "*",
     "description" : "A Perl 6 web framework",
     "depends"     : ["HTTP::Daemon", "Perl6::Sqlite"],
-    "repo-type"   : "git",
-    "repo-url"    : "git://github.com/masak/web.git"
+    "source-url"  : "git://github.com/masak/web.git"
 }
