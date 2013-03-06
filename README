@@ -39,6 +39,9 @@ Hitomi
     XML SAX streams, it allows for combining (X)HTML and Perl 6 code in the
     same template.
 
+    This is now known as Hinges, and can be found in its own repository:
+    https://github.com/supernovus/hinges/
+
 Contact
 =======
 
