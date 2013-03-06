@@ -1,7 +1,0 @@
-{
-    "name"        : "Web::Incubator",
-    "version"     : "*",
-    "description" : "The old Web project, saved for historical purposes.",
-    "depends"     : ["HTTP::Daemon", "Perl6::Sqlite"],
-    "source-url"  : "git://github.com/masak/web.git"
-}

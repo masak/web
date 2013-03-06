@@ -26,6 +26,8 @@ Squerl
     manipulate queries in a flexible way. Not really an ORM layer, it's more
     of an abstraction of SQL specifics and platform differences.
 
+    Now moved into its own repo: https://github.com/supernovus/squerl/
+
 Ratel
     A no-frills templating module. Write your HTML (or whatever), and inline
     Perl 6 code between a '[%' and a '%]'. Ratel will turn your template into
