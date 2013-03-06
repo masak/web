@@ -1,3 +1,9 @@
+NOTE: This project is now archived for historical purposes.
+      Please see https://github.com/supernovus/perl6-web/ for the new
+      Perl 6 Web project.
+
+---------------------------------------------------------------------------
+
 Web.pm is an incubator for several related but independent web application
 projects. It's united by one central goal: to bring web application crafting,
 just like the rest of Perl 6, up-to-date with current practices that have
@@ -20,6 +26,8 @@ Squerl
     manipulate queries in a flexible way. Not really an ORM layer, it's more
     of an abstraction of SQL specifics and platform differences.
 
+    Now moved into its own repo: https://github.com/supernovus/squerl/
+
 Ratel
     A no-frills templating module. Write your HTML (or whatever), and inline
     Perl 6 code between a '[%' and a '%]'. Ratel will turn your template into
@@ -30,6 +38,9 @@ Hitomi
     Hitomi aims for strictness and scalability. A modular system based on
     XML SAX streams, it allows for combining (X)HTML and Perl 6 code in the
     same template.
+
+    This is now known as Hinges, and can be found in its own repository:
+    https://github.com/supernovus/hinges/
 
 Contact
 =======

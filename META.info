@@ -1,7 +1,0 @@
-{
-    "name"        : "Web",
-    "version"     : "*",
-    "description" : "A Perl 6 web framework",
-    "depends"     : ["HTTP::Daemon", "Perl6::Sqlite"],
-    "source-url"  : "git://github.com/masak/web.git"
-}
