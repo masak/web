@@ -1,3 +1,9 @@
+NOTE: This project is now archived for historical purposes.
+      Please see https://github.com/supernovus/perl6-web/ for the new
+      Perl 6 Web project.
+
+---------------------------------------------------------------------------
+
 Web.pm is an incubator for several related but independent web application
 projects. It's united by one central goal: to bring web application crafting,
 just like the rest of Perl 6, up-to-date with current practices that have
