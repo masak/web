@@ -4,7 +4,7 @@ role http-handler {
 # Needs a better name
 module LolDispatch {
     my @routes;
-    multi trait_auxiliary:<is>(http-handler $trait, $block, $arg) is export {
+    multi trait_mod:<is>(Routine $block, http-handler, $arg) is export {
         @routes.push({:route($arg[0]), :block($block)});
     }
 
